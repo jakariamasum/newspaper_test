@@ -14,7 +14,7 @@ const IndexPage: React.FC = () => {
       <div className="container my-2">
         <div className="w-full flex md:flex-row flex-col gap-4">
           <div className="w-fill md:w-3/4 block space-y-2">
-            <div className="bg-white p-2">
+            <div className="bg-white p-2  ">
               <Link
                 href="/"
                 className='bg-main text-white px-2 py-0 rounded-sm mb-2 leading-none'
