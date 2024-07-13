@@ -89,7 +89,7 @@ const Section: React.FC<SectionProps> = ({
             <div className="fixed right-0 top-0 bottom-0 bg-white w-full md:w-96 z-[1000]">
               <div className='flex items-center justify-between p-2 bg-main/10'>
                 <h1 className='leading-none font-bold text-black'>Builder</h1>
-                <svg  className="cursor-pointer text-red-500" onClick={() => setShowPopup(false)} stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368 144 144m224 0L144 368"></path></svg>
+                <svg  className="cursor-pointer text-red-500" onClick={() => setShowPopup(false)} stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linecap="round" strokeLinejoin="round" stroke-width="32" d="M368 368 144 144m224 0L144 368"></path></svg>
                 
               </div>
               <div className="bg-white text-black p-4 block divide-y h-auto overflow-y-auto">

@@ -68,7 +68,7 @@ const Banners: React.FC<BannersProps> = ({ items }) => {
                         ) : (
                             <div className='p-2 border bg-white w-full h-96'>
                                 <div className='border-2 h-full border-gray-500 text-gray-500 border-dashed flex flex-col items-center justify-center p-5 w-full'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-6-6h12"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" d="M12 6v12m-6-6h12"/></svg>
                                     <p>
                                       450x800px
                                     </p>
@@ -95,7 +95,7 @@ const Banners: React.FC<BannersProps> = ({ items }) => {
                     placeholder="Title"
                 />
                 <button onClick={() => removeBanner(index)} className="text-white p-1 absolute right-2 top-2 bg-red-500/50 hover:bg-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 5L5 19M5 5l14 14" color="currentColor"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" stroke-width="1.5" d="M19 5L5 19M5 5l14 14" color="currentColor"/></svg>
                 </button>
             </div>
         ))}

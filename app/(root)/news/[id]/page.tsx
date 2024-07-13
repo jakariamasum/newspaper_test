@@ -84,7 +84,7 @@ const IndexPage: React.FC = () => {
                     className='bg-[#7bbf6a] p-2 rounded-sm'
                     target='_blank'
                   >
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linejoin="round" stroke-width="32" d="M384 368h24a40.12 40.12 0 0 0 40-40V168a40.12 40.12 0 0 0-40-40H104a40.12 40.12 0 0 0-40 40v160a40.12 40.12 0 0 0 40 40h24"></path><rect width="256" height="208" x="128" y="240" fill="none" stroke-linejoin="round" stroke-width="32" rx="24.32" ry="24.32"></rect><path fill="none" stroke-linejoin="round" stroke-width="32" d="M384 128v-24a40.12 40.12 0 0 0-40-40H168a40.12 40.12 0 0 0-40 40v24"></path><circle cx="392" cy="184" r="24"></circle></svg>
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" strokeLinejoin="round" stroke-width="32" d="M384 368h24a40.12 40.12 0 0 0 40-40V168a40.12 40.12 0 0 0-40-40H104a40.12 40.12 0 0 0-40 40v160a40.12 40.12 0 0 0 40 40h24"></path><rect width="256" height="208" x="128" y="240" fill="none" strokeLinejoin="round" stroke-width="32" rx="24.32" ry="24.32"></rect><path fill="none" strokeLinejoin="round" stroke-width="32" d="M384 128v-24a40.12 40.12 0 0 0-40-40H168a40.12 40.12 0 0 0-40 40v24"></path><circle cx="392" cy="184" r="24"></circle></svg>
                   </Link>
                 </div>
               </div>
@@ -451,7 +451,7 @@ const IndexPage: React.FC = () => {
                     className='bg-[#7bbf6a] p-2 rounded-sm'
                     target='_blank'
                   >
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linejoin="round" stroke-width="32" d="M384 368h24a40.12 40.12 0 0 0 40-40V168a40.12 40.12 0 0 0-40-40H104a40.12 40.12 0 0 0-40 40v160a40.12 40.12 0 0 0 40 40h24"></path><rect width="256" height="208" x="128" y="240" fill="none" stroke-linejoin="round" stroke-width="32" rx="24.32" ry="24.32"></rect><path fill="none" stroke-linejoin="round" stroke-width="32" d="M384 128v-24a40.12 40.12 0 0 0-40-40H168a40.12 40.12 0 0 0-40 40v24"></path><circle cx="392" cy="184" r="24"></circle></svg>
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" strokeLinejoin="round" stroke-width="32" d="M384 368h24a40.12 40.12 0 0 0 40-40V168a40.12 40.12 0 0 0-40-40H104a40.12 40.12 0 0 0-40 40v160a40.12 40.12 0 0 0 40 40h24"></path><rect width="256" height="208" x="128" y="240" fill="none" strokeLinejoin="round" stroke-width="32" rx="24.32" ry="24.32"></rect><path fill="none" strokeLinejoin="round" stroke-width="32" d="M384 128v-24a40.12 40.12 0 0 0-40-40H168a40.12 40.12 0 0 0-40 40v24"></path><circle cx="392" cy="184" r="24"></circle></svg>
                   </Link>
                 </div>
               </div>
