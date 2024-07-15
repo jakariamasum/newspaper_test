@@ -1,9 +1,7 @@
 "use client";
-import axiosPublic from "@/lib/axiosPublic";
-import { useAllLanguages } from "@/lib/hooks/useAllLanguage";
-import Image from "next/image";
+import { useAllLanguages } from "@/lib/useAllLanguage";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface Post {
   img: string;
@@ -23,25 +21,13 @@ interface ILanguage {
   language_type?: string;
 }
 
-const Table: React.FC<TableProps> = ({ post, title, link }) => {
+const Table: React.FC<TableProps> = async ({ post, title, link }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [languages, setLanguages] = useState<ILanguage[]>([]);
   const postsPerPage = 10;
+  const languages: ILanguage[] = await useAllLanguages();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axiosPublic.get("/language");
-        setLanguages(data.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const filteredLanguages = languages.filter((language) =>
+  const filteredLanguages = languages.filter((language: ILanguage) =>
     language.language_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

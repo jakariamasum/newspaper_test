@@ -11,8 +11,12 @@ const IndexPage: React.FC = () => {
   const handleCreateLanguage = async () => {
     console.log(language);
     try {
-      await axiosPublic.post("/language", language);
-      toast.success("Successfully created!");
+      const response = await axiosPublic.post("/language", language);
+      if (response.status === 200) {
+        toast.success("Successfully created!");
+      } else {
+        toast.warning("Failed to create language!");
+      }
     } catch (error) {
       console.log(error);
       toast.warning("Failed to create language!");
