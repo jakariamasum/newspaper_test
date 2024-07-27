@@ -5,8 +5,9 @@ import { toast, Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
   const [language, setLanguage] = useState({
-    language_name: "English",
+    title: "English",
     language_code: "en",
+    link: "/en",
   });
   const handleCreateLanguage = async () => {
     console.log(language);
@@ -27,7 +28,8 @@ const IndexPage: React.FC = () => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     setLanguage({
       language_code: e.target.value,
-      language_name: selectedOption.text,
+      title: selectedOption.text,
+      link: `/${e.target.value}`,
     });
   };
 

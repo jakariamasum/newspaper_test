@@ -1,5 +1,5 @@
 "use client";
-import { useAllLanguages } from "@/lib/useAllLanguage";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -15,31 +15,21 @@ interface TableProps {
   post: Post[];
 }
 
-interface ILanguage {
-  language_name: string;
-  language_code: string;
-  language_type?: string;
-}
-
-const Table: React.FC<TableProps> = async ({ post, title, link }) => {
+const Table: React.FC<TableProps> = ({ post, title, link }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
-  const languages: ILanguage[] = await useAllLanguages();
 
-  const filteredLanguages = languages.filter((language: ILanguage) =>
-    language.language_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPosts = post?.filter((p) =>
+    p?.title?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentLanguages = filteredLanguages.slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  );
+  const currentPosts = filteredPosts?.slice(indexOfFirstPost, indexOfLastPost);
 
   const nextPage = () => {
-    if (currentPage * postsPerPage < filteredLanguages.length) {
+    if (currentPage * postsPerPage < filteredPosts.length) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -68,20 +58,52 @@ const Table: React.FC<TableProps> = async ({ post, title, link }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {currentLanguages?.map((language) => (
-          <div
-            key={language.language_code}
-            className="relative bg-white shadow-lg p-6 rounded-lg transform transition duration-500 ease-in-out hover:scale-105 hover:shadow-2xl text-center hover:translate-y-3 "
-          >
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              {language.language_name}
-            </h2>
-            <p className="text-[#AB4725]">{language.language_code}</p>
-          </div>
-        ))}
-      </div>
-
+      <table className="w-full text-left bg-white border">
+        <thead>
+          <tr className="w-full p-2 flex text-left border-b">
+            <th className="w-[90px]">Image</th>
+            <th className="w-[80%]">Title</th>
+            <th className="w-[13%] hidden md:block">Action</th>
+          </tr>
+        </thead>
+        <tbody className="w-full divide-y">
+          {currentPosts?.map((p, index) => (
+            <tr
+              key={index}
+              className="w-full p-2 flex flex-row md:items-center text-left"
+            >
+              <td className="w-[80px] mr-2">
+                <Image
+                  src={p?.img}
+                  width={100}
+                  height={500}
+                  alt={p?.title}
+                  className="w-20 h-16 object-cover"
+                />
+              </td>
+              <td className="w-[72%] md:w-[75%]">
+                <Link
+                  href={p?.link}
+                  target="_blank"
+                  className="text-blue-500 hover:underline line-clamp-2"
+                >
+                  {p?.title}
+                </Link>
+              </td>
+              <td className="md:w-[16%]">
+                <div className="flex md:flex-row flex-col md:items-center items-end justify-end md:space-x-4 md:space-y-0 space-y-2 font-bold">
+                  <Link href="/" className="">
+                    Editing
+                  </Link>
+                  <Link href="/" className="text-red-500">
+                    Delete
+                  </Link>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <div className="flex justify-between mt-4">
         <button
           onClick={prevPage}
@@ -93,7 +115,7 @@ const Table: React.FC<TableProps> = async ({ post, title, link }) => {
         <button
           onClick={nextPage}
           className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded disabled:opacity-50"
-          disabled={currentPage * postsPerPage >= filteredLanguages.length}
+          disabled={currentPage * postsPerPage >= filteredPosts.length}
         >
           Next
         </button>
