@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 interface Post {
+  _id: string;
   img: string;
   link: string;
   title: string;
@@ -83,7 +84,7 @@ const Table: React.FC<TableProps> = ({ post, title, link }) => {
               </td>
               <td className="w-[72%] md:w-[75%]">
                 <Link
-                  href={p?.link}
+                  href={`/admin/type/${p?._id}`}
                   target="_blank"
                   className="text-blue-500 hover:underline line-clamp-2"
                 >
