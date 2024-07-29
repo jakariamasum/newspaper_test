@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import { useEffect, useState } from "react";
 import { useNewsByLanguage } from "@/lib/useNewsByLanguage";
 import { useSingleCategory } from "@/lib/useSingleCategory";
 import { useSingleUser } from "@/lib/useSingleUser";
@@ -8,6 +9,8 @@ import { useParams } from "next/navigation";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import axiosPublic from "@/lib/axiosPublic";
+import { toast, Toaster } from "sonner";
 
 interface TNews {
   _id: string;
@@ -25,20 +28,132 @@ interface TNews {
   language_id?: string;
 }
 
-const ModuleTypePage = async () => {
+const ModuleTypePage = () => {
   const { _id } = useParams();
-  const news: TNews[] = await useNewsByLanguage(_id as string);
+  const [news, setNews] = useState<TNews[]>([]);
+  const [users, setUsers] = useState<{ [key: string]: string }>({});
+  const [categories, setCategories] = useState<{ [key: string]: string }>({});
 
-  //func for userinfo
-  const getUserInfo = async (id: string) => {
-    const user = await useSingleUser(id);
-    return user;
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [currentNews, setCurrentNews] = useState<TNews | null>(null);
+  const [editedNews, setEditedNews] = useState<TNews | null>(null);
+
+  // Handlers for edit and delete actions
+  const handleEdit = (newsItem: TNews) => {
+    setCurrentNews(newsItem);
+    setEditedNews(newsItem); // Initialize editedNews with currentNews
+    setEditModalOpen(true);
   };
-  //func for category info
-  const getCategoryInfo = async (id: string) => {
-    const category = await useSingleCategory(id);
-    return category;
+
+  const handleDelete = (newsItem: TNews) => {
+    setCurrentNews(newsItem);
+    setDeleteConfirmOpen(true);
   };
+
+  const handleDeleteConfirm = async () => {
+    if (currentNews) {
+      const response = await axiosPublic.delete(`/news/${currentNews._id}`);
+      if (response.status === 200) {
+        toast.success("News Deleted successfully!");
+        setNews((prevNews) =>
+          prevNews.filter((n) => n._id !== currentNews._id)
+        );
+      } else {
+        toast.warning("Something went wrong!");
+      }
+      setDeleteConfirmOpen(false);
+      setCurrentNews(null);
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editedNews) {
+      console.log(editedNews);
+      const response = await axiosPublic.put(
+        `/news/${editedNews._id}`,
+        editedNews
+      );
+      if (response.status === 200) {
+        toast.success("News Updated successfully!");
+        setNews((prevNews) =>
+          prevNews.map((n) => (n._id === editedNews._id ? editedNews : n))
+        );
+      }
+      setEditModalOpen(false);
+      setEditedNews(null);
+      setCurrentNews(null);
+    } else {
+      toast.warning("Something went wrong!");
+    }
+  };
+
+  const handleEditChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setEditedNews((prev) => ({ ...prev!, [name]: value }));
+  };
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const newsData = await useNewsByLanguage(_id as string);
+      setNews(newsData);
+    };
+
+    fetchNews();
+  }, [_id]);
+
+  useEffect(() => {
+    const fetchUserInfo = async (id: string) => {
+      const user = await useSingleUser(id);
+      return user?.username;
+    };
+
+    const fetchCategoryInfo = async (id: string) => {
+      const category = await useSingleCategory(id);
+      return category?.name;
+    };
+
+    const fetchData = async () => {
+      const userPromises = news.map((n) =>
+        fetchUserInfo(n.author_id).then((username) => ({
+          id: n.author_id,
+          username,
+        }))
+      );
+
+      const categoryPromises = news.map((n) =>
+        fetchCategoryInfo(n.category_id).then((name) => ({
+          id: n.category_id,
+          name,
+        }))
+      );
+
+      const userResults = await Promise.all(userPromises);
+      const categoryResults = await Promise.all(categoryPromises);
+
+      const userMap: { [key: string]: string } = {};
+      userResults.forEach((user) => {
+        if (user) userMap[user.id] = user.username;
+      });
+
+      const categoryMap: { [key: string]: string } = {};
+      categoryResults.forEach((category) => {
+        if (category) categoryMap[category.id] = category.name;
+      });
+
+      setUsers(userMap);
+      setCategories(categoryMap);
+    };
+
+    if (news.length) {
+      fetchData();
+    }
+  }, [news]);
 
   return (
     <div className="p-4">
@@ -68,14 +183,14 @@ const ModuleTypePage = async () => {
             {news.map((n) => (
               <tr key={n._id}>
                 <td className="py-2 px-4 border-b">{n.title}</td>
-                <td className="py-2 px-4 border-b hover:underline  text-blue-500 ">
-                  <Link href={`/news/${n._id}`}>See details</Link>{" "}
+                <td className="py-2 px-4 border-b hover:underline text-blue-500">
+                  <Link href={`/news/${n._id}`}>See details</Link>
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {getUserInfo(n.author_id).then((res) => res?.username)}
+                  {users[n.author_id] || "Loading..."}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {getCategoryInfo(n.category_id).then((res) => res?.name)}
+                  {categories[n.category_id] || "Loading..."}
                 </td>
                 <td className="py-2 px-4 border-b">{n.page_tag}</td>
                 <td className="py-2 px-4 border-b">{n.status}</td>
@@ -85,11 +200,11 @@ const ModuleTypePage = async () => {
                 <td className="py-2 px-4 border-b">
                   {new Date(n.publish_date as string).toLocaleDateString()}
                 </td>
-                <td className="py-2 px-4 border-b ">
-                  <span>
+                <td className="py-2 px-4 border-b flex gap-2">
+                  <span onClick={() => handleEdit(n)}>
                     <FaEdit fill="blue" size={22} className="cursor-pointer" />
                   </span>
-                  <span>
+                  <span onClick={() => handleDelete(n)}>
                     <MdDelete fill="red" size={22} className="cursor-pointer" />
                   </span>
                 </td>
@@ -98,6 +213,87 @@ const ModuleTypePage = async () => {
           </tbody>
         </table>
       </div>
+      {editModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Edit News</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="mb-4">
+                <label className="block mb-2">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  defaultValue={currentNews?.title}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Content</label>
+                <textarea
+                  name="content"
+                  defaultValue={currentNews?.content}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  onChange={handleEditChange}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-2">Status</label>
+                <select
+                  name="status"
+                  defaultValue={currentNews?.status}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  onChange={handleEditChange}
+                >
+                  <option value="published">published</option>
+                  <option value="draft">draft</option>
+                  <option value="unavailable">unavailable</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-300 rounded"
+                  onClick={() => setEditModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirmOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this news item?</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setDeleteConfirmOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded"
+                onClick={handleDeleteConfirm}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 };
