@@ -110,7 +110,7 @@ const CategoryTypePage = () => {
   useEffect(() => {
     const fetchUserInfo = async (id: string) => {
       const user = await useSingleUser(id);
-      return user?.username;
+      return user?.title;
     };
 
     const fetchCategoryInfo = async (id: string) => {

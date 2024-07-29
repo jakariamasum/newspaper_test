@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { useEffect, useState } from "react";
-import { useNewsByLanguage } from "@/lib/useNewsByLanguage";
 import { useSingleCategory } from "@/lib/useSingleCategory";
 import { useSingleUser } from "@/lib/useSingleUser";
 import Link from "next/link";
@@ -11,6 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
+import { useNewsByUser } from "@/lib/useNewsByUser";
 
 interface TNews {
   _id: string;
@@ -28,7 +28,7 @@ interface TNews {
   language_id?: string;
 }
 
-const ModuleTypePage = () => {
+const UserTypePage = () => {
   const { _id } = useParams();
   const [news, setNews] = useState<TNews[]>([]);
   const [users, setUsers] = useState<{ [key: string]: string }>({});
@@ -42,7 +42,7 @@ const ModuleTypePage = () => {
   // Handlers for edit and delete actions
   const handleEdit = (newsItem: TNews) => {
     setCurrentNews(newsItem);
-    setEditedNews(newsItem); // Initialize editedNews with currentNews
+    setEditedNews(newsItem);
     setEditModalOpen(true);
   };
 
@@ -100,7 +100,7 @@ const ModuleTypePage = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
-      const newsData = await useNewsByLanguage(_id as string);
+      const newsData = await useNewsByUser(_id as string);
       setNews(newsData);
     };
 
@@ -306,4 +306,4 @@ const ModuleTypePage = () => {
   );
 };
 
-export default ModuleTypePage;
+export default UserTypePage;
