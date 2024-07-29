@@ -6,7 +6,7 @@ const IndexPage: React.FC = async () => {
   console.log(languages);
   return (
     <>
-      <Table title="models type" link="/admin/type/add" post={languages} />
+      <Table title="models type" link="/admin/type" post={languages} />
     </>
   );
 };

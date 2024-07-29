@@ -1,46 +1,51 @@
 "use client";
-import React from 'react';
+import React from "react";
 import dynamic from "next/dynamic";
-import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import "suneditor/dist/css/suneditor.min.css";
 
-
-// Assuming you have some specific props for this component
 interface ContentProps {
-  // Define your props here if any
+  value: string;
+  onChange: (value: string) => void;
 }
 
 const SunEditor = dynamic(() => import("suneditor-react"), {
   ssr: false,
 });
 
-const Content: React.FC<ContentProps> = () => {
+const Content: React.FC<ContentProps> = ({ value, onChange }) => {
   const editorOptions = {
     buttonList: [
       [
-        'formatBlock',
-        'bold',
-        'underline',
-        'italic',
-        'blockquote',
-        'fontColor',
-        'hiliteColor',
-        'textStyle',
-        'removeFormat',
-        'align',
-        'horizontalRule',
-        'list',
-        'lineHeight',
-        'table',
-        'link',
-        'image',
-        'video',
-        'audio',
-        'codeView'
-      ]
-    ]
+        "formatBlock",
+        "bold",
+        "underline",
+        "italic",
+        "blockquote",
+        "fontColor",
+        "hiliteColor",
+        "textStyle",
+        "removeFormat",
+        "align",
+        "horizontalRule",
+        "list",
+        "lineHeight",
+        "table",
+        "link",
+        "image",
+        "video",
+        "audio",
+        "codeView",
+      ],
+    ],
   };
 
-  return (<SunEditor setOptions={editorOptions} />);
+  return (
+    <SunEditor
+      setOptions={editorOptions}
+      setContents={value}
+      onChange={onChange}
+    />
+  );
 };
 
 export default Content;

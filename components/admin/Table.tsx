@@ -53,7 +53,10 @@ const Table: React.FC<TableProps> = ({ post, title, link }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Link href={link} className="bg-main py-1 px-4 rounded-md text-white">
+          <Link
+            href={`${link}/add`}
+            className="bg-main py-1 px-4 rounded-md text-white"
+          >
             Add
           </Link>
         </div>
@@ -84,7 +87,7 @@ const Table: React.FC<TableProps> = ({ post, title, link }) => {
               </td>
               <td className="w-[72%] md:w-[75%]">
                 <Link
-                  href={`/admin/type/${p?._id}`}
+                  href={`${link}/${p?._id}`}
                   target="_blank"
                   className="text-blue-500 hover:underline line-clamp-2"
                 >
