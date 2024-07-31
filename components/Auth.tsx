@@ -6,7 +6,8 @@ import { useState, useRef } from "react";
 import { toast, Toaster } from "sonner";
 
 const Auth = () => {
-  const { login, loading } = useAuth();
+  const { login, user } = useAuth();
+  console.log(user);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string[]>(new Array(6).fill(""));
   const passwordInputsRef = useRef<HTMLInputElement[]>(Array(6).fill(null));

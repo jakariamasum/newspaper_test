@@ -1,4 +1,6 @@
-import { ReactNode, useContext, useEffect } from "react";
+"use client";
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../context/authContext";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
@@ -6,8 +8,10 @@ import { toast } from "sonner";
 interface PrivateRouteProps {
   children: ReactNode;
 }
+
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { user, setUser, loading, setLoading, logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -28,9 +32,9 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
             },
           }
         );
-        console.log("private route", response.data.data);
+        console.log("private route", response);
         if (response.data.data) {
-          setUser(response.data.data._doc);
+          setUser(response.data.data);
         } else {
           handleAccessDenied();
           localStorage.removeItem("authToken");
@@ -48,23 +52,26 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   }, []);
 
   const handleAccessDenied = () => {
-    toast.warning("You dont access here!!");
+    toast.warning("You don't have access here!!");
     logout();
-    (window.location.href = "/auth"), { replace: true };
+    router.replace("/auth");
   };
+
+  useEffect(() => {
+    if (!loading) {
+      if (user?.role === "admin") {
+        router.replace("/admin");
+      } else if (user?.role === "reporter") {
+        router.replace("/");
+      }
+    }
+  }, [loading, user, router]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (user?.role === "admin") {
-    return (window.location.href = "/admin");
-  }
-  if (user?.role === "reporter") {
-    return (window.location.href = "/");
-  }
-
-  return children;
+  return <>{children}</>;
 };
 
 export default PrivateRoute;
