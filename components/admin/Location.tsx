@@ -16,13 +16,21 @@ interface LocationProps {
 }
 
 const Location: React.FC<LocationProps> = ({ items }) => {
-  const [selectedCity, setSelectedCity] = useState<string>(items[0]?.name || "");
-  const defaultSelectedArea = items.find(city => city.name === selectedCity)?.areas.find(area => area.selected)?.name || "";
+  const [selectedCity, setSelectedCity] = useState<string>(
+    items[0]?.name || ""
+  );
+  const defaultSelectedArea =
+    items
+      .find((city) => city.name === selectedCity)
+      ?.areas.find((area) => area.selected)?.name || "";
   const [selectedArea, setSelectedArea] = useState<string>(defaultSelectedArea);
 
   const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(e.target.value);
-    const defaultSelectedArea = items.find(city => city.name === e.target.value)?.areas.find(area => area.selected)?.name || "";
+    const defaultSelectedArea =
+      items
+        .find((city) => city.name === e.target.value)
+        ?.areas.find((area) => area.selected)?.name || "";
     setSelectedArea(defaultSelectedArea);
   };
 
@@ -33,9 +41,7 @@ const Location: React.FC<LocationProps> = ({ items }) => {
   return (
     <div className="grid grid-cols-1 gap-2 mb-4">
       <div>
-        <p>
-        Location
-        </p>
+        <p>Location</p>
         <select
           value={selectedCity}
           onChange={handleCityChange}
