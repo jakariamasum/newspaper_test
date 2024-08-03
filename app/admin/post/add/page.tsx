@@ -1,4 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import React, { useEffect, useState } from "react";
+import axiosPublic from "@/lib/axiosPublic";
+import { toast, Toaster } from "sonner";
+import { useAllUsers } from "@/lib/useAllUsers";
+import { useAllArea } from "@/lib/useAllArea";
+import { useAllCities } from "@/lib/useAllCities";
 import AttachFiles from "@/components/admin/AttachFiles";
 import Checkbox from "@/components/admin/Checkbox";
 import Content from "@/components/admin/Content";
@@ -6,9 +13,19 @@ import Location from "@/components/admin/Location";
 import Photo from "@/components/admin/Photo";
 import Tag from "@/components/admin/Tag";
 import Time from "@/components/admin/Time";
-import { useState } from "react";
-import axiosPublic from "@/lib/axiosPublic";
-import { toast, Toaster } from "sonner";
+import { useAllSubCategories } from "@/lib/useAllSubCategory";
+import { useAllCategory } from "@/lib/useAllCategory";
+
+interface TUser {
+  _id: string;
+  title: string;
+}
+
+interface TCategory {
+  title: string;
+  checked?: boolean;
+  subItems?: TCategory[];
+}
 
 const IndexPage: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -16,7 +33,71 @@ const IndexPage: React.FC = () => {
   const [tags, setTags] = useState<string[]>(["hello"]);
   const [img, setImg] = useState("");
   const [reporter, setReporter] = useState("");
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState({ city: "", area: "" });
+  const [users, setUsers] = useState<TUser[]>([]);
+  const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [category, setCategory] = useState<{
+    category: string;
+    subCategory?: string;
+  }>({ category: "" });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await useAllUsers();
+      setUsers(response);
+    };
+    fetchUsers();
+    const fetchCities = async () => {
+      const response = await useAllCities();
+      setCities(response);
+    };
+    fetchCities();
+    const fetchAreas = async () => {
+      const response = await useAllArea();
+      setAreas(response);
+    };
+    fetchAreas();
+    const fetchCategories = async () => {
+      const response = await useAllCategory();
+      setCategories(response);
+    };
+    fetchCategories();
+    const fetchSubCategories = async () => {
+      const response = await useAllSubCategories();
+      setSubCategories(response);
+    };
+    fetchSubCategories();
+  }, []);
+
+  const transformData = (
+    areas: { title: string; city: string }[],
+    cities: { _id: string; title: string }[]
+  ) => {
+    return cities.map((city) => ({
+      title: city.title,
+      areas: areas
+        .filter((area) => area.city === city._id)
+        .map((area) => ({ title: area.title })),
+    }));
+  };
+  const transformData2 = (
+    subCategories: { title: string; category: string }[],
+    categories: { _id: string; title: string }[]
+  ) => {
+    console.log(subCategories, categories);
+    return categories.map((category) => ({
+      title: category.title,
+      subCategories: subCategories
+        .filter((subCategory) => subCategory.category === category._id)
+        .map((subCategory) => ({ title: subCategory.title })),
+    }));
+  };
+
+  const transformedData = transformData(areas, cities);
+  const transformeCategorydData = transformData2(subCategories, categories);
 
   const handlePublish = async () => {
     const formData = {
@@ -26,8 +107,10 @@ const IndexPage: React.FC = () => {
       img,
       reporter,
       location,
+      category,
     };
 
+    console.log(formData);
     try {
       const response = await axiosPublic.post("/news", formData);
       console.log(response.data);
@@ -80,21 +163,8 @@ const IndexPage: React.FC = () => {
             <Time />
             <Checkbox
               title="Category"
-              items={[
-                {
-                  title: "Category 1",
-                  subItems: [
-                    { title: "SubCategory 1.1" },
-                    { title: "SubCategory 1.2" },
-                  ],
-                },
-                {
-                  title: "Category 2",
-                  subItems: [{ title: "SubCategory 2.1", checked: true }],
-                },
-                { title: "Category 3", checked: true },
-                { title: "Category 4" },
-              ]}
+              items={transformeCategorydData}
+              onChange={setCategory}
             />
             <div className="mb-4">
               <p>Reporter</p>
@@ -104,31 +174,14 @@ const IndexPage: React.FC = () => {
                 onChange={(e) => setReporter(e.target.value)}
               >
                 <option value="">Select a reporter</option>
-                <option value="HeRa">HeRa</option>
-                <option value="Khan">Khan</option>
-                <option value="Reporter">Reporter</option>
+                {users?.map((user: TUser) => (
+                  <option value={user?._id} key={user?._id}>
+                    {user?.title}
+                  </option>
+                ))}
               </select>
             </div>
-            <Location
-              items={[
-                {
-                  name: "City Name 1",
-                  areas: [
-                    { name: "Area 1" },
-                    { name: "Area 2", selected: true },
-                    { name: "Area 3" },
-                  ],
-                },
-                {
-                  name: "City Name 2",
-                  areas: [
-                    { name: "Area 4" },
-                    { name: "Area 5" },
-                    { name: "Area 6" },
-                  ],
-                },
-              ]}
-            />
+            <Location items={transformedData} onChange={setLocation} />
           </div>
         </div>
       </div>

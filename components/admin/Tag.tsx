@@ -3,7 +3,7 @@ import React, { useState, useEffect, KeyboardEvent, ChangeEvent } from "react";
 
 type TagProps = {
   value: string[];
-  onChange: (tags: string[]) => void; // Callback to update tags in parent
+  onChange: (tags: string[]) => void;
 };
 
 const Tag: React.FC<TagProps> = ({ value, onChange }) => {
@@ -20,14 +20,14 @@ const Tag: React.FC<TagProps> = ({ value, onChange }) => {
       if (!tags.includes(trimmedValue)) {
         const updatedTags = [...tags, trimmedValue];
         setTags(updatedTags);
-        onChange(updatedTags); // Notify parent about updated tags
+        onChange(updatedTags);
       }
       setInputValue("");
       e.preventDefault();
     } else if (e.key === "Backspace" && inputValue === "" && tags.length) {
       const updatedTags = tags.slice(0, -1);
       setTags(updatedTags);
-      onChange(updatedTags); // Notify parent about updated tags
+      onChange(updatedTags);
     }
   };
 
@@ -38,7 +38,7 @@ const Tag: React.FC<TagProps> = ({ value, onChange }) => {
   const removeTag = (indexToRemove: number) => {
     const updatedTags = tags.filter((_, index) => index !== indexToRemove);
     setTags(updatedTags);
-    onChange(updatedTags); // Notify parent about updated tags
+    onChange(updatedTags);
   };
 
   return (

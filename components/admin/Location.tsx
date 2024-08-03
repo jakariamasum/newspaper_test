@@ -1,41 +1,50 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 
 interface Area {
-  name: string;
-  selected?: boolean; // Added 'selected' property
+  title: string;
+  selected?: boolean;
 }
 
 interface City {
-  name: string;
+  title: string;
   areas: Area[];
 }
 
 interface LocationProps {
   items: City[];
+  onChange: (location: { city: string; area: string }) => void;
 }
 
-const Location: React.FC<LocationProps> = ({ items }) => {
+const Location: React.FC<LocationProps> = ({ items, onChange }) => {
   const [selectedCity, setSelectedCity] = useState<string>(
-    items[0]?.name || ""
+    items[0]?.title || ""
   );
   const defaultSelectedArea =
     items
-      .find((city) => city.name === selectedCity)
-      ?.areas.find((area) => area.selected)?.name || "";
+      .find((city) => city.title === selectedCity)
+      ?.areas.find((area) => area.selected)?.title || "";
   const [selectedArea, setSelectedArea] = useState<string>(defaultSelectedArea);
 
-  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(e.target.value);
-    const defaultSelectedArea =
+  useEffect(() => {
+    onChange({ city: selectedCity, area: selectedArea });
+  }, [selectedCity, selectedArea, onChange]);
+
+  const handleCityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newCity = e.target.value;
+    const newDefaultSelectedArea =
       items
-        .find((city) => city.name === e.target.value)
-        ?.areas.find((area) => area.selected)?.name || "";
-    setSelectedArea(defaultSelectedArea);
+        .find((city) => city.title === newCity)
+        ?.areas.find((area) => area.selected)?.title || "";
+    setSelectedCity(newCity);
+    setSelectedArea(newDefaultSelectedArea);
+    onChange({ city: newCity, area: newDefaultSelectedArea });
   };
 
-  const handleAreaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedArea(e.target.value);
+  const handleAreaChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newArea = e.target.value;
+    setSelectedArea(newArea);
+    onChange({ city: selectedCity, area: newArea });
   };
 
   return (
@@ -48,8 +57,8 @@ const Location: React.FC<LocationProps> = ({ items }) => {
           className="block w-full px-4 py-2 mt-2 bg-white border border-gray-300 rounded-md focus:outline-none"
         >
           {items.map((city) => (
-            <option key={city.name} value={city.name}>
-              {city.name}
+            <option key={city.title} value={city.title}>
+              {city.title}
             </option>
           ))}
         </select>
@@ -62,10 +71,10 @@ const Location: React.FC<LocationProps> = ({ items }) => {
           className="block w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none"
         >
           {items
-            .find((city) => city.name === selectedCity)
+            .find((city) => city.title === selectedCity)
             ?.areas.map((area) => (
-              <option key={area.name} value={area.name}>
-                {area.name}
+              <option key={area.title} value={area.title}>
+                {area.title}
               </option>
             ))}
         </select>
