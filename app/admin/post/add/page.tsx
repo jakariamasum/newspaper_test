@@ -102,10 +102,10 @@ const IndexPage: React.FC = () => {
   const handlePublish = async () => {
     const formData = {
       title,
-      description,
+      content: description,
       tags,
       img,
-      reporter,
+      author_id: reporter,
       location,
       category,
     };
