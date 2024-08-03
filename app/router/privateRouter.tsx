@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../context/authContext";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
@@ -10,9 +10,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, setUser, loading, setLoading, logout } = useAuth();
   const router = useRouter();
 
+  console.log(pathname, searchParams);
   useEffect(() => {
     const verifyUser = async () => {
       const storedToken = localStorage.getItem("authToken");
@@ -60,7 +63,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   useEffect(() => {
     if (!loading) {
       if (user?.role === "admin") {
-        router.replace("/admin");
+        router.replace(`${pathname}`);
       } else if (user?.role === "reporter") {
         router.replace("/");
       }
