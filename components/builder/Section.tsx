@@ -226,28 +226,6 @@ const Section: React.FC<SectionProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between py-1.5">
-                  <p>{section} name</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="banana"
-                  >
-                    <option>select {section} name</option>
-                    <option value="1">Mobile</option>
-                    <option value="2">Grid 2</option>
-                    <option value="3">Grid 3</option>
-                    <option value="4">Grid 4</option>
-                    <option value="5">Grid 5</option>
-                    <option value="6">Grid 6</option>
-                    <option value="7">Grid 7</option>
-                    <option value="8">Grid 8</option>
-                    <option value="9">Grid 9</option>
-                    <option value="10">Grid 10</option>
-                    <option value="11">Grid 11</option>
-                    <option value="12">Grid 12</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between py-1.5">
                   <p>Desktop grids</p>
                   <select
                     className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
@@ -266,6 +244,28 @@ const Section: React.FC<SectionProps> = ({
                     <option value="10">Grid 10</option>
                     <option value="11">Grid 11</option>
                     <option value="12">Grid 12</option>
+                  </select>
+                </div>
+                <div className="flex items-center justify-between py-1.5">
+                  <p>Grid width(Desktop%)</p>
+                  <select
+                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
+                    defaultValue="25"
+                  >
+                    <option>select width</option>
+                    <option value="25">25</option>
+                    <option value="30">30 </option>
+                    <option value="35">35</option>
+                    <option value="40">40</option>
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                    <option value="55">55</option>
+                    <option value="60">60</option>
+                    <option value="65">65</option>
+                    <option value="70">70</option>
+                    <option value="75">75</option>
+                    <option value="80">80</option>
+                    <option value="85">85</option>
                   </select>
                 </div>
 

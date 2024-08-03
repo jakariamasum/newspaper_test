@@ -43,7 +43,7 @@ const Tag: React.FC<TagProps> = ({ value, onChange }) => {
 
   return (
     <div className="flex items-center flex-wrap border p-2 gap-2 bg-white rounded mt-2">
-      {tags.map((tag, index) => (
+      {tags?.map((tag, index) => (
         <div
           key={index}
           className="flex items-center text-gray-700 border rounded-full px-3 py-1"
