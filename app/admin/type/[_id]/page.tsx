@@ -25,7 +25,7 @@ interface TNews {
   views: number;
   likes: number;
   dislikes: number;
-  language_id?: string;
+  lang?: string;
 }
 
 const ModuleTypePage = () => {
