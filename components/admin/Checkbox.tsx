@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 interface CheckboxItem {
   title: string;
+  _id: string;
   checked?: boolean;
   subCategories?: CheckboxItem[];
 }
@@ -30,8 +31,9 @@ const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
+    console.log(items[index]);
     onChange({
-      category: items[index].title,
+      category: items[index]._id,
       subCategory: "",
     });
   };
@@ -45,8 +47,8 @@ const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
       !newSubCheckedItems[mainIndex][subIndex];
     setSubCheckedItems(newSubCheckedItems);
     onChange({
-      category: items[mainIndex].title,
-      subCategory: items[mainIndex].subCategories![subIndex].title,
+      category: items[mainIndex]._id,
+      subCategory: items[mainIndex].subCategories![subIndex]._id,
     });
   };
 
