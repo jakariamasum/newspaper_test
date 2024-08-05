@@ -1,0 +1,204 @@
+{
+  "_id": "66ae6105f26790860f05cb54",
+  "title": "Home Page",
+  "lang": ["bn", "en"],
+  "description": "this is desc",
+  "rowData": [
+    {
+      "_id": 1,
+      "name": "first row",
+      "bgColor": "#ffffff",
+      "textColor": "#000000",
+      "styleType": 1,
+      "desktopGrid": 0,
+      "mobileGrid": 0,
+      "sections": [
+        {
+          "title": "Section 1",
+          "link": "/section1",
+          "box": 18,
+          "limit": 5,
+          "style": 1,
+          "width": 100,
+          "photoUrl": "/photo1",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": 2,
+      "name": "second row",
+      "bgColor": "#f0f0f0",
+      "textColor": "#000000",
+      "styleType": 2,
+      "desktopGrid": 3,
+      "mobileGrid": 1,
+      "sections": [
+        {
+          "title": "Section 3",
+          "link": "/section3",
+          "style": 1,
+          "box": 3,
+          "limit": 5,
+          "width": 30,
+          "photoUrl": "/photo3",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        },
+        {
+          "title": "Section 3",
+          "link": "/section3",
+          "style": 1,
+          "box": 3,
+          "limit": 5,
+          "width": 30,
+          "photoUrl": "/photo3",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        },
+        {
+          "title": "Section 4",
+          "link": "/section4",
+          "style": 1,
+          "box": 4,
+          "limit": 5,
+          "width": 20,
+          "photoUrl": "/photo4",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": 2,
+      "name": "second row",
+      "bgColor": "#f0f0f0",
+      "textColor": "#000000",
+      "styleType": 2,
+      "desktopGrid": 3,
+      "mobileGrid": 1,
+      "sections": [
+        {
+          "title": "Section 3",
+          "link": "/section3",
+          "style": 1,
+          "box": 3,
+          "limit": 5,
+          "width": 30,
+          "photoUrl": "/photo3",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        },
+        {
+          "title": "Section 4",
+          "link": "/section4",
+          "style": 1,
+          "box": 4,
+          "limit": 5,
+          "width": 70,
+          "photoUrl": "/photo4",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": 2,
+      "name": "second row",
+      "bgColor": "#f0f0f0",
+      "textColor": "#000000",
+      "styleType": 2,
+      "desktopGrid": 3,
+      "mobileGrid": 1,
+      "sections": [
+        {
+          "title": "Section 3",
+          "link": "/section3",
+          "style": 1,
+          "box": 3,
+          "limit": 5,
+          "width": 30,
+          "photoUrl": "/photo3",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        },
+        {
+          "title": "Section 4",
+          "link": "/section4",
+          "style": 1,
+          "box": 4,
+          "limit": 5,
+          "width": 30,
+          "photoUrl": "/photo4",
+          "categories": [
+            {
+              "catId": 1,
+              "catName": "cat 1"
+            },
+            {
+              "catId": 2,
+              "catName": "cat 2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

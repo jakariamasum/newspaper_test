@@ -54,15 +54,15 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const handleAccessDenied = () => {
     toast.warning("You don't have access here!!");
     logout();
-    router.replace("/auth");
+    router.push("/auth");
   };
 
   useEffect(() => {
     if (!loading) {
       if (user?.role === "admin") {
-        router.replace("/admin");
+        router.push("/admin");
       } else if (user?.role === "reporter") {
-        router.replace("/");
+        router.push("/");
       }
     }
   }, [loading, user, router]);
