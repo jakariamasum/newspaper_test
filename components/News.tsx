@@ -54,7 +54,7 @@ const News: React.FC<NewssProps> = ({
 
   const categoriesCount = item.length;
 
-  const items = item[activeCategory].post.slice(0, limit);
+  const items = item[activeCategory]?.post.slice(0, limit);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,9 +78,7 @@ const News: React.FC<NewssProps> = ({
     setCurrentImage(index);
   };
 
-  const displayedItems = items
-    .slice(startIndex, startIndex + itemsToShow)
-    .concat(
+  const displayedItems = items?.slice(startIndex, startIndex + itemsToShow).concat(
       items.slice(0, Math.max(0, startIndex + itemsToShow - items.length))
     )
     .slice(0, limit);
@@ -103,7 +101,7 @@ const News: React.FC<NewssProps> = ({
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (
               <>
-                {item.map((categoryItem, index) => (
+                {item?.map((categoryItem, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveCategory(index)}
@@ -134,7 +132,7 @@ const News: React.FC<NewssProps> = ({
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (
               <>
-                {item.map((categoryItem, index) => (
+                {item?.map((categoryItem, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveCategory(index)}
@@ -159,7 +157,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 1 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => {
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => {
             if (index === 0) {
               return (
                 <Link href={p.link} key={index} className="w-full bg-white p-2">
@@ -209,7 +207,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 2 && (
         <div className="grid grid-cols-1 gap-1">
-          {item[activeCategory].post.slice(0, limit).map((post, index) => (
+          {item[activeCategory]?.post?.slice(0, limit)?.map((post, index) => (
             <Link
               href={post.link}
               className="bg-white p-2 flex items-center space-x-1"
@@ -229,7 +227,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 3 && (
         <div className="flex flex-col space-y">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => {
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => {
             if (index === 0) {
               return (
                 <Link
@@ -272,7 +270,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 4 && (
         <div className="grid grid-cols-2 gap-1">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => {
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => {
             if (index === 0) {
               return (
                 <Link
@@ -315,7 +313,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 5 && (
         <div className="grid grid-cols-2 space-y">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => {
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => {
             if (index === 0) {
               return (
                 <Link
@@ -375,7 +373,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 6 && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-1">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => (
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => (
             <Link href={p.link} className="bg-white p-2" key={index}>
               <Image
                 src={p.img || "/default.jpg"}
@@ -391,7 +389,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 7 && (
         <div className="grid grid-cols-2 gap-1">
-          {item[activeCategory].post.slice(0, limit).map((p, index) => {
+          {item[activeCategory]?.post?.slice(0, limit)?.map((p, index) => {
             if (index === 0) {
               return (
                 <Link
@@ -452,7 +450,7 @@ const News: React.FC<NewssProps> = ({
       {box === 8 && (
         <div className="grid grid-cols-3 gap-2">
           <div className="space-y-2 block">
-            {item[activeCategory].post.slice(0, 4).map((p, index) => (
+            {item[activeCategory]?.post?.slice(0, 4)?.map((p, index) => (
               <Link
                 href={p.link}
                 className="bg-white p-1.5 flex items-center space-x-1"
@@ -470,7 +468,7 @@ const News: React.FC<NewssProps> = ({
             ))}
           </div>
           <div>
-            {item[activeCategory].post.slice(4, 5).map((p, index) => (
+            {item[activeCategory]?.post?.slice(4, 5)?.map((p, index) => (
               <Link href={p.link} className="bg-white p-2 block" key={index}>
                 <Image
                   src={p.img || "/default.jpg"}
@@ -485,7 +483,7 @@ const News: React.FC<NewssProps> = ({
           </div>
 
           <div className="space-y-2 block">
-            {item[activeCategory].post.slice(5, 9).map((p, index) => (
+            {item[activeCategory]?.post?.slice(5, 9)?.map((p, index) => (
               <Link
                 href={p.link}
                 className="bg-white p-1.5 flex items-center space-x-2"
@@ -507,7 +505,7 @@ const News: React.FC<NewssProps> = ({
       {box === 9 && (
         <div className="flex md:flex-row flex-col gap-2">
           <div className="w-full md:w-1/4 space-y-3 block">
-            {item[activeCategory].post.slice(1, 3).map((p, index) => (
+            {item[activeCategory]?.post?.slice(1, 3)?.map((p, index) => (
               <Link href={p.link} className="bg-white p-2 block" key={index}>
                 <Image
                   src={p.img || "/default.jpg"}
@@ -521,7 +519,7 @@ const News: React.FC<NewssProps> = ({
             ))}
           </div>
           <div className="w-full md:w-1/2">
-            {item[activeCategory].post.slice(0, 1).map((p, index) => (
+            {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
               <Link href={p.link} className="bg-white p-2 block" key={index}>
                 <Image
                   src={p.img || "/default.jpg"}
@@ -536,7 +534,7 @@ const News: React.FC<NewssProps> = ({
           </div>
 
           <div className="w-full md:w-1/4 space-y-3 block">
-            {item[activeCategory].post.slice(3, 5).map((p, index) => (
+            {item[activeCategory]?.post?.slice(3, 5)?.map((p, index) => (
               <Link href={p.link} className="bg-white p-2 block" key={index}>
                 <Image
                   src={p.img || "/default.jpg"}
@@ -553,7 +551,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 10 && (
         <div className="grid grid-cols-3 grid-flow-col gap-2">
-          {item[activeCategory].post.slice(0, 1).map((p, index) => (
+          {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
             <Link
               href={p.link}
               className="bg-white h-full p-2 block"
@@ -571,7 +569,7 @@ const News: React.FC<NewssProps> = ({
           ))}
           <div className="col-span-2">
             <div className="grid grid-cols-2 gap-2">
-              {item[activeCategory].post.slice(1, 4).map((p, index) => {
+              {item[activeCategory]?.post?.slice(1, 4)?.map((p, index) => {
                 if (index === 0) {
                   return (
                     <Link
@@ -616,7 +614,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 11 && (
         <div className="flex flex-col md:flex-row gap-2">
-          {item[activeCategory].post.slice(0, 1).map((p, index) => (
+          {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
             <Link
               href={p.link}
               className="w-full md:w-1/4 bg-white h-auto p-2 block"
@@ -633,7 +631,7 @@ const News: React.FC<NewssProps> = ({
             </Link>
           ))}
           <div className="w-full md:w-2/4	 grid grid-cols-2 gap-2">
-            {item[activeCategory].post.slice(2, 5).map((p, index) => {
+            {item[activeCategory]?.post?.slice(2, 5)?.map((p, index) => {
               if (index === 0) {
                 return (
                   <Link
@@ -673,7 +671,7 @@ const News: React.FC<NewssProps> = ({
               }
             })}
           </div>
-          {item[activeCategory].post.slice(1, 2).map((p, index) => (
+          {item[activeCategory]?.post?.slice(1, 2)?.map((p, index) => (
             <Link
               href={p.link}
               className="w-full md:w-1/4 bg-white h-auto p-2 block"
@@ -694,7 +692,7 @@ const News: React.FC<NewssProps> = ({
       {box === 12 && (
         <div className="flex md:flex-row flex-col gap-2">
           <div className="w-full md:w-1/4 space-y-1 block">
-            {item[activeCategory].post.slice(1, 5).map((p, index) => {
+            {item[activeCategory]?.post?.slice(1, 5)?.map((p, index) => {
               if (index === 0) {
                 return (
                   <Link
@@ -737,7 +735,7 @@ const News: React.FC<NewssProps> = ({
             })}
           </div>
           <div className="w-full md:w-1/2">
-            {item[activeCategory].post.slice(0, 1).map((p, index) => (
+            {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
               <Link
                 href={p.link}
                 className="bg-white p-2 block h-auto"
@@ -758,7 +756,7 @@ const News: React.FC<NewssProps> = ({
           </div>
 
           <div className="w-full md:w-1/4 space-y-1 block">
-            {item[activeCategory].post.slice(5, 9).map((p, index) => {
+            {item[activeCategory]?.post?.slice(5, 9)?.map((p, index) => {
               if (index === 0) {
                 return (
                   <Link
@@ -804,7 +802,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 13 && (
         <div className="w-full flex flex-col md:flex-row gap-2">
-          {item[activeCategory].post.slice(0, 1).map((p, index) => (
+          {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
             <Link
               href={p.link}
               className="w-full md:w-2/4	bg-white p-2 block h-auto"
@@ -821,7 +819,7 @@ const News: React.FC<NewssProps> = ({
             </Link>
           ))}
           <div className="w-full md:w-2/4	block space-y-1">
-            {item[activeCategory].post.slice(1, limit).map((p, index) => (
+            {item[activeCategory]?.post?.slice(1, limit)?.map((p, index) => (
               <Link
                 href={p.link}
                 className="bg-white p-2 flex items-center space-x-1"
@@ -844,7 +842,7 @@ const News: React.FC<NewssProps> = ({
       )}
       {box === 14 && (
         <div className="w-full flex flex-col md:flex-row gap-2">
-          {item[activeCategory].post.slice(0, 1).map((p, index) => (
+          {item[activeCategory]?.post?.slice(0, 1)?.map((p, index) => (
             <Link
               href={p.link}
               className="w-full md:w-2/4	bg-white p-2 block h-auto"
@@ -861,7 +859,7 @@ const News: React.FC<NewssProps> = ({
             </Link>
           ))}
           <div className="w-full md:w-2/4	grid grid-cols-2 gap-1">
-            {item[activeCategory].post.slice(1, limit).map((p, index) => (
+            {item[activeCategory]?.post?.slice(1, limit)?.map((p, index) => (
               <Link
                 href={p.link}
                 className="bg-white p-2 space-y-1"
@@ -930,7 +928,7 @@ const News: React.FC<NewssProps> = ({
             </div>
           </div>
           <div className="absolute bottom-4 left-0 right-0 group-hover:flex hidden justify-center">
-            {items.map((_, index) => (
+            {items?.map((_, index) => (
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full mx-1 cursor-pointer ${
@@ -990,7 +988,7 @@ const News: React.FC<NewssProps> = ({
             </div>
           </div>
           <div className="flex items-center flex-row gap-1 overflow-x-auto scrollbarx w-full mt-2">
-            {items.map((slide, index) => (
+            {items?.map((slide, index) => (
               <Image
                 key={index}
                 width={300}
@@ -1012,7 +1010,7 @@ const News: React.FC<NewssProps> = ({
             ref={containerRef}
             className="flex overflow-hidden gap-2 transition-transform duration-500"
           >
-            {displayedItems.map((p, index) => (
+            {displayedItems?.map((p, index) => (
               <div
                 key={index}
                 className={`w-full sm:w-3/6 md:w-1/${itemsToShow} transition-opacity duration-500`}
@@ -1080,7 +1078,7 @@ const News: React.FC<NewssProps> = ({
             ref={containerRef}
             className="flex overflow-hidden gap-2 transition-transform duration-500"
           >
-            {displayedItems.map((p, index) => (
+            {displayedItems?.map((p, index) => (
               <div
                 key={index}
                 className={`w-full sm:w-3/6 md:w-1/${itemsToShow} transition-opacity duration-500`}

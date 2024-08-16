@@ -10,6 +10,61 @@ interface HeaderProps {
   menu?: number;
 }
 
+const menus = [
+  {
+    title: "subCategory 1",
+    link: "/",
+    option: "sub",
+    // SubCategory will appear on mouse hover
+    subItems: [
+      { title: "SubCategory 1.1", link: "/" },
+      { title: "SubCategory 1.2", link: "/" },
+    ],
+  },
+  {
+    title: "post 1",
+    link: "/",
+    option: "post",
+    limit: "5", // limit post
+    // post will appear on mouse hover
+    post: [
+      { title: "post 2", img: "/post/1.jpg", link: "/" },
+      { title: "post 3", img: "/post/2.jpg", link: "/" },
+      { title: "post 2", img: "/post/7.jpg", link: "/" },
+    ],
+  },
+  {
+    title: "tab 1",
+    link: "/",
+    option: "tab",
+    limit: "5", // limit post and tab
+    // tab will appear on mouse hover
+    postTabs: [
+      {
+        title: "SubCategory 1.1",
+        link: "/",
+        post: [
+          { title: "post 2", img: "/post/1.jpg", link: "/" },
+          { title: "post 3", img: "/post/2.jpg", link: "/" },
+          { title: "post 2", img: "/post/7.jpg", link: "/" },
+        ],
+      },
+      {
+        title: "SubCategory 1.2",
+        link: "/",
+        post: [
+          { title: "SubCategory 2", img: "/post/1.jpg", link: "/" },
+          { title: "SubCategory 3", img: "/post/2.jpg", link: "/" },
+          { title: "SubCategory 2", img: "/post/7.jpg", link: "/" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Category 3",
+    link: "/",
+  },
+];
 
 const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
 
@@ -50,6 +105,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
           </div>
         </div>
       )}
+
       {top === 2 && (
         <div className="top-content">top 2</div>
       )}
@@ -91,60 +147,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
 
       {menu === 1 && (
         <Menu
-          items={[
-            {
-              title: "subCategory 1",
-              link: "/",
-              option: "sub",
-              // SubCategory will appear on mouse hover
-              subItems: [
-                { title: "SubCategory 1.1", link: "/" },
-                { title: "SubCategory 1.2", link: "/" }
-              ]
-            },
-            {
-              title: "post 1",
-              link: "/",
-              option: "post",
-              limit: "5", // limit post
-              // post will appear on mouse hover
-              post: [
-                { title: "post 2", img: "/post/1.jpg", link: "/" },
-                { title: "post 3", img: "/post/2.jpg", link: "/" },
-                { title: "post 2", img: "/post/7.jpg", link: "/" }
-              ]
-            },
-            {
-              title: "tab 1",
-              link: "/",
-              option: "tab",
-              limit: "5", // limit post and tab
-              // tab will appear on mouse hover
-              postTabs: [
-                {
-                  title: "SubCategory 1.1",
-                  link: "/",
-                  post: [
-                    { title: "post 2", img: "/post/1.jpg", link: "/" },
-                    { title: "post 3", img: "/post/2.jpg", link: "/" },
-                    { title: "post 2", img: "/post/7.jpg", link: "/" }
-                  ]
-                },
-                {
-                  title: "SubCategory 1.2",
-                  link: "/",
-                  post: [
-                    { title: "SubCategory 2", img: "/post/1.jpg", link: "/" },
-                    { title: "SubCategory 3", img: "/post/2.jpg", link: "/" },
-                    { title: "SubCategory 2", img: "/post/7.jpg", link: "/" }
-                  ]
-                }
-              ]
-            },
-            {
-              title: "Category 3", link: "/",
-            }
-          ]}
+          items={menus}
         />
       )}
       {menu === 2 && (
