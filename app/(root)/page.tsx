@@ -41,84 +41,25 @@ interface PageData {
   rowData: RowData[];
 }
 
-
+interface NewsData {
+  _id: string;
+  title: string;
+  category: {
+    category: string;
+  };
+  img: string;
+}
+interface categoryData {
+  _id: string;
+  title: string;
+}
 
 const IndexPage: React.FC = () => {
   const [pageData, setPageData] = useState<PageData | null>(null);
-  // const [newsData, setNewsData] = useState<NewsCategory[]>([]);
+  const [news, setNews] = useState([]);
+  const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
-const newsData = [
-  {
-    category: "cat 1",
-    post: [
-      {
-        img: "/post/1.jpg",
-        link: "/news/1",
-        title:
-          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-      },
-      {
-        img: "/post/2.jpg",
-        link: "/news/2",
-        title:
-          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-      {
-        img: "/post/3.jpg",
-        link: "/news/3",
-        title:
-          "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-      {
-        img: "/post/4.jpg",
-        link: "/news/4",
-        title:
-          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-      },
-      {
-        img: "/post/5.jpg",
-        link: "/news/5",
-        title:
-          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-    ],
-  },
-  {
-    category: "cat 2",
-    post: [
-      {
-        img: "/post/6.jpg",
-        link: "/news/6",
-        title:
-          "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-      {
-        img: "/post/7.jpg",
-        link: "/news/7",
-        title:
-          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-      },
-      {
-        img: "/post/8.jpg",
-        link: "/news/8",
-        title:
-          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-      {
-        img: "/post/9.jpg",
-        link: "/news/9",
-        title:
-          "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-      },
-      {
-        img: "/post/10.jpg",
-        link: "/news/10",
-        title:
-          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-      },
-    ],
-  },
-];
+
   useEffect(() => {
     const fetchPageData = async () => {
       try {
@@ -130,6 +71,26 @@ const newsData = [
     };
 
     fetchPageData();
+    const fetchNewsData = async () => {
+      try {
+        const response = await axiosPublic.get("/news");
+        setNews(response.data.data);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+      }
+    };
+
+    fetchNewsData();
+
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosPublic.get("/categories");
+        setCategory(response.data.data);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+      }
+    };
+    fetchCategories();
   }, []);
 
   const fetchNewsData = async (
@@ -151,6 +112,26 @@ const newsData = [
       setLoading(false);
     }
   };
+
+  // Helper function to create the desired structure
+  function transformData(newsData: NewsData[], categoriesData: categoryData[]) {
+    return categoriesData.map((category) => {
+      const relatedPosts = newsData
+        .filter((newsItem) => newsItem.category.category === category._id)
+        .map((newsItem) => ({
+          img: newsItem.img,
+          link: `/news/${newsItem._id}`,
+          title: newsItem.title,
+        }));
+
+      return {
+        category: category.title,
+        post: relatedPosts,
+      };
+    });
+  }
+
+  const newsData = transformData(news, category);
 
   // if (loading) {
   //   return <div>Loading...</div>;
