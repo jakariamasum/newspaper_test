@@ -18,7 +18,6 @@ interface TNews {
   content: string;
   summary?: string;
   author_id: string;
-  category_id: string;
   page_tag: string;
   publish_date?: string;
   status: string;
@@ -26,10 +25,17 @@ interface TNews {
   likes: number;
   dislikes: number;
   lang?: string;
+  category: {
+    _id: string;
+    category: {
+      title: string;
+    };
+  };
 }
 
 const ModuleTypePage = () => {
-  const { _id } = useParams();
+  const { link } = useParams();
+  console.log(link);
   const [news, setNews] = useState<TNews[]>([]);
   const [users, setUsers] = useState<{ [key: string]: string }>({});
   const [categories, setCategories] = useState<{ [key: string]: string }>({});
@@ -100,22 +106,18 @@ const ModuleTypePage = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
-      const newsData = await useNewsByLanguage(_id as string);
+      const newsData = await useNewsByLanguage(link as string);
       setNews(newsData);
     };
 
     fetchNews();
-  }, [_id]);
+  }, [link]);
+  console.log(news);
 
   useEffect(() => {
     const fetchUserInfo = async (id: string) => {
       const user = await useSingleUser(id);
       return user?.title;
-    };
-
-    const fetchCategoryInfo = async (id: string) => {
-      const category = await useSingleCategory(id);
-      return category?.title;
     };
 
     const fetchData = async () => {
@@ -126,15 +128,7 @@ const ModuleTypePage = () => {
         }))
       );
 
-      const categoryPromises = news.map((n) =>
-        fetchCategoryInfo(n.category_id).then((name) => ({
-          id: n.category_id,
-          name,
-        }))
-      );
-
       const userResults = await Promise.all(userPromises);
-      const categoryResults = await Promise.all(categoryPromises);
 
       const userMap: { [key: string]: string } = {};
       userResults.forEach((user) => {
@@ -142,9 +136,6 @@ const ModuleTypePage = () => {
       });
 
       const categoryMap: { [key: string]: string } = {};
-      categoryResults.forEach((category) => {
-        if (category) categoryMap[category.id] = category.name;
-      });
 
       setUsers(userMap);
       setCategories(categoryMap);
@@ -154,6 +145,8 @@ const ModuleTypePage = () => {
       fetchData();
     }
   }, [news]);
+  news.forEach((n) => console.log(n.category.category.title));
+  console.log(news);
 
   return (
     <div className="p-4">
@@ -198,7 +191,7 @@ const ModuleTypePage = () => {
                   {users[n.author_id] || "Loading..."}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {categories[n.category_id] || "Loading..."}
+                  {n.category.category.title}
                 </td>
                 <td className="py-2 px-4 border-b">{n.page_tag}</td>
                 <td className="py-2 px-4 border-b">{n.status}</td>

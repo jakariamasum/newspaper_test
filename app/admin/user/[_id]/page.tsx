@@ -18,7 +18,6 @@ interface TNews {
   content: string;
   summary?: string;
   author_id: string;
-  category_id: string;
   page_tag: string;
   publish_date?: string;
   status: string;
@@ -26,13 +25,17 @@ interface TNews {
   likes: number;
   dislikes: number;
   lang?: string;
+  category: {
+    category: {
+      title: string;
+    };
+  };
 }
 
 const UserTypePage = () => {
   const { _id } = useParams();
   const [news, setNews] = useState<TNews[]>([]);
   const [users, setUsers] = useState<{ [key: string]: string }>({});
-  const [categories, setCategories] = useState<{ [key: string]: string }>({});
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -113,11 +116,6 @@ const UserTypePage = () => {
       return user?.title;
     };
 
-    const fetchCategoryInfo = async (id: string) => {
-      const category = await useSingleCategory(id);
-      return category?.title;
-    };
-
     const fetchData = async () => {
       const userPromises = news.map((n) =>
         fetchUserInfo(n.author_id).then((username) => ({
@@ -126,28 +124,14 @@ const UserTypePage = () => {
         }))
       );
 
-      const categoryPromises = news.map((n) =>
-        fetchCategoryInfo(n.category_id).then((name) => ({
-          id: n.category_id,
-          name,
-        }))
-      );
-
       const userResults = await Promise.all(userPromises);
-      const categoryResults = await Promise.all(categoryPromises);
 
       const userMap: { [key: string]: string } = {};
       userResults.forEach((user) => {
         if (user) userMap[user.id] = user.username;
       });
 
-      const categoryMap: { [key: string]: string } = {};
-      categoryResults.forEach((category) => {
-        if (category) categoryMap[category.id] = category.name;
-      });
-
       setUsers(userMap);
-      setCategories(categoryMap);
     };
 
     if (news.length) {
@@ -198,7 +182,7 @@ const UserTypePage = () => {
                   {users[n.author_id] || "Loading..."}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {categories[n.category_id] || "Loading..."}
+                  {n.category.category.title}
                 </td>
                 <td className="py-2 px-4 border-b">{n.page_tag}</td>
                 <td className="py-2 px-4 border-b">{n.status}</td>
