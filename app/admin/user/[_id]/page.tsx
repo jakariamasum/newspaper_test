@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { useEffect, useState } from "react";
-import { useSingleCategory } from "@/lib/useSingleCategory";
-import { useSingleUser } from "@/lib/useSingleUser";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -11,13 +9,16 @@ import { MdDelete } from "react-icons/md";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import { useNewsByUser } from "@/lib/useNewsByUser";
+import moment from "moment";
 
 interface TNews {
   _id: string;
   title: string;
   content: string;
   summary?: string;
-  author_id: string;
+  author: {
+    title: string;
+  };
   page_tag: string;
   publish_date?: string;
   status: string;
@@ -35,8 +36,6 @@ interface TNews {
 const UserTypePage = () => {
   const { _id } = useParams();
   const [news, setNews] = useState<TNews[]>([]);
-  const [users, setUsers] = useState<{ [key: string]: string }>({});
-
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [currentNews, setCurrentNews] = useState<TNews | null>(null);
@@ -110,35 +109,6 @@ const UserTypePage = () => {
     fetchNews();
   }, [_id]);
 
-  useEffect(() => {
-    const fetchUserInfo = async (id: string) => {
-      const user = await useSingleUser(id);
-      return user?.title;
-    };
-
-    const fetchData = async () => {
-      const userPromises = news.map((n) =>
-        fetchUserInfo(n.author_id).then((username) => ({
-          id: n.author_id,
-          username,
-        }))
-      );
-
-      const userResults = await Promise.all(userPromises);
-
-      const userMap: { [key: string]: string } = {};
-      userResults.forEach((user) => {
-        if (user) userMap[user.id] = user.username;
-      });
-
-      setUsers(userMap);
-    };
-
-    if (news.length) {
-      fetchData();
-    }
-  }, [news]);
-
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 items-center">
@@ -178,19 +148,17 @@ const UserTypePage = () => {
                 <td className="py-2 px-4 border-b hover:underline text-blue-500">
                   <Link href={`/news/${n._id}`}>See details</Link>
                 </td>
-                <td className="py-2 px-4 border-b">
-                  {users[n.author_id] || "Loading..."}
-                </td>
+                <td className="py-2 px-4 border-b">{n.author.title}</td>
                 <td className="py-2 px-4 border-b">
                   {n.category.category.title}
                 </td>
-                <td className="py-2 px-4 border-b">{n.page_tag}</td>
-                <td className="py-2 px-4 border-b">{n.status}</td>
-                <td className="py-2 px-4 border-b">{n.views}</td>
-                <td className="py-2 px-4 border-b">{n.likes}</td>
-                <td className="py-2 px-4 border-b">{n.dislikes}</td>
+                <td className="py-2 px-4 border-b">{n.page_tag || "N/A"}</td>
+                <td className="py-2 px-4 border-b">{n.status || "N/A"}</td>
+                <td className="py-2 px-4 border-b">{n.views || "N/A"}</td>
+                <td className="py-2 px-4 border-b">{n.likes || "N/A"}</td>
+                <td className="py-2 px-4 border-b">{n.dislikes || "N/A"}</td>
                 <td className="py-2 px-4 border-b">
-                  {new Date(n.publish_date as string).toLocaleDateString()}
+                  {moment(n.publish_date).format("MMMM Do YYYY")}{" "}
                 </td>
                 <td className="py-2 px-4 border-b flex gap-2">
                   <span onClick={() => handleEdit(n)}>

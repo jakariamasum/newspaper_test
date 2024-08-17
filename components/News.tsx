@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Post {
   img: string;
@@ -52,7 +52,7 @@ const News: React.FC<NewssProps> = ({
     return () => window.removeEventListener("resize", updateItemsToShow);
   }, []);
 
-  const categoriesCount = item.length;
+  const categoriesCount = item?.length || 0;
 
   const items = item[activeCategory]?.post.slice(0, limit);
 
@@ -78,7 +78,9 @@ const News: React.FC<NewssProps> = ({
     setCurrentImage(index);
   };
 
-  const displayedItems = items?.slice(startIndex, startIndex + itemsToShow).concat(
+  const displayedItems = items
+    ?.slice(startIndex, startIndex + itemsToShow)
+    .concat(
       items.slice(0, Math.max(0, startIndex + itemsToShow - items.length))
     )
     .slice(0, limit);

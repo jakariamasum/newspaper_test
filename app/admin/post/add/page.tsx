@@ -109,7 +109,7 @@ const IndexPage: React.FC = () => {
       content: description,
       tags,
       img,
-      author_id: reporter,
+      author: reporter,
       location,
       category,
     };
