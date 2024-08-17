@@ -65,12 +65,12 @@ const News: React.FC<NewssProps> = ({
   }, [currentImage]);
 
   const nextImage = () => {
-    setCurrentImage((prevIndex) => (prevIndex + 1) % items.length);
+    setCurrentImage((prevIndex) => (prevIndex + 1) % items?.length);
   };
 
   const prevImage = () => {
     setCurrentImage(
-      (prevIndex) => (prevIndex - 1 + items.length) % items.length
+      (prevIndex) => (prevIndex - 1 + items.length) % items?.length
     );
   };
 

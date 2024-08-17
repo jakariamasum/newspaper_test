@@ -45,7 +45,9 @@ interface NewsData {
   _id: string;
   title: string;
   category: {
-    category: string;
+    category: {
+      _id: string;
+    };
   };
   img: string;
 }
@@ -116,8 +118,9 @@ const IndexPage: React.FC = () => {
   // Helper function to create the desired structure
   function transformData(newsData: NewsData[], categoriesData: categoryData[]) {
     return categoriesData.map((category) => {
+      console.log(category);
       const relatedPosts = newsData
-        .filter((newsItem) => newsItem.category.category === category._id)
+        .filter((newsItem) => newsItem.category.category._id === category._id)
         .map((newsItem) => ({
           img: newsItem.img,
           link: `/news/${newsItem._id}`,
@@ -132,6 +135,7 @@ const IndexPage: React.FC = () => {
   }
 
   const newsData = transformData(news, category);
+  console.log(news, newsData);
 
   // if (loading) {
   //   return <div>Loading...</div>;
