@@ -26,7 +26,7 @@ interface Section {
   categories: { catId: number; catName: string }[];
 }
 
-interface RowData {
+interface Rows {
   _id: number;
   name: string;
   bgColor: string;
@@ -38,7 +38,7 @@ interface RowData {
 }
 
 interface PageData {
-  rowData: RowData[];
+  rows: Rows[];
 }
 
 interface NewsData {
@@ -65,8 +65,9 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const fetchPageData = async () => {
       try {
-        const response = await axios.get("/pageData.json");
-        setPageData(response.data);
+        // const response = await axios.get("/pageData.json");
+        const response = await axiosPublic.get("/pages/home");
+        setPageData(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
       }
@@ -135,7 +136,7 @@ const IndexPage: React.FC = () => {
   }
 
   const newsData = transformData(news, category);
-  console.log(news, newsData);
+  console.log(news, newsData, pageData);
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -143,7 +144,7 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      {pageData?.rowData.map((row) => (
+      {pageData?.rows.map((row) => (
         <div
           key={row._id}
           className="my-4 p-4"
