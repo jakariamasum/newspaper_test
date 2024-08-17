@@ -15,6 +15,7 @@ import Tag from "@/components/admin/Tag";
 import Time from "@/components/admin/Time";
 import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import { useAllCategory } from "@/lib/useAllCategory";
+import { useLang } from "@/app/context/langContext";
 
 interface TUser {
   _id: string;
@@ -28,6 +29,8 @@ interface TCategory {
 }
 
 const IndexPage: React.FC = () => {
+  const { lang } = useLang();
+  console.log(lang);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>(["hello"]);
@@ -112,6 +115,7 @@ const IndexPage: React.FC = () => {
       author: reporter,
       location,
       category,
+      lang,
     };
 
     console.log(formData);

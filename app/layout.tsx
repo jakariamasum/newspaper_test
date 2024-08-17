@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "./context/authContext";
+import { LangProvider } from "./context/langContext";
 
 export const metadata: Metadata = {
   title: "Newspaper",
@@ -16,7 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className="bg-gray-200">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <LangProvider>{children}</LangProvider>
+        </AuthProvider>
       </body>
     </html>
   );

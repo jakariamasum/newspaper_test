@@ -10,6 +10,7 @@ import { MdDelete } from "react-icons/md";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import moment from "moment";
+import { useLang } from "@/app/context/langContext";
 
 interface TNews {
   _id: string;
@@ -36,7 +37,7 @@ interface TNews {
 
 const ModuleTypePage = () => {
   const { link } = useParams();
-  console.log(link);
+  const { setLang, lang } = useLang();
   const [news, setNews] = useState<TNews[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -109,13 +110,34 @@ const ModuleTypePage = () => {
     };
 
     fetchNews();
-  }, [link]);
-  console.log(news);
+    setLang(link as string);
+  }, [link, setLang]);
 
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 items-center">
         <h1 className="text-2xl font-bold mb-4">News Details</h1>
+        <div className="flex gap-2">
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/post"
+            onClick={() => setLang(link as string)}
+          >
+            News
+          </Link>
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/category"
+          >
+            Category
+          </Link>
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/subcategory"
+          >
+            SubCategory
+          </Link>
+        </div>
         <Link
           href="/admin/post/add"
           className="bg-main py-1 px-4 rounded-md text-white"
