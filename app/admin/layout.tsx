@@ -110,16 +110,7 @@ export default function RootLayout({
           >
             Dashboard
           </Link>
-          <Link
-            className={`hover:bg-main hover:text-white p-2 block ${
-              isActive(["/admin/post", "/admin/post/add"])
-                ? "bg-main text-white"
-                : ""
-            }`}
-            href="/admin/post"
-          >
-            News
-          </Link>
+
           <Link
             className={`hover:bg-main hover:text-white p-2 block ${
               isActive(["/admin/stories", "/admin/stories/add"])
@@ -148,26 +139,7 @@ export default function RootLayout({
           >
             Canvas
           </Link>
-          <Link
-            className={`hover:bg-main hover:text-white p-2 block ${
-              isActive(["/admin/category", "/admin/category/add"])
-                ? "bg-main text-white"
-                : ""
-            }`}
-            href="/admin/category"
-          >
-            Category
-          </Link>
-          <Link
-            className={`hover:bg-main hover:text-white p-2 block ${
-              isActive(["/admin/subcategory", "/admin/subcategory/add"])
-                ? "bg-main text-white"
-                : ""
-            }`}
-            href="/admin/subcategory"
-          >
-            SubCategory
-          </Link>
+
           <Link
             className={`hover:bg-main hover:text-white p-2 block ${
               isActive(["/admin/page", "/admin/page/add"])

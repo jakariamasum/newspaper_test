@@ -1,6 +1,7 @@
 import Table from "@/components/admin/Table";
 import { useAllLanguages } from "@/lib/useAllLanguage";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface languageData {
   _id: string;
@@ -10,12 +11,33 @@ interface languageData {
 }
 
 const IndexPage: React.FC = async () => {
+  // Function to check if the route is active
   const languages = await useAllLanguages();
   console.log(languages);
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-xl font-bold mb-4">Available Languages</h2>
+        <div className="flex gap-2">
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/post"
+          >
+            News
+          </Link>
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/category"
+          >
+            Category
+          </Link>
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/subcategory"
+          >
+            SubCategory
+          </Link>
+        </div>
         <Link
           href={`type/add`}
           className="bg-main py-1 px-4 rounded-md text-white"
