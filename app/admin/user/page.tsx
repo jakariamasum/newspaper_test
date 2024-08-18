@@ -1,10 +1,14 @@
-import Table from "@/components/admin/Table";
-import { useAllUsers } from "@/lib/useAllUsers";
+"use client";
+import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-const IndexPage: React.FC = async () => {
-  const users = await useAllUsers();
+const IndexPage: React.FC = () => {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const handleEdit = (id: string) => {
     // ToDO: edit logic
     alert(`Edit user with ID: ${id}`);
@@ -14,6 +18,24 @@ const IndexPage: React.FC = async () => {
     // TODO: delete logic
     alert(`Delete user with ID: ${id}`);
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosPublic.get("/user");
+        console.log(response.data.data);
+        setUsers(response.data.data);
+      } catch (err) {
+        setError("Failed to fetch videos");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
   return (
     <div className="overflow-x-auto mx-16 mt-3">
       <table className="min-w-full divide-y divide-gray-200">
