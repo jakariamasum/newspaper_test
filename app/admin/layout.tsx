@@ -1,17 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminFooter from "@/components/admin/AdminFooter";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Dates from "@/components/Date";
 import PrivateRoute from "../router/privateRouter";
+import { toast, Toaster } from "sonner";
+import { useAuth } from "../context/authContext";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { logout } = useAuth();
   const pathname = usePathname();
+  const handleLogout = () => {
+    logout();
+    toast.warning("You are logged out!");
+  };
 
   // Function to check if the route is active
   const isActive = (paths: string[]) => paths.includes(pathname);
@@ -208,7 +215,8 @@ export default function RootLayout({
           </Link>
           <Link
             className="hover:bg-main hover:text-white p-2 block"
-            href="/admin/logout"
+            href="/"
+            onClick={handleLogout}
           >
             Logout
           </Link>
@@ -218,6 +226,7 @@ export default function RootLayout({
         <PrivateRoute>{children}</PrivateRoute>
       </div>
       <AdminFooter />
+      <Toaster richColors position="top-right" />
     </main>
   );
 }

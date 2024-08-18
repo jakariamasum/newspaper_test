@@ -15,7 +15,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { user, setUser, loading, setLoading, logout } = useAuth();
   const router = useRouter();
 
-  console.log(pathname, searchParams);
+  console.log(user);
   useEffect(() => {
     const verifyUser = async () => {
       const storedToken = localStorage.getItem("authToken");
