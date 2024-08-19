@@ -60,8 +60,8 @@ const IndexPage: React.FC = () => {
       };
       console.log(payload);
       const response = await axiosPublic.post("/story", payload);
-
-      if (response.status === 201) {
+      console.log(response);
+      if (response.status === 200) {
         toast.success("Stories published successfully!");
         setTitle("");
         setCategory({ category: "" });
@@ -83,7 +83,7 @@ const IndexPage: React.FC = () => {
                 type="text"
                 placeholder="title"
                 value={title}
-                onChange={(e) => e.target.value}
+                onChange={(e) => setTitle(e.target.value)}
                 className="p-2 mt-2 w-full outline-none rounded-md"
               />
             </div>
