@@ -2,10 +2,44 @@
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
-
+interface TSetting {
+  metaDescription: string;
+  description: string;
+  privacy: string;
+  terms: string;
+  orderPolicy: string;
+  logo: string;
+  favicon: string;
+  lotoImg: string;
+  metaImg: string;
+  title: string;
+  bgColor: string;
+  country: string;
+  currencySymbol: string;
+  copyright: string;
+  priceZero: string;
+  highlights: string;
+  shipInside: string;
+  shipOutside: string;
+  deliveryMethod1: string;
+  deliveryMethod2: string;
+  pickupMethod1: string;
+  pickupMethod2: string;
+  paymentMethod: string;
+  paymentText1: string;
+  paymentText2: string;
+  officeAddress: string;
+  whatsApp: number;
+  telegram: string;
+  kindlyNote: string;
+  order: string;
+  orderText: string;
+  _id: string;
+}
 const IndexPage: React.FC = () => {
+  const [settings, setSettings] = useState<TSetting>();
   const [metaDescription, setMetaDescription] = useState("");
   const [description, setDescription] = useState("");
   const [privacy, setPrivacy] = useState("");
@@ -15,42 +49,126 @@ const IndexPage: React.FC = () => {
   const [favicon, setFavicon] = useState("");
   const [lotoImg, setLotoImg] = useState("");
   const [metaImg, setMetaImg] = useState("");
-  const [title, setTitle] = useState("Price In Kenya");
-  const [bgColor, setBgColor] = useState("#ab4725");
-  const [country, setCountry] = useState("Kenya");
-  const [currencySymbol, setCurrencySymbol] = useState("$");
-  const [copyright, setCopyright] = useState(
-    "Copyright © 2012-2023 Price in Kenya. All rights reserved."
-  );
-  const [priceZero, setPriceZero] = useState("Currently Unavailable");
-  const [highlights, setHighlights] = useState("Highlights");
-  const [shipInside, setShipInside] = useState("Inside Dhaka");
-  const [shipOutside, setShipOutside] = useState("Outside Dhaka");
-  const [deliveryMethod1, setDeliveryMethod1] = useState(
-    "Delivery to your home or office"
-  );
-  const [deliveryMethod2, setDeliveryMethod2] = useState(
-    "Delivered between Same day delivery"
-  );
-  const [pickupMethod1, setPickupMethod1] = useState("Pickup Station");
-  const [pickupMethod2, setPickupMethod2] = useState(
-    "Ready to pickup between Same day delivery"
-  );
-  const [paymentMethod, setPaymentMethod] = useState("M-PESA Paybill");
-  const [paymentText1, setPaymentText1] = useState("Business no. 542542");
-  const [paymentText2, setPaymentText2] = useState("Account no. 794794");
-  const [officeAddress, setOfficeAddress] = useState(
-    "Bihi Towers, Ground Floor, Suite G8, Moi Avenue, Nairobi CBD."
-  );
-  const [whatsApp, setWhatsApp] = useState(8801781077094);
-  const [telegram, setTelegram] = useState("hotlancer");
-  const [kindlyNote, setKindlyNote] = useState(
-    "that though we strive to keep all products up to date, price and availability are subject to change without prior notice."
-  );
-  const [order, setOrder] = useState("Order");
-  const [orderText, setOrderText] = useState(
-    "from Price in Kenya with fast delivery across the country and in-store pickup in Nairobi."
-  );
+  const [title, setTitle] = useState("");
+  const [bgColor, setBgColor] = useState("");
+  const [country, setCountry] = useState("");
+  const [currencySymbol, setCurrencySymbol] = useState("");
+  const [copyright, setCopyright] = useState("");
+  const [priceZero, setPriceZero] = useState("");
+  const [highlights, setHighlights] = useState("");
+  const [shipInside, setShipInside] = useState("");
+  const [shipOutside, setShipOutside] = useState("");
+  const [deliveryMethod1, setDeliveryMethod1] = useState("");
+  const [deliveryMethod2, setDeliveryMethod2] = useState("");
+  const [pickupMethod1, setPickupMethod1] = useState("");
+  const [pickupMethod2, setPickupMethod2] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentText1, setPaymentText1] = useState("");
+  const [paymentText2, setPaymentText2] = useState("");
+  const [officeAddress, setOfficeAddress] = useState("");
+  const [whatsApp, setWhatsApp] = useState<number>();
+  const [telegram, setTelegram] = useState("");
+  const [kindlyNote, setKindlyNote] = useState("");
+  const [order, setOrder] = useState("");
+  const [orderText, setOrderText] = useState("");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await axiosPublic.get("/settings");
+        const data = response.data.data;
+        setSettings(data[0]);
+        // Destructure the fetched settings and update the states
+        const {
+          metaDescription,
+          description,
+          privacy,
+          terms,
+          orderPolicy,
+          logo,
+          favicon,
+          lotoImg,
+          metaImg,
+          title,
+          bgColor,
+          country,
+          currencySymbol,
+          copyright,
+          priceZero,
+          highlights,
+          shipInside,
+          shipOutside,
+          deliveryMethod1,
+          deliveryMethod2,
+          pickupMethod1,
+          pickupMethod2,
+          paymentMethod,
+          paymentText1,
+          paymentText2,
+          officeAddress,
+          whatsApp,
+          telegram,
+          kindlyNote,
+          order,
+          orderText,
+        } = data[0];
+
+        setMetaDescription(metaDescription || "");
+        setDescription(description || "");
+        setPrivacy(privacy || "");
+        setTerms(terms || "");
+        setOrderPolicy(orderPolicy || "");
+        setLogo(logo || "");
+        setFavicon(favicon || "");
+        setLotoImg(lotoImg || "");
+        setMetaImg(metaImg || "");
+        setTitle(title || "Price In Kenya");
+        setBgColor(bgColor || "#ab4725");
+        setCountry(country || "Kenya");
+        setCurrencySymbol(currencySymbol || "$");
+        setCopyright(
+          copyright ||
+            "Copyright © 2012-2023 Price in Kenya. All rights reserved."
+        );
+        setPriceZero(priceZero || "Currently Unavailable");
+        setHighlights(highlights || "Highlights");
+        setShipInside(shipInside || "Inside Dhaka");
+        setShipOutside(shipOutside || "Outside Dhaka");
+        setDeliveryMethod1(
+          deliveryMethod1 || "Delivery to your home or office"
+        );
+        setDeliveryMethod2(
+          deliveryMethod2 || "Delivered between Same day delivery"
+        );
+        setPickupMethod1(pickupMethod1 || "Pickup Station");
+        setPickupMethod2(
+          pickupMethod2 || "Ready to pickup between Same day delivery"
+        );
+        setPaymentMethod(paymentMethod || "M-PESA Paybill");
+        setPaymentText1(paymentText1 || "Business no. 542542");
+        setPaymentText2(paymentText2 || "Account no. 794794");
+        setOfficeAddress(
+          officeAddress ||
+            "Bihi Towers, Ground Floor, Suite G8, Moi Avenue, Nairobi CBD."
+        );
+        setWhatsApp(whatsApp || 8801781077094);
+        setTelegram(telegram || "hotlancer");
+        setKindlyNote(
+          kindlyNote ||
+            "that though we strive to keep all products up to date, price and availability are subject to change without prior notice."
+        );
+        setOrder(order || "Order");
+        setOrderText(
+          orderText ||
+            "from Price in Kenya with fast delivery across the country and in-store pickup in Nairobi."
+        );
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   const handlePublish = async () => {
     const settingData = {
@@ -82,19 +200,21 @@ const IndexPage: React.FC = () => {
       order,
       orderText,
     };
-    console.log(settingData);
+    console.log(settings, settings!._id);
     try {
-      const response = await axiosPublic.post("/settings", settingData);
+      const response = await axiosPublic.put(
+        `/settings/${settings?._id}`,
+        settingData
+      );
       console.log(response);
       if (response.status === 200) {
-        toast.success("Settings created successfully!");
+        toast.success("Settings updated successfully!");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create area. Please try again.");
+      toast.error("Failed to update settings. Please try again.");
     }
   };
-
   return (
     <>
       <div className="container my-4">

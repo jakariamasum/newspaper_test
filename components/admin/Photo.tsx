@@ -13,6 +13,8 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(
     img || null
   );
+  // Generate a unique ID for each instance of the Photo component
+  const uniqueId = `photoInput-${Math.random().toString(36).slice(2, 9)}`;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -42,7 +44,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
       </p>
       <div className="flex flex-col items-center my-2 relative">
         <label
-          htmlFor="photoInput"
+          htmlFor={uniqueId}
           className="cursor-pointer w-full flex items-center justify-center"
         >
           {selectedImage ? (
@@ -75,7 +77,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
             </div>
           )}
           <input
-            id="photoInput"
+            id={uniqueId}
             type="file"
             accept="image/*"
             className="hidden"
