@@ -1,6 +1,7 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast, Toaster } from "sonner";
@@ -88,6 +89,14 @@ const IndexPage: React.FC = () => {
   if (error) return <p>Error: {error}</p>;
   return (
     <div className="overflow-x-auto mx-2 lg:mx-16 mt-3">
+      <div className="text-right my-4">
+        <Link
+          href="/admin/user/add"
+          className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
+        >
+          Add New User
+        </Link>
+      </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
