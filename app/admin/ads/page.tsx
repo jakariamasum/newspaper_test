@@ -1,200 +1,136 @@
 "use client";
-import React, { useState } from "react";
-import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
-import { toast, Toaster } from "sonner";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-interface Section {
-  id: string;
-  title: string;
+interface IAds {
+  _id: string;
   position: string;
+  type: string;
+  content: any;
 }
 
-const sections: Section[] = [
-  // Header sections
-  { id: "headerTop", title: "Header Top", position: "header" },
-  { id: "headerBottom", title: "Header Bottom", position: "header" },
-  { id: "headerLeft", title: "Header Left", position: "header" },
-  { id: "headerRight", title: "Header Right", position: "header" },
-  // Category sections
-  { id: "categoryTop", title: "Category Top", position: "category" },
-  { id: "categoryBottom", title: "Category Bottom", position: "category" },
-  { id: "categoryLeft", title: "Category Left", position: "category" },
-  { id: "categoryRight", title: "Category Right", position: "category" },
-  // Details sections
-  { id: "detailsTitleTop", title: "Details Title Top", position: "details" },
-  {
-    id: "detailsTitleBottom",
-    title: "Details Title Bottom",
-    position: "details",
-  },
-  { id: "detailsImagesTop", title: "Details Images Top", position: "details" },
-  {
-    id: "detailsImagesBottom",
-    title: "Details Images Bottom",
-    position: "details",
-  },
-  {
-    id: "detailsDescriptionTop",
-    title: "Details Description Top",
-    position: "details",
-  },
-  {
-    id: "detailsDescriptionCentre",
-    title: "Details Description Centre",
-    position: "details",
-  },
-  {
-    id: "detailsDescriptionBottom",
-    title: "Details Description Bottom",
-    position: "details",
-  },
-  {
-    id: "detailsRelatedPostTop",
-    title: "Details Related Post Top",
-    position: "details",
-  },
-  {
-    id: "detailsRelatedPostBottom",
-    title: "Details Related Post Bottom",
-    position: "details",
-  },
-];
-
 const IndexPage: React.FC = () => {
-  const [selectedOptions, setSelectedOptions] = useState<{
-    [key: string]: string;
-  }>(
-    sections.reduce((acc, section) => {
-      acc[section.id] = "code";
-      return acc;
-    }, {} as { [key: string]: string })
-  );
+  const [ads, setAds] = useState<IAds[]>([]);
 
-  const [linkData, setLinkData] = useState<{ [key: string]: string }>({});
-  const [imageData, setImageData] = useState<{ [key: string]: string }>({});
-  const [codeData, setCodeData] = useState<{ [key: string]: string }>({});
+  useEffect(() => {
+    const fetchAds = async () => {
+      const response = await axiosPublic.get("/ads");
+      setAds(response.data.data);
+    };
+    fetchAds();
+  }, []);
 
-  const handleSelectChange = (id: string, value: string) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+  const handleEdit = (id: string) => {
+    // TODO:Edit func
+    console.log("Edit", id);
   };
 
-  const handleLinkChange = (id: string, value: string) => {
-    setLinkData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
-  const handleImageChange = (id: string, img: string) => {
-    setImageData((prev) => ({
-      ...prev,
-      [id]: img,
-    }));
-  };
-
-  const handleCodeChange = (id: string, value: string) => {
-    setCodeData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
-  const handlePublish = async () => {
-    try {
-      const data = sections.map((section) => ({
-        id: section.id,
-        position: section.position,
-        type: selectedOptions[section.id],
-        content:
-          selectedOptions[section.id] === "code"
-            ? codeData[section.id] || ""
-            : {
-                image: imageData[section.id] || "",
-                link: linkData[section.id] || "",
-              },
-      }));
-
-      console.log(data);
-      await axiosPublic.post("/ads", data);
-      toast.success("Ads Published successfully!");
-    } catch (error) {
-      console.error("Failed to publish:", error);
-      toast.warning("Failed to publish.");
-    }
+  const handleDelete = (id: string) => {
+    // TODO: Delete func
+    console.log("Delete", id);
   };
 
   return (
-    <div className="my-4 container">
-      <h1 className="text-xl font-bold mb-4">Advertisement</h1>
-
-      {["header", "category", "details"].map((position) => (
-        <div key={position}>
-          <h1 className="text-md border-y border-dashed border-main font-semibold mt-2">
-            {position.charAt(0).toUpperCase() + position.slice(1)}
-          </h1>
-          <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-4">
-            {sections
-              .filter((section) => section.position === position)
-              .map((section) => (
-                <div key={section.id}>
-                  <div className="flex items-center justify-between mt-2">
-                    <p>{section.title}</p>
-                    <select
-                      className="px-2 max-w-sm outline-none"
-                      value={selectedOptions[section.id]}
-                      onChange={(e) =>
-                        handleSelectChange(section.id, e.target.value)
-                      }
-                    >
-                      <option value="code">Code</option>
-                      <option value="images">Images</option>
-                    </select>
+    <div className="space-y-8">
+      {/* Code Ads Section */}
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Code Ads</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ads
+            .filter((ad) => ad.type === "code")
+            .map((ad) => (
+              <div
+                key={ad._id}
+                className="p-6 border rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out relative"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1 items-center">
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {ad.position.toUpperCase()}
+                    </h2>
+                    <span className="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">
+                      {ad.type.toUpperCase()}
+                    </span>
                   </div>
-                  {selectedOptions[section.id] === "code" ? (
-                    <textarea
-                      rows={4}
-                      placeholder="html code"
-                      className="p-2 mt-2 w-full outline-none rounded-md"
-                      value={codeData[section.id] || ""}
-                      onChange={(e) =>
-                        handleCodeChange(section.id, e.target.value)
-                      }
-                    />
-                  ) : (
-                    <>
-                      <Photo
-                        title="Photo (600x600px)"
-                        img={imageData[section.id] || ""}
-                        onChange={(img) => handleImageChange(section.id, img)}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Link"
-                        className="p-2 mt-2 w-full outline-none rounded-md"
-                        value={linkData[section.id] || ""}
-                        onChange={(e) =>
-                          handleLinkChange(section.id, e.target.value)
-                        }
-                      />
-                    </>
-                  )}
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(ad._id)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(ad._id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </div>
                 </div>
-              ))}
-          </div>
+                <div
+                  className="text-sm text-gray-700"
+                  dangerouslySetInnerHTML={{ __html: ad.content }}
+                />
+              </div>
+            ))}
         </div>
-      ))}
+      </div>
 
-      <button
-        onClick={handlePublish}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-      >
-        Publish
-      </button>
-      <Toaster richColors position="top-center" />
+      {/* Image Ads Section */}
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Image Ads</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ads
+            .filter((ad) => ad.type === "images")
+            .map((ad) => (
+              <div
+                key={ad._id}
+                className="p-6 border rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out relative"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1 items-center">
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {ad.position.toUpperCase()}
+                    </h2>
+                    <span className="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">
+                      {ad.type.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(ad._id)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(ad._id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </div>
+                </div>
+                <Link
+                  href={ad.content.link as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src={ad.content.image}
+                    alt={`${ad.position} Ad`}
+                    className="w-full h-48 object-cover rounded"
+                    width={696}
+                    height={464}
+                  />
+                </Link>
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   );
 };
