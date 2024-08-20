@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
+import { postFormat } from "../utils/postFormat";
 
 interface NewsItem {
   img: string;
@@ -116,26 +117,7 @@ const IndexPage: React.FC = () => {
     }
   };
 
-  // Helper function to create the desired structure
-  function transformData(newsData: NewsData[], categoriesData: categoryData[]) {
-    return categoriesData.map((category) => {
-      console.log(category);
-      const relatedPosts = newsData
-        .filter((newsItem) => newsItem.category.category._id === category._id)
-        .map((newsItem) => ({
-          img: newsItem.img,
-          link: `/news/${newsItem._id}`,
-          title: newsItem.title,
-        }));
-
-      return {
-        category: category.title,
-        post: relatedPosts,
-      };
-    });
-  }
-
-  const newsData = transformData(news, category);
+  const newsData = postFormat(news, category);
   console.log(news, newsData, pageData);
 
   // if (loading) {
