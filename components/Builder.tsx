@@ -8,6 +8,7 @@ const Builder: React.FC = () => {
   const [rows, setRows] = useState<
     { id: number; sections: string[]; backgroundColor: string; color: string }[]
   >([]);
+  console.log(rows);
   const [nextId, setNextId] = useState(1);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {

@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <main>
       <Header top={1} header={1} menu={1} />
-      <PrivateRoute>{children}</PrivateRoute>
+      {children}
       <Footer />
     </main>
   );

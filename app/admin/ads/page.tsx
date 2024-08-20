@@ -7,6 +7,7 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast, Toaster } from "sonner";
 
 interface IAds {
+  id: string;
   _id: string;
   position: string;
   type: string;
@@ -53,6 +54,8 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="space-y-8 mx-16 my-4">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Code Ads</h2>
+
       {/* Code Ads Section */}
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -69,7 +72,7 @@ const IndexPage: React.FC = () => {
                       {ad.position.toUpperCase()}
                     </h2>
                     <span className="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">
-                      {ad.type.toUpperCase()}
+                      {ad.id.toUpperCase()}
                     </span>
                   </div>
                   <div className="flex space-x-2">
@@ -92,7 +95,7 @@ const IndexPage: React.FC = () => {
 
       {/* Image Ads Section */}
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Image Ads</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 my-4">Image Ads</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {ads
             .filter((ad) => ad.type === "images")
@@ -107,7 +110,7 @@ const IndexPage: React.FC = () => {
                       {ad.position.toUpperCase()}
                     </h2>
                     <span className="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-200 rounded">
-                      {ad.type.toUpperCase()}
+                      {ad.id.toUpperCase()}
                     </span>
                   </div>
                   <div className="flex space-x-2">

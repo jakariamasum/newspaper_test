@@ -70,7 +70,6 @@ const menusItem = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
-  const { user } = useAuth();
   const [menus, setMenus] = useState<MenuItem[]>([]);
   console.log(menus);
   useEffect(() => {
@@ -88,12 +87,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
           <div className="container text-white">
             <div className="flex items-center justify-between py-1">
               <Dates lan="en-US" />
-              {user && (
-                <div>
-                  <Link href={"/dashboard"}>Dashboard</Link>{" "}
-                  <Link href={"/"}>Home</Link>
-                </div>
-              )}
+
               <div className="flex items-center space-x-2 text-white">
                 <Link href="/" target="_blank">
                   <svg
