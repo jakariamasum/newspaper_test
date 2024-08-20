@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import PrivateRoute from "../router/privateRouter";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,7 @@ export default function RootLayout({
   return (
     <main>
       <Header top={1} header={1} menu={1} />
-      {children}
+      <PrivateRoute>{children}</PrivateRoute>
       <Footer />
     </main>
   );

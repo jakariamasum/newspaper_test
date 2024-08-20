@@ -2,26 +2,32 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
+import Content from "@/components/admin/Content";
 import { toast, Toaster } from "sonner";
+import { useRouter } from "next/navigation";
 interface TNews {
   _id: string;
   title: string;
   lang: string;
 }
 const IndexPage: React.FC = () => {
-  const [news, setNews] = useState<TNews[]>([]);
+  const router = useRouter();
+  const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editItem, setEditItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchNews = async () => {
       setLoading(true);
       try {
-        const response = await axiosPublic.get("/news");
+        const response = await axiosPublic.get("/news/my-news/all", {
+          headers: {
+            Authorization: `Bears ${localStorage.getItem("authToken")}`,
+          },
+        });
+        console.log(response);
         setNews(response.data.data);
       } catch (error) {
         console.error("Failed to fetch news:", error);
@@ -34,10 +40,10 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const handleEdit = (item: TNews) => {
-    router.push(`/admin/post/edit/${item._id}`);
+    router.push(`/dashboard/edit/${item._id}`);
   };
 
-  const handleDelete = (item: TNews) => {
+  const handleDelete = (item: any) => {
     setEditItem(item);
     setDeleteConfirmOpen(true);
   };
@@ -53,6 +59,34 @@ const IndexPage: React.FC = () => {
       }
       setDeleteConfirmOpen(false);
       setEditItem(null);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      console.log(editItem);
+      const updateInfo = {
+        ...editItem,
+        author: editItem.author._id,
+        category: {
+          category: editItem.category.category._id,
+          subCategory: editItem.category.subCategory || "",
+        },
+      };
+      const response = await axiosPublic.put(
+        `/news/${editItem._id}`,
+        updateInfo
+      );
+      console.log(response);
+      if (response.status === 200) {
+        toast.success("Edited!");
+        setNews((prev) =>
+          prev.map((item) => (item._id === editItem._id ? editItem : item))
+        );
+      }
+    } catch (error) {
+      console.error("Failed to save changes:", error);
+      toast.warning("Failed");
     }
   };
 

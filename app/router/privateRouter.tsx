@@ -65,7 +65,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
       if (user?.role === "admin") {
         router.replace(`${pathname}`);
       } else if (user?.role === "reporter") {
-        router.push("/");
+        router.push("/dashboard");
       }
     }
   }, [loading, user, router]);

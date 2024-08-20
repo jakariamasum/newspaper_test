@@ -34,7 +34,7 @@ const IndexPage: React.FC = async () => {
             <h3 className="text-lg font-semibold mb-2">{language.title}</h3>
 
             <Link
-              href={`type/${language.link}`}
+              href={`type${language.link}`}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
               See News
