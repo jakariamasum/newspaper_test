@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ICategory {
   category: { title: string };
@@ -21,10 +22,12 @@ interface IVideo {
 }
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [videos, setVideos] = useState<IVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(videos);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [currentVideo, setCurrentVide] = useState<IVideo | null>(null);
   useEffect(() => {
     const fetchVideos = async () => {
       try {
@@ -41,19 +44,28 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const handleEdit = (video: IVideo) => {
-    // Implement your edit logic here
-    console.log("Editing video:", video);
-    toast("Edit functionality is not yet implemented.");
+    router.push(`/admin/videos/edit/${video._id}`);
   };
 
-  const handleDelete = async (videoId: string) => {
-    try {
-      await axiosPublic.delete(`/news/${videoId}`);
-      setVideos((prev) => prev.filter((video) => video._id !== videoId));
-      toast.success("Video deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete video:", error);
-      toast.error("Failed to delete video.");
+  const handleDelete = (item: IVideo) => {
+    setCurrentVide(item);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (currentVideo) {
+      console.log(currentVideo._id);
+      const response = await axiosPublic.delete(`/videos/${currentVideo._id}`);
+      if (response.status === 200) {
+        toast.success("Video Deleted successfully!");
+        setVideos((prevVideos) =>
+          prevVideos.filter((n) => n._id !== currentVideo._id)
+        );
+      } else {
+        toast.warning("Something went wrong!");
+      }
+      setDeleteConfirmOpen(false);
+      setCurrentVide(null);
     }
   };
 
@@ -140,7 +152,7 @@ const IndexPage: React.FC = () => {
                   </button>
                   <button
                     className="text-red-500 hover:text-red-700"
-                    onClick={() => handleDelete(video._id)}
+                    onClick={() => handleDelete(video)}
                   >
                     <FaTrash size={22} />
                   </button>
@@ -150,6 +162,29 @@ const IndexPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {deleteConfirmOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this news item?</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setDeleteConfirmOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded"
+                onClick={handleDeleteConfirm}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <Toaster richColors position="top-right" />
     </div>
   );
 };
