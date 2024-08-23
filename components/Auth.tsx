@@ -48,7 +48,7 @@ const Auth = () => {
         window.location.href = "/admin";
       } else if (response.data.data._doc.role === "reporter") {
         toast.success("Welcome back!");
-        window.location.href = "/";
+        window.location.href = "/user";
       } else {
         toast.warning("Failed to login!");
       }

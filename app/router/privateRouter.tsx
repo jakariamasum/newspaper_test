@@ -15,7 +15,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { user, setUser, loading, setLoading, logout } = useAuth();
   const router = useRouter();
 
-  console.log(user);
+  console.log(pathname, user);
   useEffect(() => {
     const verifyUser = async () => {
       const storedToken = localStorage.getItem("authToken");
@@ -65,7 +65,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
       if (user?.role === "admin") {
         router.replace(`${pathname}`);
       } else if (user?.role === "reporter") {
-        router.push("/dashboard");
+        router.replace("/user");
       }
     }
   }, [loading, user, router]);
