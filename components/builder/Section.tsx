@@ -1,25 +1,34 @@
-// Section.tsx
-
-import React, { useState, useRef } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import Photo from "../admin/Photo";
-
-type SectionProps = {
+interface SectionData {
+  sectionTitle: string;
+  color: string;
+  backgroundColor: string;
+  desktopGrid: string;
+  mobileGrid: string;
+  sectionLimit: string;
+  imgPosition: string;
+  handleInputChange: (field: string, value: string) => void;
+}
+const Section: React.FC<{
   section: string;
+  categories: any[];
+  setSectionInfo: (data: Partial<SectionData>) => void;
   index: number;
   moveSection: (dragIndex: number, hoverIndex: number) => void;
   deleteSection: (index: number) => void;
   moveSectionUp: () => void;
   moveSectionDown: () => void;
-};
-
-const Section: React.FC<SectionProps> = ({
+}> = ({
   section,
   index,
   moveSection,
   deleteSection,
   moveSectionUp,
   moveSectionDown,
+  setSectionInfo,
+  categories,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
@@ -67,6 +76,57 @@ const Section: React.FC<SectionProps> = ({
     setColor(e.target.value);
   };
 
+  const [sectionTitle, setSectionTitle] = useState("");
+  const [desktopGrid, setDesktopGrid] = useState("");
+  const [mobileGrid, setMobileGrid] = useState("");
+  const [sectionLimit, setSectionLimit] = useState("");
+  const [imgPosition, setImgPosition] = useState("");
+  const sections = {
+    sectionTitle,
+    color,
+    backgroundColor,
+    desktopGrid,
+    mobileGrid,
+    sectionLimit,
+    imgPosition,
+  };
+  console.log(sections);
+  const prevSectionData = useRef(sections);
+  const random = (Math.random() * 10).toString().slice(0, 1);
+  const handleConfirm = () => {
+    setSectionInfo(sections);
+  };
+  const handleInputChange = (field: keyof SectionData, value: string) => {
+    setSectionInfo({ [field]: value });
+    switch (field) {
+      case "sectionTitle":
+        setSectionTitle(value);
+        break;
+      case "color":
+        setColor(value);
+        break;
+      case "backgroundColor":
+        setBackgroundColor(value);
+        break;
+      case "desktopGrid":
+        setDesktopGrid(value);
+        break;
+      case "mobileGrid":
+        setMobileGrid(value);
+        break;
+
+      case "sectionLimit":
+        setSectionLimit(value);
+        break;
+
+      case "imgPosition":
+        setImgPosition(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div
       ref={ref}
@@ -87,11 +147,23 @@ const Section: React.FC<SectionProps> = ({
             <path d="M11 11V5.82843L9.17157 7.65685L7.75736 6.24264L12 2L16.2426 6.24264L14.8284 7.65685L13 5.82843V11H18.1716L16.3431 9.17157L17.7574 7.75736L22 12L17.7574 16.2426L16.3431 14.8284L18.1716 13H13V18.1716L14.8284 16.3431L16.2426 17.7574L12 22L7.75736 17.7574L9.17157 16.3431L11 18.1716V13H5.82843L7.65685 14.8284L6.24264 16.2426L2 12L6.24264 7.75736L7.65685 9.17157L5.82843 11H11Z"></path>
           </svg>
         </div>
-        <input
+        <select
+          onChange={(e) => handleInputChange("sectionTitle", e.target.value)}
+        >
+          <option value="">Select category</option>
+          {categories?.map((cat) => (
+            <option key={cat?._id} value={cat?.title}>
+              {cat?.title}
+            </option>
+          ))}
+        </select>
+        {/* <input
           type="text"
           className="border outline-none rounded-sm px-2 py-1 w-full leading-none"
           placeholder={`${section} title`}
-        />
+          value={sectionTitle}
+          onChange={(e) => setSectionTitle(e.target.value)}
+        /> */}
         <div className="flex md:flex-row flex-col items-center md:space-x-2">
           <button onClick={moveSectionUp}>
             <svg
@@ -137,6 +209,7 @@ const Section: React.FC<SectionProps> = ({
               </g>
             </g>
           </svg>
+
           {showPopup && (
             <div className="fixed right-0 top-0 bottom-0 bg-white w-full md:w-96 z-[1000]">
               <div className="flex items-center justify-between p-2 bg-main/10">
@@ -155,7 +228,7 @@ const Section: React.FC<SectionProps> = ({
                   <path
                     fill="none"
                     stroke-linecap="round"
-                    strokeLinejoin="round"
+                    stroke-linejoin="round"
                     stroke-width="32"
                     d="M368 368 144 144m224 0L144 368"
                   ></path>
@@ -177,7 +250,7 @@ const Section: React.FC<SectionProps> = ({
                   <input
                     type="color"
                     className="h-6 border max-w-sm text-xs leading-none outline-none rounded-m"
-                    defaultValue={color}
+                    value={color}
                     onChange={handleColorChange}
                     placeholder="Enter text color"
                   />
@@ -188,8 +261,10 @@ const Section: React.FC<SectionProps> = ({
                   <input
                     type="color"
                     className="h-6 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue={backgroundColor}
-                    onChange={handleBackgroundColorChange}
+                    value={backgroundColor}
+                    onChange={(e) =>
+                      handleInputChange("backgroundColor", e.target.value)
+                    }
                     placeholder="Enter background color"
                   />
                 </div>
@@ -198,8 +273,8 @@ const Section: React.FC<SectionProps> = ({
                   <input
                     type="color"
                     className="h-6 border max-w-sm text-xs leading-none outline-none rounded-m"
-                    defaultValue={color}
-                    onChange={handleColorChange}
+                    value={color}
+                    onChange={(e) => handleInputChange("color", e.target.value)}
                     placeholder="Enter text color"
                   />
                 </div>
@@ -230,6 +305,10 @@ const Section: React.FC<SectionProps> = ({
                   <select
                     className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
                     defaultValue="banana"
+                    value={desktopGrid}
+                    onChange={(e) =>
+                      handleInputChange("desktopGrid", e.target.value)
+                    }
                   >
                     <option>select {section} grid</option>
                     <option value="1">Grid 1</option>
@@ -246,34 +325,15 @@ const Section: React.FC<SectionProps> = ({
                     <option value="12">Grid 12</option>
                   </select>
                 </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <p>Grid width(Desktop%)</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="25"
-                  >
-                    <option>select width</option>
-                    <option value="25">25</option>
-                    <option value="30">30 </option>
-                    <option value="35">35</option>
-                    <option value="40">40</option>
-                    <option value="45">45</option>
-                    <option value="50">50</option>
-                    <option value="55">55</option>
-                    <option value="60">60</option>
-                    <option value="65">65</option>
-                    <option value="70">70</option>
-                    <option value="75">75</option>
-                    <option value="80">80</option>
-                    <option value="85">85</option>
-                  </select>
-                </div>
 
                 <div className="flex items-center justify-between py-1.5">
                   <p>Mobile grids</p>
                   <select
                     className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="banana"
+                    value={mobileGrid}
+                    onChange={(e) =>
+                      handleInputChange("mobileGrid", e.target.value)
+                    }
                   >
                     <option>select {section} grid</option>
                     <option value="1">Grid 1</option>
@@ -297,6 +357,10 @@ const Section: React.FC<SectionProps> = ({
                     type="number"
                     className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
                     placeholder="Enter number"
+                    value={sectionLimit}
+                    onChange={(e) =>
+                      handleInputChange("sectionLimit", e.target.value)
+                    }
                   />
                 </div>
 
@@ -327,15 +391,22 @@ const Section: React.FC<SectionProps> = ({
                       <select
                         className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
                         defaultValue="banana"
+                        value={imgPosition}
+                        onChange={(e) =>
+                          handleInputChange("imgPosition", e.target.value)
+                        }
                       >
                         <option>select</option>
                         <option value="1">Left</option>
                         <option value="2">Right</option>
                       </select>
                     </div>
-                    <div className="py-1.5">
-                      <Photo title="Photo (256×399px)" img="" />
-                    </div>
+                    {/* <div className='py-1.5'>
+                        <Photo
+                          title="Photo (256×399px)"
+                          img=""
+                        />
+                    </div> */}
                   </>
                 )}
               </div>
@@ -356,8 +427,13 @@ const Section: React.FC<SectionProps> = ({
           </svg>
         </div>
       </div>
+      <button
+        onClick={handleConfirm}
+        className="px-4 py-1 bg-main text-white rounded-md"
+      >
+        Confirm
+      </button>
     </div>
   );
 };
-
 export default Section;

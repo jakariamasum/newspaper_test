@@ -1,14 +1,34 @@
 "use client";
-import React, { useState } from "react";
-import { DndProvider } from "react-dnd";
+import React, {
+  useState,
+  useRef,
+  ReactNode,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import Photo from "./admin/Photo";
+import axiosPublic from "@/lib/axiosPublic";
+import Section from "./builder/Section";
 import Row from "./builder/Row";
-
-const Builder: React.FC = () => {
+interface SectionData {
+  sectionTitle: string;
+  color: string;
+  backgroundColor: string;
+  desktopGrid: string;
+  mobileGrid: string;
+  sectionLimit: string;
+  imgPosition?: string;
+}
+interface BuilderProps {
+  onRowDataChange: (index: number, updatedData: Partial<any>) => void;
+}
+const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
   const [rows, setRows] = useState<
     { id: number; sections: string[]; backgroundColor: string; color: string }[]
   >([]);
-  console.log(rows);
   const [nextId, setNextId] = useState(1);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
@@ -21,7 +41,12 @@ const Builder: React.FC = () => {
   const addRow = () => {
     setRows([
       ...rows,
-      { id: nextId, sections: [], backgroundColor: "", color: "" },
+      {
+        id: nextId,
+        sections: [],
+        backgroundColor: "#ffffff",
+        color: "#000000",
+      },
     ]);
     setNextId(nextId + 1);
   };
@@ -30,13 +55,8 @@ const Builder: React.FC = () => {
     setRows(rows.filter((row) => row.id !== id));
   };
 
-  const duplicateRow = (
-    id: number,
-    sections: string[],
-    backgroundColor: string,
-    color: string
-  ) => {
-    setRows([...rows, { id: nextId, sections, backgroundColor, color }]);
+  const duplicateRow = (row: any) => {
+    setRows([...rows, { ...row, id: nextId }]);
     setNextId(nextId + 1);
   };
 
@@ -58,14 +78,27 @@ const Builder: React.FC = () => {
     }
   };
 
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      const response = await axiosPublic.get("/categories");
+      setCategories(response.data.data);
+    };
+    fetchCategoryData();
+  }, []);
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <>
+      <div className="builder-container">
         <div className="flex items-center space-x-2 mb-4">
           <strong>Page Builder</strong>
           <button
             onClick={addRow}
-            className="p-2 leading-none bg-main rounded-md text-white"
+            className="p-2 leading-none bg-blue-500 rounded-md text-white"
           >
             New Row
           </button>
@@ -73,6 +106,7 @@ const Builder: React.FC = () => {
         {rows.map((row, index) => (
           <Row
             key={row.id}
+            categories={categories}
             id={row.id}
             index={index}
             moveRow={moveRow}
@@ -83,9 +117,10 @@ const Builder: React.FC = () => {
             initialSections={row.sections}
             initialBackgroundColor={row.backgroundColor}
             initialColor={row.color}
+            updateRowData={(data) => onRowDataChange(index, data)}
           />
         ))}
-      </>
+      </div>
     </DndProvider>
   );
 };

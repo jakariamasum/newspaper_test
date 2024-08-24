@@ -1,8 +1,17 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import Section from "./Section";
-
-type RowProps = {
+interface SectionData {
+  sectionTitle: string;
+  color: string;
+  backgroundColor: string;
+  desktopGrid: string;
+  mobileGrid: string;
+  sectionLimit: string;
+  imgPosition: string;
+}
+const Row: React.FC<{
+  categories: any[];
   id: number;
   index: number;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
@@ -18,9 +27,8 @@ type RowProps = {
   initialSections?: string[];
   initialBackgroundColor?: string;
   initialColor?: string;
-};
-
-const Row: React.FC<RowProps> = ({
+  updateRowData: (data: Partial<any>) => void; // Function to update parent state
+}> = ({
   id,
   index,
   moveRow,
@@ -28,9 +36,12 @@ const Row: React.FC<RowProps> = ({
   duplicateRow,
   moveRowUp,
   moveRowDown,
+  categories,
   initialSections = [],
   initialBackgroundColor = "",
   initialColor = "",
+
+  updateRowData,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
@@ -39,7 +50,7 @@ const Row: React.FC<RowProps> = ({
   );
   const [color, setColor] = useState<string>(initialColor);
   const [showPopup, setShowPopup] = useState(false);
-
+  //
   const [, drop] = useDrop({
     accept: "ROW",
     hover: (item: { index: number }) => {
@@ -49,7 +60,28 @@ const Row: React.FC<RowProps> = ({
       }
     },
   });
+  const [sectionDataArray, setSectionDataArray] = useState<SectionData[]>([]);
+  const currentIndex = useRef(0);
+  console.log(currentIndex, id);
 
+  const SectionInfo = (index: number, data: Partial<SectionData>) => {
+    setSectionDataArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = { ...newArray[index], ...data };
+      return newArray;
+    });
+  };
+  console.log(color, backgroundColor, index, sectionDataArray);
+  const row = {
+    color,
+    backgroundColor,
+    index,
+    sectionDataArray,
+  };
+  useEffect(() => {
+    updateRowData({ color, backgroundColor, index, sectionDataArray });
+  }, [color, backgroundColor, sectionDataArray]);
+  console.log(row);
   const [, drag, preview] = useDrag({
     type: "ROW",
     item: { index },
@@ -68,6 +100,7 @@ const Row: React.FC<RowProps> = ({
   };
 
   const addSection = (section: string) => {
+    console.log(section);
     setSectionList([...sectionList, section]);
   };
 
@@ -198,7 +231,7 @@ const Row: React.FC<RowProps> = ({
                   <path
                     fill="none"
                     stroke-linecap="round"
-                    strokeLinejoin="round"
+                    stroke-linejoin="round"
                     stroke-width="32"
                     d="M368 368 144 144m224 0L144 368"
                   ></path>
@@ -286,7 +319,9 @@ const Row: React.FC<RowProps> = ({
         {sectionList.map((section, idx) => (
           <Section
             key={idx}
+            categories={categories}
             section={section}
+            setSectionInfo={(data) => SectionInfo(idx, data)}
             index={idx}
             moveSection={moveSection}
             deleteSection={deleteSection}
