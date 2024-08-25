@@ -9,6 +9,7 @@ interface SectionData {
   mobileGrid: string;
   sectionLimit: string;
   imgPosition: string;
+  width?: string;
   handleInputChange: (field: string, value: string) => void;
 }
 const Section: React.FC<{
@@ -81,6 +82,7 @@ const Section: React.FC<{
   const [mobileGrid, setMobileGrid] = useState("");
   const [sectionLimit, setSectionLimit] = useState("");
   const [imgPosition, setImgPosition] = useState("");
+  const [width, setWidth] = useState("");
   const sections = {
     sectionTitle,
     color,
@@ -91,11 +93,6 @@ const Section: React.FC<{
     imgPosition,
   };
   console.log(sections);
-  const prevSectionData = useRef(sections);
-  const random = (Math.random() * 10).toString().slice(0, 1);
-  const handleConfirm = () => {
-    setSectionInfo(sections);
-  };
   const handleInputChange = (field: keyof SectionData, value: string) => {
     setSectionInfo({ [field]: value });
     switch (field) {
@@ -121,6 +118,9 @@ const Section: React.FC<{
 
       case "imgPosition":
         setImgPosition(value);
+        break;
+      case "width":
+        setWidth(value);
         break;
       default:
         break;
@@ -363,17 +363,18 @@ const Section: React.FC<{
                     }
                   />
                 </div>
-
+                <div className="flex items-center justify-between py-1.5">
+                  <p>{section} width</p>
+                  <input
+                    type="number"
+                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
+                    placeholder="Enter number"
+                    value={width}
+                    onChange={(e) => handleInputChange("width", e.target.value)}
+                  />
+                </div>
                 {section === "banner" && (
                   <>
-                    <div className="flex items-center justify-between py-1.5">
-                      <p>{section} width</p>
-                      <input
-                        type="number"
-                        className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
-                        placeholder="Enter number"
-                      />
-                    </div>
                     <div className="flex items-center justify-between py-1.5">
                       <p>{section} height</p>
                       <input
@@ -427,12 +428,6 @@ const Section: React.FC<{
           </svg>
         </div>
       </div>
-      <button
-        onClick={handleConfirm}
-        className="px-4 py-1 bg-main text-white rounded-md"
-      >
-        Confirm
-      </button>
     </div>
   );
 };

@@ -18,11 +18,11 @@ interface NewsCategory {
 }
 
 interface Section {
-  title: string;
+  sectionTitle: string;
   link: string;
   limit: number;
   box: number;
-  style: number;
+  imgPosition: string;
   width: number;
   categories: { catId: number; catName: string }[];
 }
@@ -137,22 +137,28 @@ const IndexPage: React.FC = () => {
           }}
         >
           <div className="flex flex-col md:flex-row">
-            {row.sections.map((section) => (
-              <div
-                key={section.title}
-                style={{ width: `${section.width}%` }}
-                className="p-2"
-              >
-                <News
-                  title={section.title}
-                  link={section.link}
-                  limit={section.limit}
-                  box={section.box}
-                  style={section.style}
-                  item={newsData}
-                />
-              </div>
-            ))}
+            {row.sections.map((section) => {
+              const filteredNewsData = newsData.filter(
+                (news) => news.category === section.sectionTitle
+              );
+
+              return (
+                <div
+                  key={section.sectionTitle}
+                  style={{ width: `${section.width}%` }}
+                  className="p-2"
+                >
+                  <News
+                    title={section.sectionTitle}
+                    link={section.link || "/"}
+                    limit={section.limit}
+                    box={section.box || 18}
+                    style={Number(section.imgPosition) || 1}
+                    item={filteredNewsData}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}

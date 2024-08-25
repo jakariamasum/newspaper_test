@@ -13,6 +13,7 @@ interface SectionData {
   mobileGrid: string;
   sectionLimit: string;
   imgPosition?: string;
+  width?: string;
 }
 interface ILanguage {
   _id: string;
@@ -108,7 +109,7 @@ const IndexPage: React.FC = () => {
               <select onChange={(e) => setLanguage(e.target.value)}>
                 <option value="">Select Language</option>
                 {languages?.map((lang) => (
-                  <option key={lang?._id} value={lang?._id}>
+                  <option key={lang?._id} value={lang?.language_code}>
                     {lang?.title}
                   </option>
                 ))}

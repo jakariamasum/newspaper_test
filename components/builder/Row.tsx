@@ -9,6 +9,7 @@ interface SectionData {
   mobileGrid: string;
   sectionLimit: string;
   imgPosition: string;
+  width?: string;
 }
 const Row: React.FC<{
   categories: any[];
@@ -73,13 +74,18 @@ const Row: React.FC<{
   };
   console.log(color, backgroundColor, index, sectionDataArray);
   const row = {
-    color,
-    backgroundColor,
-    index,
-    sectionDataArray,
+    textColor: color,
+    bgColor: backgroundColor,
+    id: index,
+    sections: sectionDataArray,
   };
   useEffect(() => {
-    updateRowData({ color, backgroundColor, index, sectionDataArray });
+    updateRowData({
+      textColor: color,
+      bgColor: backgroundColor,
+      id: index,
+      sections: sectionDataArray,
+    });
   }, [color, backgroundColor, sectionDataArray]);
   console.log(row);
   const [, drag, preview] = useDrag({

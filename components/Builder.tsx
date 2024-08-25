@@ -21,6 +21,7 @@ interface SectionData {
   mobileGrid: string;
   sectionLimit: string;
   imgPosition?: string;
+  width?: string;
 }
 interface BuilderProps {
   onRowDataChange: (index: number, updatedData: Partial<any>) => void;
