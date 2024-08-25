@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { postFormat } from "@/app/utils/postFormat";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
-import { postFormat } from "../utils/postFormat";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface NewsItem {
   img: string;
@@ -59,6 +59,8 @@ interface categoryData {
 }
 
 const IndexPage: React.FC = () => {
+  const pathname = usePathname();
+  console.log(pathname);
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
@@ -68,7 +70,7 @@ const IndexPage: React.FC = () => {
     const fetchPageData = async () => {
       try {
         // const response = await axios.get("/pageData.json");
-        const response = await axiosPublic.get("/pages/home");
+        const response = await axiosPublic.get(`/pages/get-page${pathname}`);
         setPageData(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -78,7 +80,7 @@ const IndexPage: React.FC = () => {
     fetchPageData();
     const fetchNewsData = async () => {
       try {
-        const response = await axiosPublic.get("/news");
+        const response = await axiosPublic.get(`/news/${pathname}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -98,28 +100,7 @@ const IndexPage: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const fetchNewsData = async (
-    categories: { catId: string; catName: string }[]
-  ) => {
-    console.log("categories", categories);
-    try {
-      const response = await axiosPublic.post(
-        "/news/category-news",
-        { categories },
-        { params: { lang: "en" } } // Modify language as needed
-      );
-      console.log(response.data);
-      return response.data.data;
-    } catch (error) {
-      console.log("Error fetching news data:", error);
-      console.error("Error fetching news data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const newsData = postFormat(news, category);
-  console.log(Array.isArray(newsData));
   console.log(news, newsData, pageData);
 
   // if (loading) {
