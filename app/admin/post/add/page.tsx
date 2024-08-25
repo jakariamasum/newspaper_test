@@ -17,6 +17,7 @@ import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import { useAllCategory } from "@/lib/useAllCategory";
 import { useLang } from "@/app/context/langContext";
 import { categoryFormat } from "@/app/utils/categoryFormate";
+import { useRouter } from "next/navigation";
 
 interface TUser {
   _id: string;
@@ -30,8 +31,8 @@ interface TCategory {
 }
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const { lang } = useLang();
-  console.log(lang);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>(["hello"]);
@@ -50,28 +51,32 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await useAllUsers();
-      setUsers(response);
+      const response = await axiosPublic.get("/user/admin", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      setUsers(response.data.data);
     };
     fetchUsers();
     const fetchCities = async () => {
-      const response = await useAllCities();
-      setCities(response);
+      const response = await axiosPublic.get("/city");
+      setCities(response.data.data);
     };
     fetchCities();
     const fetchAreas = async () => {
-      const response = await useAllArea();
-      setAreas(response);
+      const response = await axiosPublic.get("/area");
+      setAreas(response.data.data);
     };
     fetchAreas();
     const fetchCategories = async () => {
-      const response = await useAllCategory();
-      setCategories(response);
+      const response = await axiosPublic.get("/categories");
+      setCategories(response.data.data);
     };
     fetchCategories();
     const fetchSubCategories = async () => {
-      const response = await useAllSubCategories();
-      setSubCategories(response);
+      const response = await axiosPublic.get("/sub-categories");
+      setSubCategories(response.data.data);
     };
     fetchSubCategories();
   }, []);
@@ -105,10 +110,15 @@ const IndexPage: React.FC = () => {
 
     console.log(formData);
     try {
-      const response = await axiosPublic.post("/news", formData);
+      const response = await axiosPublic.post("/news/admin", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       console.log(response.data);
       if (response.status === 200) {
         toast.success("News created!");
+        router.push(`/admin/type/${lang}`);
       } else {
         toast.error("Failed to create news!");
       }

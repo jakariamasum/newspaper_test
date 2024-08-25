@@ -1,9 +1,11 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { toast, Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [language, setLanguage] = useState({
     title: "English",
     language_code: "en",
@@ -12,9 +14,14 @@ const IndexPage: React.FC = () => {
   const handleCreateLanguage = async () => {
     console.log(language);
     try {
-      const response = await axiosPublic.post("/language", language);
+      const response = await axiosPublic.post("/language/admin", language, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       if (response.status === 200) {
         toast.success("Successfully created!");
+        router.push("/admin/type");
       } else {
         toast.warning("Failed to create language!");
       }

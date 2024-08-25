@@ -2,10 +2,12 @@
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [role, setRole] = useState("admin");
   const [email, setEmail] = useState("");
@@ -24,15 +26,15 @@ const IndexPage: React.FC = () => {
     };
     console.log(userInfo);
     try {
-      const response = await axiosPublic.post("/user", userInfo);
+      const response = await axiosPublic.post("/user/admin", userInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
 
       if (response.status === 200) {
         toast.success("User created successfully!");
-        setTitle("");
-        setEmail("");
-        setPassword("");
-        setImg("");
-        setRole("");
+        router.push("/admin/user");
       }
     } catch (error) {
       toast.error("Failed to create user. Please try again.");

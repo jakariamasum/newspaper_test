@@ -55,7 +55,14 @@ const CategoryTypePage = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentNews) {
-      const response = await axiosPublic.delete(`/news/${currentNews._id}`);
+      const response = await axiosPublic.delete(
+        `/news/admin/${currentNews._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("News Deleted successfully!");
         setNews((prevNews) =>
@@ -75,8 +82,13 @@ const CategoryTypePage = () => {
     if (editedNews) {
       console.log(editedNews);
       const response = await axiosPublic.put(
-        `/news/${editedNews._id}`,
-        editedNews
+        `/news/admin/${editedNews._id}`,
+        editedNews,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
       );
       if (response.status === 200) {
         toast.success("News Updated successfully!");

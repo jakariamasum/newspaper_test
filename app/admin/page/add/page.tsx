@@ -3,6 +3,7 @@ import Builder from "@/components/Builder";
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast, Toaster } from "sonner";
 interface SectionData {
@@ -21,6 +22,7 @@ interface ILanguage {
   language_code: string;
 }
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState<string>("");
   const [path, setPath] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -47,9 +49,10 @@ const IndexPage: React.FC = () => {
     };
     console.log(pageInfo);
     try {
-      const response = await axiosPublic.post("/pages", pageInfo);
+      const response = await axiosPublic.post("/pages/admin", pageInfo);
       if (response.status === 200) {
         toast.success("Page published successfully!");
+        router.push("/admin/page");
       } else {
         toast.warning("Failed to publish page:");
         console.log("err", response);
@@ -104,8 +107,8 @@ const IndexPage: React.FC = () => {
               </button>
             </div>
             <Photo title="Photo" img={img} onChange={setImg} />
-            <div>
-              {languages?.length | 0}
+            <div className="mb-4 w-full my-2">
+              <h1 className="text-xl mb-4">Select Language</h1>
               <select onChange={(e) => setLanguage(e.target.value)}>
                 <option value="">Select Language</option>
                 {languages?.map((lang) => (
@@ -115,11 +118,11 @@ const IndexPage: React.FC = () => {
                 ))}
               </select>
             </div>
-            <div className="mb-4">
+            <div className="mb-4 w-full">
               <p>Path</p>
               <input
                 type="text"
-                placeholder="title"
+                placeholder="title start with /"
                 value={path}
                 onChange={(e) => setPath(e.target.value)}
                 className="p-2 mt-2 w-full outline-none rounded-md"

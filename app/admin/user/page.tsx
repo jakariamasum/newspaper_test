@@ -33,7 +33,14 @@ const IndexPage: React.FC = () => {
   const handleDeleteConfirm = async () => {
     if (currentUser) {
       console.log(currentUser);
-      const response = await axiosPublic.delete(`/user/${currentUser._id}`);
+      const response = await axiosPublic.delete(
+        `/user/admin/${currentUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("User Deleted successfully!");
         setUsers((prevUsers) =>
@@ -51,8 +58,13 @@ const IndexPage: React.FC = () => {
     if (currentUser) {
       try {
         const response = await axiosPublic.put(
-          `/user/${currentUser._id}`,
-          currentUser
+          `/user/admin/${currentUser._id}`,
+          currentUser,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          }
         );
         if (response.status === 200) {
           toast.success("User updated successfully!");
@@ -73,7 +85,11 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axiosPublic.get("/user");
+        const response = await axiosPublic.get("/user/admin", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
         console.log(response.data.data);
         setUsers(response.data.data);
       } catch (err) {

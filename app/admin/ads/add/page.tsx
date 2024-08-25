@@ -119,7 +119,11 @@ const IndexPage: React.FC = () => {
       }));
 
       console.log(data);
-      await axiosPublic.post("/ads", data);
+      await axiosPublic.post("/ads/admin", data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       toast.success("Ads Published successfully!");
     } catch (error) {
       console.error("Failed to publish:", error);

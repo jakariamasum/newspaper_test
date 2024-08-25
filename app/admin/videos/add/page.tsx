@@ -10,6 +10,7 @@ import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
 import { categoryFormat } from "@/app/utils/categoryFormate";
+import { useRouter } from "next/navigation";
 
 const extractYouTubeID = (url: string): string | null => {
   const regex =
@@ -19,6 +20,7 @@ const extractYouTubeID = (url: string): string | null => {
 };
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [videoInput, setVideoInput] = useState("");
   const [tags, setTags] = useState<string[]>(["hello"]);
@@ -62,10 +64,15 @@ const IndexPage: React.FC = () => {
 
     console.log(formData);
     try {
-      const response = await axiosPublic.post("/videos", formData);
+      const response = await axiosPublic.post("/videos/admin", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       console.log(response.data);
       if (response.status === 200) {
         toast.success("Videos published!");
+        router.push("/admin/videos");
       } else {
         toast.error("Failed to publish videos!");
       }
@@ -108,11 +115,6 @@ const IndexPage: React.FC = () => {
             <div className="mb-4">
               <p>Keywords</p>
               <Tag value={tags} onChange={setTags} />
-              <ul>
-                {tags.map((tag, index) => (
-                  <li key={index}>{tag}</li>
-                ))}
-              </ul>
             </div>
           </div>
           <div className="w-full md:w-1/3">

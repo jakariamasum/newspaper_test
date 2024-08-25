@@ -55,7 +55,14 @@ const IndexPage: React.FC = () => {
   const handleDeleteConfirm = async () => {
     if (currentVideo) {
       console.log(currentVideo._id);
-      const response = await axiosPublic.delete(`/videos/${currentVideo._id}`);
+      const response = await axiosPublic.delete(
+        `/videos/admin/${currentVideo._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("Video Deleted successfully!");
         setVideos((prevVideos) =>

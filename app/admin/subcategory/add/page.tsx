@@ -5,6 +5,7 @@ import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
 import { useAllCategory } from "@/lib/useAllCategory";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast, Toaster } from "sonner";
 
@@ -18,6 +19,7 @@ interface TCat {
 }
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [description, setDescription] = useState("");
   const [img, setImg] = useState("");
   const [category, setCategory] = useState("");
@@ -41,16 +43,18 @@ const IndexPage: React.FC = () => {
     console.log(subCategoryInfo);
     try {
       const response = await axiosPublic.post(
-        "/sub-categories",
-        subCategoryInfo
+        "/sub-categories/admin",
+        subCategoryInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
       );
 
       if (response.status === 200) {
         toast.success("Sub-category created successfully!");
-        setTitle("");
-        setImg("");
-        setDescription("");
-        setCategory("");
+        router.push("/admin/subcategory");
       }
     } catch (error) {
       toast.error("Failed to create sub-category. Please try again.");

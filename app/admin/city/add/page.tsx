@@ -1,18 +1,28 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast, Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const handlePublish = async () => {
     console.log(title);
     try {
-      const response = await axiosPublic.post("/city", { title });
+      const response = await axiosPublic.post(
+        "/city/admin",
+        { title },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         toast.success("City created successfully!");
-        setTitle("");
+        router.push("/admin/city");
       }
     } catch (error) {
       toast.error("Failed to create city. Please try again.");

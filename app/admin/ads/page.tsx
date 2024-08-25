@@ -36,7 +36,15 @@ const IndexPage: React.FC = () => {
     if (editAd) {
       console.log(editAd);
       try {
-        const response = await axiosPublic.put(`/ads/${editAd._id}`, editAd);
+        const response = await axiosPublic.put(
+          `/ads/admin/${editAd._id}`,
+          editAd,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          }
+        );
         if (response.status === 200) {
           toast.success("updated");
           setAds((prevAds) =>
@@ -54,6 +62,15 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="space-y-8 mx-16 my-4">
+      <div className="w-full max-w-7xl flex items-center justify-between mb-8">
+        <h1 className="text-xl font-bold mb-4"></h1>
+        <Link
+          href="/admin/area/add"
+          className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
+        >
+          Add New Area
+        </Link>
+      </div>
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Code Ads</h2>
 
       {/* Code Ads Section */}

@@ -57,7 +57,11 @@ const EditVideo: React.FC = () => {
       };
       console.log(payload);
 
-      const response = await axiosPublic.put(`/videos/${_id}`, payload);
+      const response = await axiosPublic.put(`/videos/admin/${_id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       if (response.status === 200) {
         toast.success("Video updated successfully!");
         router.push("/admin/videos");

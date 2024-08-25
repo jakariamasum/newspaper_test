@@ -44,7 +44,7 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (editItem) {
-      const response = await axiosPublic.delete(`/news/${editItem._id}`);
+      const response = await axiosPublic.delete(`/news/admin/${editItem._id}`);
       if (response.status === 200) {
         toast.success("News Deleted successfully!");
         setNews((prevNews) => prevNews.filter((n) => n._id !== editItem._id));

@@ -2,6 +2,7 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
 import { useAllCities } from "@/lib/useAllCities";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 
@@ -11,6 +12,7 @@ interface TCity {
 }
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
@@ -27,14 +29,17 @@ const IndexPage: React.FC = () => {
       title,
       city,
     };
-    console.log(areaInfo);
+    console.log(localStorage.getItem("authToken"));
     try {
-      const response = await axiosPublic.post("/area", areaInfo);
+      const response = await axiosPublic.post("/area/admin", areaInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
 
       if (response.status === 200) {
         toast.success("Area created successfully!");
-        setTitle("");
-        setCity("");
+        router.push("/admin/area");
       }
     } catch (error) {
       toast.error("Failed to create area. Please try again.");
@@ -63,7 +68,7 @@ const IndexPage: React.FC = () => {
                 onChange={(e) => setCity(e.target.value)}
               >
                 <option value="" disabled>
-                  Select a category
+                  Select a City
                 </option>
                 {cities?.map((city: TCity) => (
                   <option key={city._id} value={city._id}>

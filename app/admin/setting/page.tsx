@@ -203,8 +203,13 @@ const IndexPage: React.FC = () => {
     console.log(settings, settings!._id);
     try {
       const response = await axiosPublic.put(
-        `/settings/${settings?._id}`,
-        settingData
+        `/settings/admin/${settings?._id}`,
+        settingData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
       );
       console.log(response);
       if (response.status === 200) {

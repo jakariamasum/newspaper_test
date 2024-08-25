@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNewsByLanguage } from "@/lib/useNewsByLanguage";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -36,6 +36,7 @@ interface TNews {
 }
 
 const ModuleTypePage = () => {
+  const router = useRouter();
   const { link } = useParams();
   const { setLang, lang } = useLang();
   const [news, setNews] = useState<TNews[]>([]);
@@ -45,10 +46,8 @@ const ModuleTypePage = () => {
   const [editedNews, setEditedNews] = useState<TNews | null>(null);
 
   // Handlers for edit and delete actions
-  const handleEdit = (newsItem: TNews) => {
-    setCurrentNews(newsItem);
-    setEditedNews(newsItem); // Initialize editedNews with currentNews
-    setEditModalOpen(true);
+  const handleEdit = (item: TNews) => {
+    router.push(`/admin/post/edit/${item._id}`);
   };
 
   const handleDelete = (newsItem: TNews) => {
@@ -58,7 +57,14 @@ const ModuleTypePage = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentNews) {
-      const response = await axiosPublic.delete(`/news/${currentNews._id}`);
+      const response = await axiosPublic.delete(
+        `/news/admin/${currentNews._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("News Deleted successfully!");
         setNews((prevNews) =>
@@ -77,8 +83,13 @@ const ModuleTypePage = () => {
     if (editedNews) {
       console.log(editedNews);
       const response = await axiosPublic.put(
-        `/news/${editedNews._id}`,
-        editedNews
+        `/news/admin/${editedNews._id}`,
+        editedNews,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
       );
       if (response.status === 200) {
         toast.success("News Updated successfully!");

@@ -6,10 +6,12 @@ import Checkbox from "@/components/admin/Checkbox";
 import axiosPublic from "@/lib/axiosPublic";
 import { useAllCategory } from "@/lib/useAllCategory";
 import { useAllSubCategories } from "@/lib/useAllSubCategory";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
+  const router = useRouter();
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [category, setCategory] = useState<{
@@ -43,13 +45,15 @@ const IndexPage: React.FC = () => {
         banners,
       };
       console.log(payload);
-      const response = await axiosPublic.post("/story", payload);
+      const response = await axiosPublic.post("/story/admin", payload, {
+        headers: {
+          Authorization: `Beares ${localStorage.getItem("authToken")}`,
+        },
+      });
       console.log(response);
       if (response.status === 200) {
         toast.success("Stories published successfully!");
-        setTitle("");
-        setCategory({ category: "" });
-        setBanners([]);
+        router.push("/admin/stories");
       }
     } catch (error) {
       console.error("Failed to publish data", error);
