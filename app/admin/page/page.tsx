@@ -25,6 +25,7 @@ export type TRowData = {
 };
 
 export type TPage = {
+  _id: string;
   title: string;
   description: string;
   img: string;
@@ -60,7 +61,7 @@ const IndexPage: React.FC = () => {
               {data.title}
             </h2>
             <FaEdit
-              onClick={() => handleEdit(data.path)}
+              onClick={() => handleEdit(data._id)}
               className="text-blue-500 cursor-pointer hover:text-blue-600"
             />
           </div>

@@ -55,7 +55,7 @@ const EditPage: React.FC = () => {
   useEffect(() => {
     const fetchPageData = async () => {
       try {
-        const response = await axiosPublic.get(`/pages/${_id}`);
+        const response = await axiosPublic.get(`/pages/edit-page/${_id}`);
         const page = response.data.data;
         console.log(page);
         setTitle(page.title);
@@ -97,7 +97,11 @@ const EditPage: React.FC = () => {
       path,
     };
     try {
-      const response = await axiosPublic.put(`/pages/admin/${_id}`, pageInfo);
+      const response = await axiosPublic.put(`/pages/admin/${_id}`, pageInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       if (response.status === 200) {
         toast.success("Page updated successfully!");
         router.push("/admin/page");
