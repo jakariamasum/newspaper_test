@@ -18,7 +18,8 @@ interface NewsCategory {
 }
 
 interface Section {
-  sectionTitle: string;
+  _id: string;
+  sectionTitle: { _id: string; title: string };
   link: string;
   limit: number;
   box: number;
@@ -140,18 +141,18 @@ const IndexPage: React.FC = () => {
           <div className="flex flex-col md:flex-row">
             {row.sections.map((section) => {
               const filteredNewsData = newsData.filter(
-                (news) => news.category === section.sectionTitle
+                (news) => news.category === section.sectionTitle?.title
               );
 
               return (
                 <div
-                  key={section.sectionTitle}
+                  key={section._id}
                   style={{ width: `${section.width}%` }}
                   className="p-2"
                 >
                   <News
-                    title={section.sectionTitle}
-                    link={section.link || "/"}
+                    title={section.sectionTitle?.title || ""}
+                    link={`/news/all-category/${section.sectionTitle._id}`}
                     limit={section.limit}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}

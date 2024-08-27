@@ -168,7 +168,7 @@ const Section: React.FC<{
         >
           <option value="">Select category</option>
           {categories?.map((cat) => (
-            <option key={cat?._id} value={cat?.title}>
+            <option key={cat?._id} value={cat?._id}>
               {cat?.title}
             </option>
           ))}
