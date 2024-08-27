@@ -888,7 +888,10 @@ const News: React.FC<NewssProps> = ({
             <Image
               width={1900}
               height={600}
-              src={items[currentImage].img || "/default.jpg"}
+              src={
+                (Array.isArray(items) && items[currentImage]?.img) ||
+                "/default.jpg"
+              }
               alt={`Slide ${currentImage + 1}`}
               className="h-full w-full object-cover"
             />
@@ -948,7 +951,10 @@ const News: React.FC<NewssProps> = ({
             <Image
               width={1280}
               height={600}
-              src={items[currentImage].img || "/default.jpg"}
+              src={
+                (Array.isArray(items) && items[currentImage]?.img) ||
+                "/default.jpg"
+              }
               alt={`Slide ${currentImage + 1}`}
               className="h-full w-full object-cover"
             />

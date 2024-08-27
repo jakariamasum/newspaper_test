@@ -9,9 +9,21 @@ interface SectionData {
   mobileGrid: string;
   sectionLimit: string;
   imgPosition: string;
-  width?: string;
+  width: string;
+  box: string;
   handleInputChange: (field: string, value: string) => void;
 }
+
+const boxStyles = Array.from({ length: 18 }, (_, i) => ({
+  id: (i + 1).toString(),
+  name: `Box ${i + 1}`,
+}));
+
+const gridStyles = Array.from({ length: 12 }, (_, i) => ({
+  id: (i + 1).toString(),
+  name: `Grid ${i + 1}`,
+}));
+
 const Section: React.FC<{
   section: string;
   categories: any[];
@@ -33,8 +45,8 @@ const Section: React.FC<{
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
-  const [backgroundColor, setBackgroundColor] = useState<string>();
-  const [color, setColor] = useState<string>();
+  const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
+  const [color, setColor] = useState<string>("#000000");
 
   const [, drop] = useDrop({
     accept: "SECTION",
@@ -83,6 +95,7 @@ const Section: React.FC<{
   const [sectionLimit, setSectionLimit] = useState("");
   const [imgPosition, setImgPosition] = useState("");
   const [width, setWidth] = useState("");
+  const [box, setBox] = useState("");
   const sections = {
     sectionTitle,
     color,
@@ -121,6 +134,9 @@ const Section: React.FC<{
         break;
       case "width":
         setWidth(value);
+        break;
+      case "box":
+        setBox(value);
         break;
       default:
         break;
@@ -279,83 +295,151 @@ const Section: React.FC<{
                   />
                 </div>
 
-                <div className="flex items-center justify-between py-1.5">
-                  <p>{section} Style</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="banana"
-                  >
-                    <option value="1">Grid</option>
-                    <option value="2">Sliders</option>
-                  </select>
-                </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <p>{section} Title</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="banana"
-                  >
-                    <option value="1">On</option>
-                    <option value="2">Off</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between py-1.5">
-                  <p>Desktop grids</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    defaultValue="banana"
-                    value={desktopGrid}
-                    onChange={(e) =>
-                      handleInputChange("desktopGrid", e.target.value)
-                    }
-                  >
-                    <option>select {section} grid</option>
-                    <option value="1">Grid 1</option>
-                    <option value="2">Grid 2</option>
-                    <option value="3">Grid 3</option>
-                    <option value="4">Grid 4</option>
-                    <option value="5">Grid 5</option>
-                    <option value="6">Grid 6</option>
-                    <option value="7">Grid 7</option>
-                    <option value="8">Grid 8</option>
-                    <option value="9">Grid 9</option>
-                    <option value="10">Grid 10</option>
-                    <option value="11">Grid 11</option>
-                    <option value="12">Grid 12</option>
-                  </select>
+                <div className="mb-6 w-full my-2">
+                  <div className="relative">
+                    <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
+                      <option value="" className="text-gray-400">
+                        {section} Style
+                      </option>
+                      <option value="1">Grid</option>
+                      <option value="2">Slider</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between py-1.5">
-                  <p>Mobile grids</p>
-                  <select
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                    value={mobileGrid}
-                    onChange={(e) =>
-                      handleInputChange("mobileGrid", e.target.value)
-                    }
-                  >
-                    <option>select {section} grid</option>
-                    <option value="1">Grid 1</option>
-                    <option value="2">Grid 2</option>
-                    <option value="3">Grid 3</option>
-                    <option value="4">Grid 4</option>
-                    <option value="5">Grid 5</option>
-                    <option value="6">Grid 6</option>
-                    <option value="7">Grid 7</option>
-                    <option value="8">Grid 8</option>
-                    <option value="9">Grid 9</option>
-                    <option value="10">Grid 10</option>
-                    <option value="11">Grid 11</option>
-                    <option value="12">Grid 12</option>
-                  </select>
+                <div className="mb-6 w-full my-2">
+                  <div className="relative">
+                    <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
+                      <option value="" className="text-gray-400">
+                        Select {section} Title
+                      </option>
+                      <option value="1">On</option>
+                      <option value="2">Off</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between py-1.5">
-                  <p>{section} limit</p>
+                <div className="mb-6 w-full my-2">
+                  <div className="relative">
+                    <select
+                      onChange={(e) =>
+                        handleInputChange("desktopGrid", e.target.value)
+                      }
+                      className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                    >
+                      <option value="" className="text-gray-400">
+                        Select Desktop Grids
+                      </option>
+                      {gridStyles?.map((grid) => (
+                        <option
+                          key={grid?.id}
+                          value={grid?.id}
+                          className="text-gray-700"
+                        >
+                          {grid?.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-6 w-full my-2">
+                  <div className="relative">
+                    <select
+                      onChange={(e) =>
+                        handleInputChange("mobileGrid", e.target.value)
+                      }
+                      className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                    >
+                      <option value="" className="text-gray-400">
+                        Select Mobile Grids
+                      </option>
+                      {gridStyles?.map((grid) => (
+                        <option
+                          key={grid?.id}
+                          value={grid?.id}
+                          className="text-gray-700"
+                        >
+                          {grid?.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-6 w-full my-2">
+                  <div className="relative">
+                    <select
+                      onChange={(e) => handleInputChange("box", e.target.value)}
+                      className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                    >
+                      <option value="" className="text-gray-400">
+                        Select Box Style
+                      </option>
+                      {boxStyles?.map((box) => (
+                        <option
+                          key={box?.id}
+                          value={box?.id}
+                          className="text-gray-700"
+                        >
+                          {box?.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 py-1">
+                  <p className="text-sm font-medium text-gray-700">
+                    {section} Limit
+                  </p>
                   <input
                     type="number"
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
+                    className="w-32 px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
                     placeholder="Enter number"
                     value={sectionLimit}
                     onChange={(e) =>
@@ -363,16 +447,20 @@ const Section: React.FC<{
                     }
                   />
                 </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <p>{section} width</p>
+
+                <div className="flex items-center gap-2 py-1">
+                  <p className="text-sm font-medium text-gray-700">
+                    {section} Width
+                  </p>
                   <input
                     type="number"
-                    className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
+                    className="w-32 px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
                     placeholder="Enter number"
                     value={width}
                     onChange={(e) => handleInputChange("width", e.target.value)}
                   />
                 </div>
+
                 {section === "banner" && (
                   <>
                     <div className="flex items-center justify-between py-1.5">
@@ -387,20 +475,31 @@ const Section: React.FC<{
                 )}
                 {section === "category" && (
                   <>
-                    <div className="flex items-center justify-between py-1.5">
-                      <p>Photo position</p>
-                      <select
-                        className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-md"
-                        defaultValue="banana"
-                        value={imgPosition}
-                        onChange={(e) =>
-                          handleInputChange("imgPosition", e.target.value)
-                        }
-                      >
-                        <option>select</option>
-                        <option value="1">Left</option>
-                        <option value="2">Right</option>
-                      </select>
+                    <div className="mb-6 w-full my-1">
+                      <div className="relative">
+                        <select
+                          value={imgPosition}
+                          onChange={(e) =>
+                            handleInputChange("imgPosition", e.target.value)
+                          }
+                          className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                        >
+                          <option value="" className="text-gray-400">
+                            Photo Position{" "}
+                          </option>
+                          <option value="1">Left</option>
+                          <option value="2">Right</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <svg
+                            className="fill-current h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                     {/* <div className='py-1.5'>
                         <Photo

@@ -153,7 +153,7 @@ const IndexPage: React.FC = () => {
                     title={section.sectionTitle}
                     link={section.link || "/"}
                     limit={section.limit}
-                    box={row.id + 1 || 18}
+                    box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}
                   />
