@@ -1,12 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import News from "@/components/News";
 import Image from "next/image";
 import Link from "next/link";
 import Comment from "@/components/Comment";
+import axiosPublic from "@/lib/axiosPublic";
+import AdDisplay from "@/app/utils/AdDisplay";
 
+interface IAds {
+  id: string;
+  _id: string;
+  position: string;
+  type: string;
+  content: any;
+}
 const IndexPage: React.FC = () => {
   const [page] = useState<number>(1);
+  const [ads, setAds] = useState<IAds[]>([]);
+  useEffect(() => {
+    const fetchAds = async () => {
+      const response = await axiosPublic.get("/ads");
+      setAds(response.data.data);
+    };
+    fetchAds();
+  }, []);
+  console.log(ads);
 
   return (
     <>
@@ -21,10 +39,12 @@ const IndexPage: React.FC = () => {
                 >
                   Fashion
                 </Link>
+                <AdDisplay ads={ads} adId="detailsTitleTop" />
                 <h1 className="md:text-2xl text-xl font-semibold leading-normal">
                   China Wholesale Cheap Hand Made Brazilian Virgin Remy Long
                   Human Hair Natural Bone Straight 360 Full HD Transparent
                 </h1>
+                <AdDisplay ads={ads} adId="detailsTitleBottom" />
                 <div className="flex items-center flex-col md:flex-row justify-between mt-2">
                   <div className="flex items-center space-x-1 text-sm">
                     <Image
@@ -166,17 +186,8 @@ const IndexPage: React.FC = () => {
                 </div>
               </div>
 
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
-
               <div className="bg-white p-2">
+                <AdDisplay ads={ads} adId="detailsImagesTop" />
                 <Image
                   src="/post/1.jpg"
                   width={696}
@@ -185,18 +196,10 @@ const IndexPage: React.FC = () => {
                   className="w-full h-auto"
                 />
               </div>
-
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsImagesBottom" />
 
               <div className="bg-white p-2 text-base block space-y-2">
+                <AdDisplay ads={ads} adId="detailsDescriptionTop" />
                 <p className="mb-2">
                   It is a long established fact that a reader will be distracted
                   by the readable content of a page when looking at its layout.
@@ -212,6 +215,9 @@ const IndexPage: React.FC = () => {
                   sometimes by accident, sometimes on purpose (injected humour
                   and the like).
                 </p>
+
+                <AdDisplay ads={ads} adId="detailsDescriptionCentre" />
+
                 <h4 className="mb-2 font-bold">Key Responsibilities</h4>
                 <ul className="list-disc ml-8">
                   <li>
@@ -280,27 +286,10 @@ const IndexPage: React.FC = () => {
                 </ul>
               </div>
 
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsDescriptionBottom" />
 
               <Comment />
-
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsRelatedPostTop" />
 
               <News
                 title="RELATED ARTICLES"
@@ -346,16 +335,7 @@ const IndexPage: React.FC = () => {
                   },
                 ]}
               />
-
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsRelatedPostBottom" />
             </div>
             <div className="w-fill md:w-1/4">
               <div className="sticky top-0">

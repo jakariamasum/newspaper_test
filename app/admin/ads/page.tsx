@@ -65,10 +65,10 @@ const IndexPage: React.FC = () => {
       <div className="w-full max-w-7xl flex items-center justify-between mb-8">
         <h1 className="text-xl font-bold mb-4"></h1>
         <Link
-          href="/admin/area/add"
+          href="/admin/ads/add"
           className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
         >
-          Add New Area
+          Add New Ads
         </Link>
       </div>
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Code Ads</h2>
