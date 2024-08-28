@@ -56,6 +56,7 @@ const Location: React.FC<LocationProps> = ({ items, onChange }) => {
           onChange={handleCityChange}
           className="block w-full px-4 py-2 mt-2 bg-white border border-gray-300 rounded-md focus:outline-none"
         >
+          <option value="">Select City</option>
           {items.map((city) => (
             <option key={city.title} value={city.title}>
               {city.title}

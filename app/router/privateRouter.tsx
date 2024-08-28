@@ -1,6 +1,6 @@
 "use client";
-import { ReactNode, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../context/authContext";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
@@ -11,11 +11,10 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { user, setUser, loading, setLoading, logout } = useAuth();
   const router = useRouter();
+  const [accessGranted, setAccessGranted] = useState<boolean>(false);
 
-  console.log(pathname, user);
   useEffect(() => {
     const verifyUser = async () => {
       const storedToken = localStorage.getItem("authToken");
@@ -35,17 +34,15 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
             },
           }
         );
-        console.log("private route", response);
+
         if (response.data.data) {
           setUser(response.data.data);
         } else {
           handleAccessDenied();
-          localStorage.removeItem("authToken");
         }
       } catch (error) {
         console.error("Error verifying user:", error);
         handleAccessDenied();
-        localStorage.removeItem("authToken");
       } finally {
         setLoading(false);
       }
@@ -57,21 +54,32 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const handleAccessDenied = () => {
     toast.warning("You don't have access here!!");
     logout();
-    router.push("/auth");
+    localStorage.removeItem("authToken");
+    router.push("/");
   };
 
   useEffect(() => {
-    if (!loading) {
-      if (user?.role === "admin") {
-        router.replace(`${pathname}`);
-      } else if (user?.role === "reporter") {
-        router.replace("/user");
+    if (!loading && user) {
+      const isAdminRoute = pathname.startsWith("/admin");
+      const isReporterRoute = pathname.startsWith("/user");
+
+      if (user.role === "admin" && isAdminRoute) {
+        setAccessGranted(true);
+      } else if (user.role === "reporter" && isReporterRoute) {
+        setAccessGranted(true);
+      } else {
+        handleAccessDenied();
       }
     }
-  }, [loading, user, router]);
+  }, [loading, user, pathname, router]);
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  // Prevent loading the restricted page
+  if (!accessGranted) {
+    return null;
   }
 
   return <>{children}</>;

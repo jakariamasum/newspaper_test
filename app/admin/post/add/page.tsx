@@ -82,19 +82,21 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const transformData = (
-    areas: { title: string; city: string }[],
+    areas: { title: string; city: { _id: string } }[],
     cities: { _id: string; title: string }[]
   ) => {
+    console.log(areas, cities);
     return cities.map((city) => ({
       title: city.title,
       areas: areas
-        .filter((area) => area.city === city._id)
+        .filter((area) => area.city._id === city._id)
         .map((area) => ({ title: area.title })),
     }));
   };
 
   const transformedData = transformData(areas, cities);
   const transformeCategorydData = categoryFormat(subCategories, categories);
+  console.log(transformedData);
 
   const handlePublish = async () => {
     const formData = {

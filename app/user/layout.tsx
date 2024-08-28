@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Dates from "@/components/Date";
 import PrivateRoute from "../router/privateRouter";
 import { toast, Toaster } from "sonner";
@@ -14,7 +14,9 @@ export default function UserLayout({
 }>) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const handleLogout = () => {
+    router.push("/");
     logout();
     toast.warning("You are logged out!");
   };
@@ -44,16 +46,7 @@ export default function UserLayout({
                   >
                     Post
                   </Link>
-                  <Link
-                    className={`hover:bg-main hover:text-white p-2 block ${
-                      isActive(["/user/type", "/user/type/add"])
-                        ? "bg-main text-white"
-                        : ""
-                    }`}
-                    href="/user/type"
-                  >
-                    Models type
-                  </Link>
+
                   <Link
                     className="hover:bg-main hover:text-white p-2 block"
                     href="/"

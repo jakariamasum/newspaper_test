@@ -47,10 +47,18 @@ const EditNews: React.FC = () => {
         img,
       };
       console.log(payload);
-      const response = await axiosPublic.put(`/news/${_id}`, payload);
+      const response = await axiosPublic.put(
+        `/news/user/news/edit/${_id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("News updated successfully!");
-        router.push("/admin/post");
+        router.push("/user/post");
       } else {
         toast.warning("Failed to update news");
       }

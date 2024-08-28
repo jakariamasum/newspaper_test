@@ -40,7 +40,7 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const handleEdit = (item: TNews) => {
-    router.push(`/dashboard/edit/${item._id}`);
+    router.push(`/user/post/edit/${item._id}`);
   };
 
   const handleDelete = (item: any) => {
@@ -50,7 +50,14 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (editItem) {
-      const response = await axiosPublic.delete(`/news/${editItem._id}`);
+      const response = await axiosPublic.delete(
+        `/news/user/news/delete/${editItem._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
       if (response.status === 200) {
         toast.success("News Deleted successfully!");
         setNews((prevNews) => prevNews.filter((n) => n._id !== editItem._id));
@@ -59,34 +66,6 @@ const IndexPage: React.FC = () => {
       }
       setDeleteConfirmOpen(false);
       setEditItem(null);
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      console.log(editItem);
-      const updateInfo = {
-        ...editItem,
-        author: editItem.author._id,
-        category: {
-          category: editItem.category.category._id,
-          subCategory: editItem.category.subCategory || "",
-        },
-      };
-      const response = await axiosPublic.put(
-        `/news/${editItem._id}`,
-        updateInfo
-      );
-      console.log(response);
-      if (response.status === 200) {
-        toast.success("Edited!");
-        setNews((prev) =>
-          prev.map((item) => (item._id === editItem._id ? editItem : item))
-        );
-      }
-    } catch (error) {
-      console.error("Failed to save changes:", error);
-      toast.warning("Failed");
     }
   };
 
@@ -99,7 +78,7 @@ const IndexPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">News</h1>
         <Link
-          href="/admin/post/add"
+          href="/user/post/add"
           className="bg-main py-1 px-4 rounded-md text-white"
         >
           Add

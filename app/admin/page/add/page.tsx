@@ -65,7 +65,11 @@ const IndexPage: React.FC = () => {
     };
     console.log(pageInfo);
     try {
-      const response = await axiosPublic.post("/pages/admin", pageInfo);
+      const response = await axiosPublic.post("/pages/admin", pageInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       if (response.status === 200) {
         toast.success("Page published successfully!");
         router.push("/admin/page");

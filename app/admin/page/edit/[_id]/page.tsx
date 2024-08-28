@@ -55,7 +55,11 @@ const EditPage: React.FC = () => {
   useEffect(() => {
     const fetchPageData = async () => {
       try {
-        const response = await axiosPublic.get(`/pages/edit-page/${_id}`);
+        const response = await axiosPublic.get(`/pages/edit-page/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
         const page = response.data.data;
         console.log(page);
         setTitle(page.title);

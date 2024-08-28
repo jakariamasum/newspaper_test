@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 export type TSectionData = {
-  sectionTitle: string;
+  sectionTitle: { title: string };
   color: string;
   backgroundColor: string;
   desktopGrid: string;
@@ -100,7 +100,8 @@ const IndexPage: React.FC = () => {
                 {row.sections.map((section, sectionIndex) => (
                   <div key={sectionIndex} className="mb-1">
                     <h6 className="text-sm font-medium text-gray-700">
-                      Section {sectionIndex + 1}: {section.sectionTitle}
+                      Section {sectionIndex + 1}:{" "}
+                      {section?.sectionTitle?.title || ""}
                     </h6>
                   </div>
                 ))}

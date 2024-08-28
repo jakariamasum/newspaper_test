@@ -3,10 +3,8 @@
 import React, { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
-import { useAllUsers } from "@/lib/useAllUsers";
 import { useAllArea } from "@/lib/useAllArea";
 import { useAllCities } from "@/lib/useAllCities";
-import AttachFiles from "@/components/admin/AttachFiles";
 import Checkbox from "@/components/admin/Checkbox";
 import Content from "@/components/admin/Content";
 import Location from "@/components/admin/Location";
@@ -15,8 +13,9 @@ import Tag from "@/components/admin/Tag";
 import Time from "@/components/admin/Time";
 import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import { useAllCategory } from "@/lib/useAllCategory";
-import { useLang } from "@/app/context/langContext";
 import { categoryFormat } from "@/app/utils/categoryFormate";
+import { useAuth } from "@/app/context/authContext";
+import { useRouter } from "next/navigation";
 
 interface TUser {
   _id: string;
@@ -28,17 +27,22 @@ interface TCategory {
   checked?: boolean;
   subItems?: TCategory[];
 }
+interface ILanguage {
+  _id: string;
+  title: string;
+  language_code: string;
+}
 
 const IndexPage: React.FC = () => {
-  const { lang } = useLang();
-  console.log(lang);
+  const router = useRouter();
+  const [languages, setLanguages] = useState<ILanguage[]>([]);
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>(["hello"]);
   const [img, setImg] = useState("");
-  const [reporter, setReporter] = useState("");
+  const [language, setLanguage] = useState("en");
   const [location, setLocation] = useState({ city: "", area: "" });
-  const [users, setUsers] = useState<TUser[]>([]);
   const [cities, setCities] = useState([]);
   const [areas, setAreas] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -49,11 +53,6 @@ const IndexPage: React.FC = () => {
   }>({ category: "" });
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await useAllUsers();
-      setUsers(response);
-    };
-    fetchUsers();
     const fetchCities = async () => {
       const response = await useAllCities();
       setCities(response);
@@ -74,16 +73,21 @@ const IndexPage: React.FC = () => {
       setSubCategories(response);
     };
     fetchSubCategories();
+    const fetchLanguages = async () => {
+      const response = await axiosPublic.get("/language");
+      setLanguages(response.data.data);
+    };
+    fetchLanguages();
   }, []);
 
   const transformData = (
-    areas: { title: string; city: string }[],
+    areas: { title: string; city: { _id: string } }[],
     cities: { _id: string; title: string }[]
   ) => {
     return cities.map((city) => ({
       title: city.title,
       areas: areas
-        .filter((area) => area.city === city._id)
+        .filter((area) => area.city._id === city._id)
         .map((area) => ({ title: area.title })),
     }));
   };
@@ -97,18 +101,23 @@ const IndexPage: React.FC = () => {
       content: description,
       tags,
       img,
-      author: reporter,
+      author: user?._id,
       location,
       category,
-      lang,
+      lang: language,
     };
 
     console.log(formData);
     try {
-      const response = await axiosPublic.post("/news", formData);
+      const response = await axiosPublic.post("/news/user/news", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
       console.log(response.data);
       if (response.status === 200) {
         toast.success("News created!");
+        router.push("/user/post");
       } else {
         toast.error("Failed to create news!");
       }
@@ -161,18 +170,43 @@ const IndexPage: React.FC = () => {
             />
             <div className="mb-4">
               <p>Reporter</p>
-              <select
-                className="p-2 mt-2 w-full outline-none rounded-md"
-                value={reporter}
-                onChange={(e) => setReporter(e.target.value)}
-              >
-                <option value="">Select a reporter</option>
-                {users?.map((user: TUser) => (
-                  <option value={user?._id} key={user?._id}>
-                    {user?.title}
+              <input
+                type="text"
+                placeholder="Reporter"
+                value={user?.title || ""}
+                className="p-2 mt-2 w-full outline-none rounded-md cursor-not-allowed  bg-gray-300"
+                readOnly
+              />
+            </div>
+            <div className="mb-6 w-full my-4">
+              <div className="relative">
+                <select
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                >
+                  <option value="" className="text-gray-400">
+                    Select Language
                   </option>
-                ))}
-              </select>
+                  {languages?.map((lang) => (
+                    <option
+                      key={lang?._id}
+                      value={lang?.language_code}
+                      className="text-gray-700"
+                    >
+                      {lang?.title}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                  </svg>
+                </div>
+              </div>
             </div>
             <Location items={transformedData} onChange={setLocation} />
           </div>
