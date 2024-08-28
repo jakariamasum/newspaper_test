@@ -1,4 +1,5 @@
 "use client";
+import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,29 +32,46 @@ const IndexPage: React.FC = () => {
     setEditAd(ad);
     setIsModalOpen(true);
   };
+  const [img, setImage] = useState(editAd?.content?.image);
 
   const handleUpdate = async () => {
     if (editAd) {
       console.log(editAd);
+
+      let updatedAd: IAds = { ...editAd };
+
+      if (img && editAd.type !== "code") {
+        updatedAd = {
+          ...editAd,
+          content: {
+            ...editAd.content,
+            image: img,
+          },
+        };
+      }
+
       try {
         const response = await axiosPublic.put(
           `/ads/admin/${editAd._id}`,
-          editAd,
+          updatedAd,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`,
             },
           }
         );
+
         if (response.status === 200) {
-          toast.success("updated");
+          toast.success("Updated");
+
+          // Update the state immediately with the new advertisement data
           setAds((prevAds) =>
-            prevAds.map((ad) => (ad._id === editAd._id ? editAd : ad))
+            prevAds.map((ad) => (ad._id === editAd._id ? updatedAd : ad))
           );
         }
       } catch (error) {
         console.log(error);
-        toast.warning("failed");
+        toast.warning("Update failed");
       }
 
       setIsModalOpen(false);
@@ -61,7 +79,7 @@ const IndexPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 mx-16 my-4">
+    <div className="space-y-8 mx-8 my-4">
       <div className="w-full max-w-7xl flex items-center justify-between mb-8">
         <h1 className="text-xl font-bold mb-4"></h1>
         <Link
@@ -165,86 +183,87 @@ const IndexPage: React.FC = () => {
 
       {/* Edit Modal */}
       {isModalOpen && editAd && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-lg font-bold mb-4">Edit Ad</h2>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Position (Read-Only)
-              </label>
-              <input
-                type="text"
-                className="w-full p-2 mb-4 border rounded bg-gray-100 cursor-not-allowed"
-                value={editAd.position}
-                readOnly
-              />
-              {editAd.type === "code" && (
+        <div className="fixed inset-0 flex items-center justify-center p-4 bg-gray-900 bg-opacity-50">
+          <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+            <div className="p-6">
+              <h2 className="text-lg font-bold mb-4">Edit Ad</h2>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2">
+                  Position (Read-Only)
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 mb-4 border rounded bg-gray-100 cursor-not-allowed"
+                  value={editAd.position}
+                  readOnly
+                />
+                {editAd.type === "code" && (
+                  <>
+                    <label className="block text-gray-700 font-bold mb-2">
+                      HTML code
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full p-2 mb-4 border rounded"
+                      value={editAd.content}
+                      onChange={(e) =>
+                        setEditAd({
+                          ...editAd,
+                          content: e.target.value,
+                        })
+                      }
+                    />
+                  </>
+                )}
+              </div>
+              {editAd.type === "images" && (
                 <>
-                  <label className="block text-gray-700 font-bold mb-2">
-                    HTML code
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 mb-4 border rounded bg-gray-100"
-                    value={editAd.content}
-                    onChange={(e) =>
-                      setEditAd({
-                        ...editAd,
-                        content: e.target.value,
-                      })
-                    }
-                  />
+                  <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">
+                      Image
+                    </label>
+                    <Photo
+                      title=""
+                      img={editAd.content.image}
+                      onChange={setImage}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">
+                      Link URL
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full p-2 mb-4 border rounded"
+                      value={editAd.content.link}
+                      onChange={(e) =>
+                        setEditAd({
+                          ...editAd,
+                          content: {
+                            ...editAd.content,
+                            link: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
                 </>
               )}
+              <div className="flex justify-end">
+                <button
+                  onClick={handleUpdate}
+                  className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-            {editAd.type === "images" && (
-              <>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Image URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 mb-4 border rounded"
-                    value={editAd.content.image}
-                    onChange={(e) =>
-                      setEditAd({
-                        ...editAd,
-                        content: { ...editAd.content, image: e.target.value },
-                      })
-                    }
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Link URL
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 mb-4 border rounded"
-                    value={editAd.content.link}
-                    onChange={(e) =>
-                      setEditAd({
-                        ...editAd,
-                        content: { ...editAd.content, link: e.target.value },
-                      })
-                    }
-                  />
-                </div>
-              </>
-            )}
-            <button
-              onClick={handleUpdate}
-              className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-            >
-              Update
-            </button>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
