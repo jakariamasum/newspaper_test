@@ -124,6 +124,10 @@ const ModuleTypePage = () => {
     setLang(link as string);
   }, [link, setLang]);
 
+  if (news.length < 1) {
+    return <div className="text-center text-red-500">No news available</div>;
+  }
+
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 items-center">
@@ -157,7 +161,7 @@ const ModuleTypePage = () => {
         </Link>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
+        <table className="min-w-full bg-white border border-gray-300 text-center">
           <thead>
             <tr>
               <th className="py-2 px-4 border-b w-[350px] break-words whitespace-normal">
@@ -166,11 +170,7 @@ const ModuleTypePage = () => {
               <th className="py-2 px-4 border-b">Content</th>
               <th className="py-2 px-4 border-b">Author</th>
               <th className="py-2 px-4 border-b">Category</th>
-              <th className="py-2 px-4 border-b">Page Tag</th>
-              <th className="py-2 px-4 border-b">Status</th>
-              <th className="py-2 px-4 border-b">Views</th>
-              <th className="py-2 px-4 border-b">Likes</th>
-              <th className="py-2 px-4 border-b">Dislikes</th>
+
               <th className="py-2 px-4 border-b">Publish Date</th>
               <th className="py-2 px-4 border-b flex gap-1 items-center ">
                 Action
@@ -188,11 +188,7 @@ const ModuleTypePage = () => {
                 <td className="py-2 px-4 border-b">
                   {n.category.category.title}
                 </td>
-                <td className="py-2 px-4 border-b">{n.page_tag || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.status || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.views || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.likes || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.dislikes || "N/A"}</td>
+
                 <td className="py-2 px-4 border-b">
                   {moment(n.publish_date).format("MMMM Do YYYY")}
                 </td>

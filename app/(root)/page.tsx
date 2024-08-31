@@ -134,8 +134,8 @@ const IndexPage: React.FC = () => {
           key={row._id}
           className="my-4 p-4"
           style={{
-            backgroundColor: row.bgColor,
-            color: row.textColor,
+            backgroundColor: row?.bgColor || "#ffffff",
+            color: row.textColor || "#000000",
           }}
         >
           <div className="flex flex-col md:flex-row">

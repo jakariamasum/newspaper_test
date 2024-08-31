@@ -1,6 +1,7 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
@@ -60,31 +61,43 @@ const IndexPage: React.FC = () => {
     if (node) observer.current.observe(node);
   };
 
+  if (displayedNews.length < 1) {
+    return <>Loading.......</>;
+  }
+
   return (
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayedNews.map((newsItem, index) => (
-          <div
-            key={newsItem._id}
-            ref={index === displayedNews.length - 1 ? lastNewsElementRef : null}
-            className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center"
-          >
-            <Image
-              src={newsItem.img}
-              alt={newsItem.title}
-              className="w-full h-48 object-cover mb-4 rounded"
-              width={100}
-              height={50}
-            />
-            <h3 className="text-lg font-semibold mb-2">{newsItem.title}</h3>
-            <p
-              className="text-gray-700 text-sm"
-              dangerouslySetInnerHTML={{ __html: newsItem?.content }}
-            />
-            <span className="text-gray-500 text-xs mt-2">
-              {newsItem.location.city}
-            </span>
-          </div>
+          <Link href={`/news/${newsItem._id}`} key={newsItem._id}>
+            <div
+              ref={
+                index === displayedNews.length - 1 ? lastNewsElementRef : null
+              }
+              className="bg-white h-fit shadow-md rounded-lg p-6 flex flex-col items-center text-center"
+            >
+              <Image
+                src={newsItem.img}
+                alt={newsItem.title}
+                className="w-full h-48 object-cover mb-4 rounded"
+                width={100}
+                height={50}
+              />
+              <h3 className="text-lg font-semibold mb-2">{newsItem.title}</h3>
+              <p
+                className="text-gray-700 text-sm "
+                dangerouslySetInnerHTML={{
+                  __html:
+                    newsItem?.content.length > 80
+                      ? newsItem?.content.slice(0, 79) + "............"
+                      : newsItem?.content,
+                }}
+              />
+              <span className="text-gray-500 text-xs mt-2">
+                {newsItem.location.city}
+              </span>
+            </div>
+          </Link>
         ))}
       </div>
       {newsToShow >= allNews.length && (
