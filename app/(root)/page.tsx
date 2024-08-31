@@ -21,7 +21,7 @@ interface Section {
   _id: string;
   sectionTitle: { _id: string; title: string };
   link: string;
-  limit: number;
+  sectionLimit: number;
   box: number;
   imgPosition: string;
   width: number;
@@ -153,7 +153,7 @@ const IndexPage: React.FC = () => {
                   <News
                     title={section.sectionTitle?.title || ""}
                     link={`/news/all-category/${section.sectionTitle._id}`}
-                    limit={section.limit}
+                    limit={section?.sectionLimit || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}

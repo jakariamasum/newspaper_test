@@ -3,18 +3,12 @@
 import React, { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
-import { useAllUsers } from "@/lib/useAllUsers";
-import { useAllArea } from "@/lib/useAllArea";
-import { useAllCities } from "@/lib/useAllCities";
-import AttachFiles from "@/components/admin/AttachFiles";
 import Checkbox from "@/components/admin/Checkbox";
 import Content from "@/components/admin/Content";
 import Location from "@/components/admin/Location";
 import Photo from "@/components/admin/Photo";
 import Tag from "@/components/admin/Tag";
 import Time from "@/components/admin/Time";
-import { useAllSubCategories } from "@/lib/useAllSubCategory";
-import { useAllCategory } from "@/lib/useAllCategory";
 import { useLang } from "@/app/context/langContext";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import { useRouter } from "next/navigation";

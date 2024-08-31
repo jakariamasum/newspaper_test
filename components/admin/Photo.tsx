@@ -1,4 +1,3 @@
-// Photo.tsx
 "use client";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
@@ -6,15 +5,13 @@ import React, { useState, useEffect } from "react";
 interface PhotoProps {
   title: string;
   img?: string;
-  onChange: (img: string) => void; // Add this prop
+  onChange: (img: string) => void;
 }
 
 const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(
     img || null
   );
-  // Generate a unique ID for each instance of the Photo component
-  const uniqueId = `photoInput-${Math.random().toString(36).slice(2, 9)}`;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -23,11 +20,21 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
       reader.onload = () => {
         if (typeof reader.result === "string") {
           setSelectedImage(reader.result);
-          onChange(reader.result); // Call the callback with the selected image
+          onChange(reader.result);
         }
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleImageUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedImage(event.target.value);
+    onChange(event.target.value);
+    console.log(event.target.value);
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
   };
 
   useEffect(() => {
@@ -44,7 +51,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
       </p>
       <div className="flex flex-col items-center my-2 relative">
         <label
-          htmlFor={uniqueId}
+          htmlFor="photoInput"
           className="cursor-pointer w-full flex items-center justify-center"
         >
           {selectedImage ? (
@@ -54,6 +61,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
               height={600}
               alt="Selected"
               className="bg-white p-2 max-w-full max-h-96 object-contain"
+              unoptimized // optionally, to skip next/image optimizations
             />
           ) : (
             <div className="p-4 bg-white w-full">
@@ -67,7 +75,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
                   <path
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M12 6v12m-6-6h12"
                   />
@@ -77,14 +85,29 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
             </div>
           )}
           <input
-            id={uniqueId}
+            id="photoInput"
             type="file"
             accept="image/*"
             className="hidden"
             onChange={handleImageChange}
           />
         </label>
+        {selectedImage && (
+          <button
+            onClick={handleRemoveImage}
+            className="absolute right-1 top-1 px-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            X
+          </button>
+        )}
       </div>
+      <input
+        type="url"
+        placeholder="Enter image URL"
+        className="p-2 outline-0 w-full border border-gray-300 rounded"
+        value={selectedImage || ""}
+        onChange={handleImageUrlChange}
+      />
     </div>
   );
 };

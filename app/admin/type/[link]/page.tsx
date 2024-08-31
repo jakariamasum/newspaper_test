@@ -125,7 +125,7 @@ const ModuleTypePage = () => {
   }, [link, setLang]);
 
   if (news.length < 1) {
-    return <div className="text-center text-red-500">No news available</div>;
+    return <div className="text-center">Loding.....</div>;
   }
 
   return (
