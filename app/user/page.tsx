@@ -3,8 +3,8 @@ import Image from "next/image";
 import { useAuth } from "../context/authContext";
 import { FaCrown, FaEnvelope, FaUser } from "react-icons/fa";
 
-export const IndexPage = () => {
-  const { user, logout } = useAuth();
+const IndexPage: React.FC = () => {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-4xl w-full">
