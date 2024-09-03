@@ -5,6 +5,7 @@ import axios from "axios";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
+import { useLang } from "../context/langContext";
 
 interface NewsItem {
   img: string;
@@ -64,12 +65,19 @@ const IndexPage: React.FC = () => {
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { lang } = useLang();
 
   useEffect(() => {
+    console.log("lang", lang);
     const fetchPageData = async () => {
       try {
+        let response;
         // const response = await axios.get("/pageData.json");
-        const response = await axiosPublic.get("/pages/home");
+        if (lang) {
+          response = await axiosPublic.get("/pages/home");
+        } else {
+          response = await axiosPublic.get(`/pages/get-page/${lang}`);
+        }
         setPageData(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -79,7 +87,7 @@ const IndexPage: React.FC = () => {
     fetchPageData();
     const fetchNewsData = async () => {
       try {
-        const response = await axiosPublic.get("/news");
+        const response = await axiosPublic.get(`/news/${lang}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -97,7 +105,7 @@ const IndexPage: React.FC = () => {
       }
     };
     fetchCategories();
-  }, []);
+  }, [lang]);
 
   const fetchNewsData = async (
     categories: { catId: string; catName: string }[]

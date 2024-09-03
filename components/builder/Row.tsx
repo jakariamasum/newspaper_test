@@ -309,18 +309,6 @@ const Row: React.FC<{
           >
             Category
           </button>
-          <button
-            onClick={() => addSection("offer")}
-            className="bg-main px-2 py-1.5 leading-none rounded-md text-white"
-          >
-            Offer
-          </button>
-          <button
-            onClick={() => addSection("banner")}
-            className="bg-main px-2 py-1.5 leading-none rounded-md text-white"
-          >
-            Banner
-          </button>
         </div>
         {sectionList.map((section, idx) => (
           <Section
