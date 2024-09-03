@@ -159,7 +159,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
                   onChange={(e) => setLang(e.target.value)}
                   className="bg-black text-white"
                 >
-                  <option value="">All</option>
+                  <option value="all">All</option>
                   {languages?.map((lang) => (
                     <option key={lang?._id} value={lang?.language_code}>
                       {lang?.language_code?.toLocaleUpperCase()}

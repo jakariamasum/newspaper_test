@@ -1,22 +1,9 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useLang } from "../context/langContext";
-
-interface NewsItem {
-  img: string;
-  link: string;
-  title: string;
-}
-
-interface NewsCategory {
-  category: string;
-  post: NewsItem[];
-}
 
 interface Section {
   _id: string;
@@ -45,21 +32,6 @@ interface PageData {
   rows: Rows[];
 }
 
-interface NewsData {
-  _id: string;
-  title: string;
-  category: {
-    category: {
-      _id: string;
-    };
-  };
-  img: string;
-}
-interface categoryData {
-  _id: string;
-  title: string;
-}
-
 const IndexPage: React.FC = () => {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [news, setNews] = useState([]);
@@ -73,7 +45,7 @@ const IndexPage: React.FC = () => {
       try {
         let response;
         // const response = await axios.get("/pageData.json");
-        if (lang) {
+        if (lang === "all") {
           response = await axiosPublic.get("/pages/home");
         } else {
           response = await axiosPublic.get(`/pages/get-page/${lang}`);
@@ -87,7 +59,7 @@ const IndexPage: React.FC = () => {
     fetchPageData();
     const fetchNewsData = async () => {
       try {
-        const response = await axiosPublic.get(`/news/${lang}`);
+        const response = await axiosPublic.get(`/news?lang=${lang}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -106,26 +78,6 @@ const IndexPage: React.FC = () => {
     };
     fetchCategories();
   }, [lang]);
-
-  const fetchNewsData = async (
-    categories: { catId: string; catName: string }[]
-  ) => {
-    console.log("categories", categories);
-    try {
-      const response = await axiosPublic.post(
-        "/news/category-news",
-        { categories },
-        { params: { lang: "en" } } // Modify language as needed
-      );
-      console.log(response.data);
-      return response.data.data;
-    } catch (error) {
-      console.log("Error fetching news data:", error);
-      console.error("Error fetching news data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const newsData = postFormat(news, category);
   console.log(Array.isArray(newsData));
