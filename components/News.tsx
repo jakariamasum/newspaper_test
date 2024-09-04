@@ -53,6 +53,7 @@ const News: React.FC<NewssProps> = ({
   }, []);
 
   const categoriesCount = item?.length || 0;
+  // console.log("cat cnt", categoriesCount);
 
   const items = item[activeCategory]?.post.slice(0, limit);
 

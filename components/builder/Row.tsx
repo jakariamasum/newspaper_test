@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import Section from "./Section";
+import Section, { Option } from "./Section";
 interface SectionData {
   sectionTitle: string;
   color: string;
@@ -10,6 +10,7 @@ interface SectionData {
   sectionLimit: string;
   imgPosition: string;
   width?: string;
+  categories?: Option[];
 }
 const Row: React.FC<{
   categories: any[];
@@ -62,23 +63,25 @@ const Row: React.FC<{
     },
   });
   const [sectionDataArray, setSectionDataArray] = useState<SectionData[]>([]);
-  const currentIndex = useRef(0);
-  console.log(currentIndex, id);
 
   const SectionInfo = (index: number, data: Partial<SectionData>) => {
+    const categories = data?.categories?.map((category) => ({
+      value: category.value,
+      label: category.label,
+    }));
+
     setSectionDataArray((prevArray) => {
       const newArray = [...prevArray];
-      newArray[index] = { ...newArray[index], ...data };
+      newArray[index] = { ...newArray[index], ...data, categories };
       return newArray;
     });
   };
-  console.log(color, backgroundColor, index, sectionDataArray);
-  const row = {
-    textColor: color,
-    bgColor: backgroundColor,
-    id: index,
-    sections: sectionDataArray,
+
+  const handleSetSectionInfo = (idx: number, data: Partial<SectionData>) => {
+    console.log(data);
+    SectionInfo(idx, data);
   };
+
   useEffect(() => {
     updateRowData({
       textColor: color,
@@ -87,7 +90,7 @@ const Row: React.FC<{
       sections: sectionDataArray,
     });
   }, [color, backgroundColor, sectionDataArray]);
-  console.log(row);
+  // console.log(row);
   const [, drag, preview] = useDrag({
     type: "ROW",
     item: { index },
@@ -106,7 +109,7 @@ const Row: React.FC<{
   };
 
   const addSection = (section: string) => {
-    console.log(section);
+    // console.log(section);
     setSectionList([...sectionList, section]);
   };
 
@@ -315,7 +318,7 @@ const Row: React.FC<{
             key={idx}
             categories={categories}
             section={section}
-            setSectionInfo={(data) => SectionInfo(idx, data)}
+            setSectionInfo={(data) => handleSetSectionInfo(idx, data)}
             index={idx}
             moveSection={moveSection}
             deleteSection={deleteSection}
