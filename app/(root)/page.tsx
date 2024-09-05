@@ -10,9 +10,9 @@ interface Section {
   sectionTitle: { _id: string; title: string };
   link: string;
   sectionLimit: number;
-  box: number;
+  box: string;
   imgPosition: string;
-  width: number;
+  width: string;
   categories: { value: string; label: string }[];
 }
 
@@ -43,13 +43,8 @@ const IndexPage: React.FC = () => {
     console.log("lang", lang);
     const fetchPageData = async () => {
       try {
-        let response;
         // const response = await axios.get("/pageData.json");
-        if (lang === "all") {
-          response = await axiosPublic.get("/pages/home");
-        } else {
-          response = await axiosPublic.get(`/pages/get-page/${lang}`);
-        }
+        const response = await axiosPublic.get(`/pages/get-page/${lang}`);
         setPageData(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -104,7 +99,7 @@ const IndexPage: React.FC = () => {
               return (
                 <div
                   key={section._id}
-                  style={{ width: `${section.width}%` }}
+                  style={{ width: `${Number(section.width)}%` }}
                   className="p-2"
                 >
                   <News

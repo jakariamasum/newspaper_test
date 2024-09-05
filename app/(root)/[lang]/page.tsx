@@ -7,13 +7,14 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface Section {
-  sectionTitle: { title: string };
+  _id: string;
+  sectionTitle: { _id: string; title: string };
   link: string;
-  limit: number;
-  box: number;
+  sectionLimit: number;
+  box: string;
   imgPosition: string;
-  width: number;
-  categories: { catId: number; catName: string }[];
+  width: string;
+  categories: { value: string; label: string }[];
 }
 
 interface Rows {
@@ -94,22 +95,25 @@ const IndexPage: React.FC = () => {
           }}
         >
           <div className="flex flex-col md:flex-row">
-            {row.sections.map((section) => {
-              const filteredNewsData = newsData.filter(
-                (news) => news.category === section.sectionTitle.title
+            {row.sections.map((section, indx) => {
+              const filteredNewsData = newsData.filter((news) =>
+                section.categories.some(
+                  (cat) =>
+                    cat.label.toLowerCase() === news.category.toLowerCase()
+                )
               );
 
               return (
                 <div
-                  key={section.sectionTitle.title}
-                  style={{ width: `${section.width}%` }}
+                  key={section._id}
+                  style={{ width: `${Number(section.width)}%` }}
                   className="p-2"
                 >
                   <News
-                    title={section.sectionTitle.title}
+                    title={`Section ${indx}`}
                     link={section.link || "/"}
-                    limit={section.limit}
-                    box={row.id + 1 || 18}
+                    limit={Number(section?.sectionLimit) || 5}
+                    box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}
                   />

@@ -137,6 +137,7 @@ const IndexPage: React.FC = () => {
                   <option value="" className="text-gray-400">
                     Select Language
                   </option>
+                  <option value="all">All</option>
                   {languages?.map((lang) => (
                     <option
                       key={lang?._id}

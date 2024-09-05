@@ -10,11 +10,10 @@ interface SectionData {
   desktopGrid: string;
   mobileGrid: string;
   sectionLimit: string;
-  imgPosition: string;
+  imgPosition?: string;
   width: string;
   box: string;
   categories: Option[];
-  handleInputChange: (field: string, value: string) => void;
 }
 
 export interface Option {
@@ -86,67 +85,37 @@ const Section: React.FC<{
     setColor(e.target.value);
   };
 
-  const [sectionTitle, setSectionTitle] = useState(`Section ${index}`);
-  const [desktopGrid, setDesktopGrid] = useState("");
-  const [mobileGrid, setMobileGrid] = useState("");
-  const [sectionLimit, setSectionLimit] = useState("");
-  const [imgPosition, setImgPosition] = useState("");
-  const [width, setWidth] = useState("");
-  const [box, setBox] = useState("");
-  const [category, setCategory] = useState<any>([]);
   const selectOptions: Option[] = categories.map((cat) => ({
     value: cat._id,
     label: cat.title,
   }));
 
-  const [selectedCategories, setSelectedCategories] = useState<
-    MultiValue<Option>
-  >([]);
+  const [sectionInfo, setSectionInfoState] = useState<SectionData>({
+    sectionTitle: `Section ${index}`,
+    color: "#000000",
+    backgroundColor: "#ffffff",
+    desktopGrid: "",
+    mobileGrid: "",
+    sectionLimit: "",
+    imgPosition: "",
+    width: "",
+    box: "",
+    categories: [],
+  });
 
   const handleSelectionChange = (selected: MultiValue<Option>) => {
-    setSelectedCategories(selected);
-    // console.log(selected);
-    setSectionInfo({
-      categories: selected.map((cat) => ({
-        value: cat.value,
-        label: cat.label,
-      })),
-    });
+    const categories = selected.map((cat) => ({
+      value: cat.value,
+      label: cat.label,
+    }));
+    setSectionInfoState((prev) => ({ ...prev, categories }));
+    setSectionInfo({ ...sectionInfo, categories });
   };
+
   const handleInputChange = (field: keyof SectionData, value: string) => {
-    setSectionInfo({ [field]: value });
-    switch (field) {
-      case "color":
-        setColor(value);
-        break;
-      case "backgroundColor":
-        setBackgroundColor(value);
-        break;
-      case "desktopGrid":
-        setDesktopGrid(value);
-        break;
-      case "mobileGrid":
-        setMobileGrid(value);
-        break;
-
-      case "sectionLimit":
-        setSectionLimit(value);
-        break;
-
-      case "imgPosition":
-        setImgPosition(value);
-        break;
-      case "width":
-        setWidth(value);
-        break;
-      case "box":
-        setBox(value);
-        break;
-      default:
-        break;
-    }
+    setSectionInfoState((prev) => ({ ...prev, [field]: value }));
+    setSectionInfo(sectionInfo);
   };
-
   return (
     <div
       ref={ref}
@@ -337,6 +306,7 @@ const Section: React.FC<{
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
+                      value={sectionInfo.desktopGrid}
                       onChange={(e) =>
                         handleInputChange("desktopGrid", e.target.value)
                       }
@@ -369,6 +339,7 @@ const Section: React.FC<{
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
+                      value={sectionInfo.mobileGrid}
                       onChange={(e) =>
                         handleInputChange("mobileGrid", e.target.value)
                       }
@@ -402,6 +373,7 @@ const Section: React.FC<{
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
+                      value={sectionInfo.box}
                       onChange={(e) => handleInputChange("box", e.target.value)}
                       className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
                     >
@@ -438,7 +410,7 @@ const Section: React.FC<{
                     type="number"
                     className="w-32 px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
                     placeholder="Enter number"
-                    value={sectionLimit}
+                    value={sectionInfo.sectionLimit}
                     onChange={(e) =>
                       handleInputChange("sectionLimit", e.target.value)
                     }
@@ -453,7 +425,7 @@ const Section: React.FC<{
                     type="number"
                     className="w-32 px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
                     placeholder="Enter number"
-                    value={width}
+                    value={sectionInfo.width}
                     onChange={(e) => handleInputChange("width", e.target.value)}
                   />
                 </div>
@@ -473,7 +445,7 @@ const Section: React.FC<{
                 <div className="mb-6 w-full my-1">
                   <div className="relative">
                     <select
-                      value={imgPosition}
+                      value={sectionInfo.imgPosition}
                       onChange={(e) =>
                         handleInputChange("imgPosition", e.target.value)
                       }
