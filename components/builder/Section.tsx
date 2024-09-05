@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { MultiSelect } from "../MultiSelect";
+import { MultiValue } from "react-select";
 interface SectionData {
   sectionTitle: string;
   color: string;
@@ -11,7 +13,13 @@ interface SectionData {
   imgPosition: string;
   width: string;
   box: string;
+  categories: Option[];
   handleInputChange: (field: string, value: string) => void;
+}
+
+export interface Option {
+  value: string;
+  label: string;
 }
 
 const boxStyles = Array.from({ length: 18 }, (_, i) => ({
@@ -67,17 +75,6 @@ const Section: React.FC<{
   drop(preview(ref));
 
   const [showPopup, setShowPopup] = useState(false);
-  const [setting1, setSetting1] = useState("");
-  const [setting2, setSetting2] = useState("");
-
-  const handleSettingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === "setting1") {
-      setSetting1(value);
-    } else if (name === "setting2") {
-      setSetting2(value);
-    }
-  };
 
   const handleBackgroundColorChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -89,29 +86,36 @@ const Section: React.FC<{
     setColor(e.target.value);
   };
 
-  const [sectionTitle, setSectionTitle] = useState("");
+  const [sectionTitle, setSectionTitle] = useState(`Section ${index}`);
   const [desktopGrid, setDesktopGrid] = useState("");
   const [mobileGrid, setMobileGrid] = useState("");
   const [sectionLimit, setSectionLimit] = useState("");
   const [imgPosition, setImgPosition] = useState("");
   const [width, setWidth] = useState("");
   const [box, setBox] = useState("");
-  const sections = {
-    sectionTitle,
-    color,
-    backgroundColor,
-    desktopGrid,
-    mobileGrid,
-    sectionLimit,
-    imgPosition,
+  const [category, setCategory] = useState<any>([]);
+  const selectOptions: Option[] = categories.map((cat) => ({
+    value: cat._id,
+    label: cat.title,
+  }));
+
+  const [selectedCategories, setSelectedCategories] = useState<
+    MultiValue<Option>
+  >([]);
+
+  const handleSelectionChange = (selected: MultiValue<Option>) => {
+    setSelectedCategories(selected);
+    // console.log(selected);
+    setSectionInfo({
+      categories: selected.map((cat) => ({
+        value: cat.value,
+        label: cat.label,
+      })),
+    });
   };
-  console.log(sections);
   const handleInputChange = (field: keyof SectionData, value: string) => {
     setSectionInfo({ [field]: value });
     switch (field) {
-      case "sectionTitle":
-        setSectionTitle(value);
-        break;
       case "color":
         setColor(value);
         break;
@@ -163,23 +167,16 @@ const Section: React.FC<{
             <path d="M11 11V5.82843L9.17157 7.65685L7.75736 6.24264L12 2L16.2426 6.24264L14.8284 7.65685L13 5.82843V11H18.1716L16.3431 9.17157L17.7574 7.75736L22 12L17.7574 16.2426L16.3431 14.8284L18.1716 13H13V18.1716L14.8284 16.3431L16.2426 17.7574L12 22L7.75736 17.7574L9.17157 16.3431L11 18.1716V13H5.82843L7.65685 14.8284L6.24264 16.2426L2 12L6.24264 7.75736L7.65685 9.17157L5.82843 11H11Z"></path>
           </svg>
         </div>
-        <select
-          onChange={(e) => handleInputChange("sectionTitle", e.target.value)}
-        >
-          <option value="">Select category</option>
-          {categories?.map((cat) => (
-            <option key={cat?._id} value={cat?._id}>
-              {cat?.title}
-            </option>
-          ))}
-        </select>
-        {/* <input
-          type="text"
-          className="border outline-none rounded-sm px-2 py-1 w-full leading-none"
-          placeholder={`${section} title`}
-          value={sectionTitle}
-          onChange={(e) => setSectionTitle(e.target.value)}
-        /> */}
+        <div className="">
+          <div className="">
+            <MultiSelect
+              options={selectOptions}
+              onChange={handleSelectionChange}
+              placeholder="Select categories"
+            />
+          </div>
+        </div>
+
         <div className="flex md:flex-row flex-col items-center md:space-x-2">
           <button onClick={moveSectionUp}>
             <svg
@@ -473,42 +470,32 @@ const Section: React.FC<{
                     </div>
                   </>
                 )}
-                {section === "category" && (
-                  <>
-                    <div className="mb-6 w-full my-1">
-                      <div className="relative">
-                        <select
-                          value={imgPosition}
-                          onChange={(e) =>
-                            handleInputChange("imgPosition", e.target.value)
-                          }
-                          className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
-                        >
-                          <option value="" className="text-gray-400">
-                            Photo Position{" "}
-                          </option>
-                          <option value="1">Left</option>
-                          <option value="2">Right</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                          </svg>
-                        </div>
-                      </div>
+                <div className="mb-6 w-full my-1">
+                  <div className="relative">
+                    <select
+                      value={imgPosition}
+                      onChange={(e) =>
+                        handleInputChange("imgPosition", e.target.value)
+                      }
+                      className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                    >
+                      <option value="" className="text-gray-400">
+                        Photo Position{" "}
+                      </option>
+                      <option value="1">Left</option>
+                      <option value="2">Right</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg
+                        className="fill-current h-4 w-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                      </svg>
                     </div>
-                    {/* <div className='py-1.5'>
-                        <Photo
-                          title="Photo (256×399px)"
-                          img=""
-                        />
-                    </div> */}
-                  </>
-                )}
+                  </div>
+                </div>
               </div>
             </div>
           )}

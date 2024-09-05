@@ -13,7 +13,7 @@ interface Section {
   box: number;
   imgPosition: string;
   width: number;
-  categories: { catId: number; catName: string }[];
+  categories: { value: string; label: string }[];
 }
 
 interface Rows {
@@ -80,12 +80,6 @@ const IndexPage: React.FC = () => {
   }, [lang]);
 
   const newsData = postFormat(news, category);
-  console.log(Array.isArray(newsData));
-  console.log(news, newsData, pageData);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <div className="container mx-auto">
@@ -100,8 +94,11 @@ const IndexPage: React.FC = () => {
         >
           <div className="flex flex-col md:flex-row">
             {row.sections.map((section) => {
-              const filteredNewsData = newsData.filter(
-                (news) => news.category === section.sectionTitle?.title
+              const filteredNewsData = newsData.filter((news) =>
+                section.categories.some(
+                  (cat) =>
+                    cat.label.toLowerCase() === news.category.toLowerCase()
+                )
               );
 
               return (
@@ -111,9 +108,9 @@ const IndexPage: React.FC = () => {
                   className="p-2"
                 >
                   <News
-                    title={section.sectionTitle?.title || ""}
-                    link={`/news/all-category/${section.sectionTitle._id}`}
-                    limit={section?.sectionLimit || 5}
+                    title={"Test"}
+                    link={`/news/all-category/${section._id}`}
+                    limit={Number(section?.sectionLimit) || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}

@@ -70,6 +70,7 @@ const IndexPage: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
+      console.log(response);
       if (response.status === 200) {
         toast.success("Page published successfully!");
         router.push("/admin/page");
@@ -91,7 +92,7 @@ const IndexPage: React.FC = () => {
     };
     fetchLanguages();
   }, []);
-  console.log(languages);
+  // console.log(languages);
 
   return (
     <>
@@ -139,7 +140,7 @@ const IndexPage: React.FC = () => {
                   {languages?.map((lang) => (
                     <option
                       key={lang?._id}
-                      value={lang?.title}
+                      value={lang?.language_code}
                       className="text-gray-700"
                     >
                       {lang?.title}
