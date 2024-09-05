@@ -86,7 +86,7 @@ const Section: React.FC<{
     setColor(e.target.value);
   };
 
-  const [sectionTitle, setSectionTitle] = useState("");
+  const [sectionTitle, setSectionTitle] = useState(`Section ${index}`);
   const [desktopGrid, setDesktopGrid] = useState("");
   const [mobileGrid, setMobileGrid] = useState("");
   const [sectionLimit, setSectionLimit] = useState("");
@@ -116,9 +116,6 @@ const Section: React.FC<{
   const handleInputChange = (field: keyof SectionData, value: string) => {
     setSectionInfo({ [field]: value });
     switch (field) {
-      case "sectionTitle":
-        setSectionTitle(value);
-        break;
       case "color":
         setColor(value);
         break;

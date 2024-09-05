@@ -19,7 +19,7 @@ export const useLang = () => {
 export const LangProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("all");
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>

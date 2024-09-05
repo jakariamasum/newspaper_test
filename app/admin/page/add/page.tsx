@@ -64,23 +64,24 @@ const IndexPage: React.FC = () => {
       path,
     };
     console.log(pageInfo);
-    // try {
-    //   const response = await axiosPublic.post("/pages/admin", pageInfo, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-    //     },
-    //   });
-    //   if (response.status === 200) {
-    //     toast.success("Page published successfully!");
-    //     router.push("/admin/page");
-    //   } else {
-    //     toast.warning("Failed to publish page:");
-    //     console.log("err", response);
-    //   }
-    // } catch (error) {
-    //   toast.error("Error publishing page:");
-    //   console.log(error);
-    // }
+    try {
+      const response = await axiosPublic.post("/pages/admin", pageInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      console.log(response);
+      if (response.status === 200) {
+        toast.success("Page published successfully!");
+        router.push("/admin/page");
+      } else {
+        toast.warning("Failed to publish page:");
+        console.log("err", response);
+      }
+    } catch (error) {
+      toast.error("Error publishing page:");
+      console.log(error);
+    }
   };
 
   const [languages, setLanguages] = useState<ILanguage[]>([]);
@@ -139,7 +140,7 @@ const IndexPage: React.FC = () => {
                   {languages?.map((lang) => (
                     <option
                       key={lang?._id}
-                      value={lang?.title}
+                      value={lang?.language_code}
                       className="text-gray-700"
                     >
                       {lang?.title}

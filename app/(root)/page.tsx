@@ -1,22 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useLang } from "../context/langContext";
-
-interface NewsItem {
-  img: string;
-  link: string;
-  title: string;
-}
-
-interface NewsCategory {
-  category: string;
-  post: NewsItem[];
-}
 
 interface Section {
   _id: string;
@@ -26,7 +14,7 @@ interface Section {
   box: number;
   imgPosition: string;
   width: number;
-  categories: { catId: number; catName: string }[];
+  categories: { value: string; label: string }[];
 }
 
 interface Rows {
@@ -43,21 +31,6 @@ interface Rows {
 
 interface PageData {
   rows: Rows[];
-}
-
-interface NewsData {
-  _id: string;
-  title: string;
-  category: {
-    category: {
-      _id: string;
-    };
-  };
-  img: string;
-}
-interface categoryData {
-  _id: string;
-  title: string;
 }
 
 const IndexPage: React.FC = () => {
@@ -107,33 +80,7 @@ const IndexPage: React.FC = () => {
     fetchCategories();
   }, [lang]);
 
-  const fetchNewsData = async (
-    categories: { catId: string; catName: string }[]
-  ) => {
-    console.log("categories", categories);
-    try {
-      const response = await axiosPublic.post(
-        "/news/category-news",
-        { categories },
-        { params: { lang: "en" } } // Modify language as needed
-      );
-      console.log(response.data);
-      return response.data.data;
-    } catch (error) {
-      console.log("Error fetching news data:", error);
-      console.error("Error fetching news data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const newsData = postFormat(news, category);
-  console.log(Array.isArray(newsData));
-  console.log(news, newsData, pageData);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <div className="container mx-auto">
@@ -148,8 +95,11 @@ const IndexPage: React.FC = () => {
         >
           <div className="flex flex-col md:flex-row">
             {row.sections.map((section) => {
-              const filteredNewsData = newsData.filter(
-                (news) => news.category === section.sectionTitle?.title
+              const filteredNewsData = newsData.filter((news) =>
+                section.categories.some(
+                  (cat) =>
+                    cat.label.toLowerCase() === news.category.toLowerCase()
+                )
               );
 
               return (
@@ -159,9 +109,9 @@ const IndexPage: React.FC = () => {
                   className="p-2"
                 >
                   <News
-                    title={section.sectionTitle?.title || ""}
-                    link={`/news/all-category/${section.sectionTitle._id}`}
-                    limit={section?.sectionLimit || 5}
+                    title={"Test"}
+                    link={`/news/all-category/${section._id}`}
+                    limit={Number(section?.sectionLimit) || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}
