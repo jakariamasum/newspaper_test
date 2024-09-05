@@ -24,7 +24,6 @@ const IndexPage: React.FC = () => {
       bio,
       password,
     };
-    console.log(userInfo);
     try {
       const response = await axiosPublic.post("/user/admin", userInfo, {
         headers: {

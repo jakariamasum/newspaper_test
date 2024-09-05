@@ -63,14 +63,12 @@ const IndexPage: React.FC = () => {
       language,
       path,
     };
-    console.log(pageInfo);
     try {
       const response = await axiosPublic.post("/pages/admin", pageInfo, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
-      console.log(response);
       if (response.status === 200) {
         toast.success("Page published successfully!");
         router.push("/admin/page");
@@ -92,7 +90,6 @@ const IndexPage: React.FC = () => {
     };
     fetchLanguages();
   }, []);
-  // console.log(languages);
 
   return (
     <>

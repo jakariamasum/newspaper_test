@@ -40,7 +40,6 @@ const IndexPage: React.FC = () => {
       description,
       category,
     };
-    console.log(subCategoryInfo);
     try {
       const response = await axiosPublic.post(
         "/sub-categories/admin",

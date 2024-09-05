@@ -45,7 +45,6 @@ const IndexPage: React.FC = () => {
     };
     fetchPageData();
   }, []);
-  console.log(pages);
   const handleEdit = (_id: string) => {
     router.push(`/admin/page/edit/${_id}`);
   };

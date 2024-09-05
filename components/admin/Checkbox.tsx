@@ -31,7 +31,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
     const newCheckedItems = [...checkedItems];
     newCheckedItems[index] = !newCheckedItems[index];
     setCheckedItems(newCheckedItems);
-    console.log(items[index]);
     onChange({
       category: items[index]._id,
       subCategory: "",

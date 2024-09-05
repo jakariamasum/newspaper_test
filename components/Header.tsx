@@ -79,7 +79,6 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [languages, setLanguages] = useState<ILanguage[]>([]);
 
-  console.log(lang);
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchMenusData();

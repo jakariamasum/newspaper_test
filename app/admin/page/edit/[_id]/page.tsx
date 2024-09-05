@@ -51,7 +51,6 @@ const EditPage: React.FC = () => {
   const [language, setLanguage] = useState("en");
   const [languages, setLanguages] = useState<ILanguage[]>([]);
 
-  console.log(_id);
   useEffect(() => {
     const fetchPageData = async () => {
       try {
@@ -61,7 +60,6 @@ const EditPage: React.FC = () => {
           },
         });
         const page = response.data.data;
-        console.log(page);
         setTitle(page.title);
         setPath(page.path);
         setDescription(page.description);

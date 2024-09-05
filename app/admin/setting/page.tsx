@@ -200,7 +200,6 @@ const IndexPage: React.FC = () => {
       order,
       orderText,
     };
-    console.log(settings, settings!._id);
     try {
       const response = await axiosPublic.put(
         `/settings/admin/${settings?._id}`,
@@ -211,7 +210,6 @@ const IndexPage: React.FC = () => {
           },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         toast.success("Settings updated successfully!");
       }

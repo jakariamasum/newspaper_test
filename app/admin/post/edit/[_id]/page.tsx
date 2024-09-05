@@ -23,7 +23,6 @@ const EditNews: React.FC = () => {
         try {
           const response = await axiosPublic.get(`/news/each-news/${_id}`);
           const data = response.data.data;
-          console.log(data);
           setTitle(data.title);
           setDescription(data.content);
           setTags(data.tags);
@@ -46,7 +45,6 @@ const EditNews: React.FC = () => {
         tags,
         img,
       };
-      console.log(payload);
       const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,

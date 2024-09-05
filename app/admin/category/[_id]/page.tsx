@@ -78,9 +78,7 @@ const CategoryTypePage = () => {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(editedNews);
     if (editedNews) {
-      console.log(editedNews);
       const response = await axiosPublic.put(
         `/news/admin/${editedNews._id}`,
         editedNews,

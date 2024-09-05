@@ -38,7 +38,6 @@ const Content: React.FC<ContentProps> = ({ value, onChange }) => {
       ],
     ],
   };
-  console.log(value);
   return (
     <SunEditor
       setOptions={editorOptions}

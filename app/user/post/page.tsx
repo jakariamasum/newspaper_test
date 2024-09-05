@@ -27,7 +27,6 @@ const IndexPage: React.FC = () => {
             Authorization: `Bears ${localStorage.getItem("authToken")}`,
           },
         });
-        console.log(response);
         setNews(response.data.data);
       } catch (error) {
         console.error("Failed to fetch news:", error);

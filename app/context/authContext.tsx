@@ -24,7 +24,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<any>(null);
-  console.log(user);
   const [loading, setLoading] = useState(true);
 
   const login = async (email: string, password: string) => {
@@ -34,7 +33,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         email,
         password,
       });
-      console.log(response);
       setUser(response.data.data._doc);
       localStorage.setItem("authToken", response.data.data.token);
       return response;

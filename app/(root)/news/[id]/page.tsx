@@ -24,7 +24,6 @@ const IndexPage: React.FC = () => {
     };
     fetchAds();
   }, []);
-  console.log(ads);
 
   return (
     <>

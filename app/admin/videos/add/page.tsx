@@ -62,14 +62,12 @@ const IndexPage: React.FC = () => {
       category,
     };
 
-    console.log(formData);
     try {
       const response = await axiosPublic.post("/videos/admin", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
-      console.log(response.data);
       if (response.status === 200) {
         toast.success("Videos published!");
         router.push("/admin/videos");

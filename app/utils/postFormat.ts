@@ -18,7 +18,6 @@ export const postFormat = (
   categoriesData: categoryData[]
 ) => {
   return categoriesData.map((category) => {
-    console.log(category);
     const relatedPosts = newsData
       .filter((newsItem) => newsItem.category.category._id === category._id)
       .map((newsItem) => ({

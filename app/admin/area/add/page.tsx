@@ -29,7 +29,6 @@ const IndexPage: React.FC = () => {
       title,
       city,
     };
-    console.log(localStorage.getItem("authToken"));
     try {
       const response = await axiosPublic.post("/area/admin", areaInfo, {
         headers: {

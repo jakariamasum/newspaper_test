@@ -12,7 +12,6 @@ const IndexPage: React.FC = () => {
     link: "/en",
   });
   const handleCreateLanguage = async () => {
-    console.log(language);
     try {
       const response = await axiosPublic.post("/language/admin", language, {
         headers: {

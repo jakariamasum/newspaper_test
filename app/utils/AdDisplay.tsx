@@ -14,7 +14,6 @@ interface AdDisplayProps {
 
 const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
   const ad = ads.find((ad) => ad.id === adId);
-  console.log(ad);
 
   return (
     <Link href="/" className="mb-2 block bg-white p-2">

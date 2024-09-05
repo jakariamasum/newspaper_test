@@ -40,7 +40,6 @@ const IndexPage: React.FC = () => {
   const { lang } = useLang();
 
   useEffect(() => {
-    console.log("lang", lang);
     const fetchPageData = async () => {
       try {
         // const response = await axios.get("/pageData.json");

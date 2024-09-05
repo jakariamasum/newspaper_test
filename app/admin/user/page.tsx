@@ -32,7 +32,6 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentUser) {
-      console.log(currentUser);
       const response = await axiosPublic.delete(
         `/user/admin/${currentUser._id}`,
         {
@@ -90,7 +89,6 @@ const IndexPage: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
-        console.log(response.data.data);
         setUsers(response.data.data);
       } catch (err) {
         setError("Failed to fetch videos");

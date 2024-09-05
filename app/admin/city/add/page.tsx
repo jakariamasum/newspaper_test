@@ -8,7 +8,6 @@ const IndexPage: React.FC = () => {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const handlePublish = async () => {
-    console.log(title);
     try {
       const response = await axiosPublic.post(
         "/city/admin",

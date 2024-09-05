@@ -44,8 +44,6 @@ const IndexPage: React.FC = () => {
 
   const newsItems = postFormat(news, categories);
   const videoItems = postFormat(videos, categories);
-  // const storyItems = postFormat(stories, categories);
-  console.log(stories);
   return (
     <>
       <div className="container my-4">

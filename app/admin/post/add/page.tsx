@@ -79,7 +79,6 @@ const IndexPage: React.FC = () => {
     areas: { title: string; city: { _id: string } }[],
     cities: { _id: string; title: string }[]
   ) => {
-    console.log(areas, cities);
     return cities.map((city) => ({
       title: city.title,
       areas: areas
@@ -90,7 +89,6 @@ const IndexPage: React.FC = () => {
 
   const transformedData = transformData(areas, cities);
   const transformeCategorydData = categoryFormat(subCategories, categories);
-  console.log(transformedData);
 
   const handlePublish = async () => {
     const formData = {
@@ -104,14 +102,12 @@ const IndexPage: React.FC = () => {
       lang,
     };
 
-    console.log(formData);
     try {
       const response = await axiosPublic.post("/news/admin", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
-      console.log(response.data);
       if (response.status === 200) {
         toast.success("News created!");
         router.push(`/admin/type/${lang}`);

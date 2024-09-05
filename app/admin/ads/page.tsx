@@ -36,8 +36,6 @@ const IndexPage: React.FC = () => {
 
   const handleUpdate = async () => {
     if (editAd) {
-      console.log(editAd);
-
       let updatedAd: IAds = { ...editAd };
 
       if (img && editAd.type !== "code") {

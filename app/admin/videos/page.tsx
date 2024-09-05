@@ -32,7 +32,6 @@ const IndexPage: React.FC = () => {
     const fetchVideos = async () => {
       try {
         const response = await axiosPublic.get("/videos");
-        console.log(response.data.data);
         setVideos(response.data.data);
       } catch (err) {
         setError("Failed to fetch videos");
@@ -54,7 +53,6 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentVideo) {
-      console.log(currentVideo._id);
       const response = await axiosPublic.delete(
         `/videos/admin/${currentVideo._id}`,
         {

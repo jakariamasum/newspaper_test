@@ -107,14 +107,12 @@ const IndexPage: React.FC = () => {
       lang: language,
     };
 
-    console.log(formData);
     try {
       const response = await axiosPublic.post("/news/user/news", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
-      console.log(response.data);
       if (response.status === 200) {
         toast.success("News created!");
         router.push("/user/post");

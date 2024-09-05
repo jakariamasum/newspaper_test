@@ -39,10 +39,8 @@ const Auth = () => {
       setErrorMessage("Please enter your password.");
       return;
     }
-    console.log(email, enteredPassword);
     try {
       const response = await login(email, enteredPassword);
-      console.log(response.data.data._doc.role);
       if (response.data.data._doc.role === "admin") {
         toast.success("Welcome back!");
         window.location.href = "/admin";

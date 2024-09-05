@@ -35,7 +35,6 @@ interface PageData {
 
 const IndexPage: React.FC = () => {
   const pathname = useParams();
-  console.log(pathname);
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
@@ -77,7 +76,7 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const newsData = postFormat(news, category);
-  console.log(news, newsData, pageData);
+  // console.log(news, newsData, pageData);
 
   // if (loading) {
   //   return <div>Loading...</div>;

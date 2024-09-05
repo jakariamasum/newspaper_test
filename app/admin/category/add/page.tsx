@@ -16,7 +16,6 @@ const IndexPage: React.FC = () => {
   const [img, setImg] = useState("");
 
   const handlePublish = async () => {
-    console.log(title, description, position, img);
     const categoryData = {
       title,
       description,

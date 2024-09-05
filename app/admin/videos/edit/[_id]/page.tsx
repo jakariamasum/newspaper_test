@@ -55,7 +55,6 @@ const EditVideo: React.FC = () => {
         tags,
         video: videoInput,
       };
-      console.log(payload);
 
       const response = await axiosPublic.put(`/videos/admin/${_id}`, payload, {
         headers: {

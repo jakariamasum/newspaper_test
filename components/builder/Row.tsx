@@ -78,7 +78,6 @@ const Row: React.FC<{
   };
 
   const handleSetSectionInfo = (idx: number, data: Partial<SectionData>) => {
-    console.log(data);
     SectionInfo(idx, data);
   };
 
@@ -90,7 +89,6 @@ const Row: React.FC<{
       sections: sectionDataArray,
     });
   }, [color, backgroundColor, sectionDataArray]);
-  // console.log(row);
   const [, drag, preview] = useDrag({
     type: "ROW",
     item: { index },
@@ -109,7 +107,6 @@ const Row: React.FC<{
   };
 
   const addSection = (section: string) => {
-    // console.log(section);
     setSectionList([...sectionList, section]);
   };
 

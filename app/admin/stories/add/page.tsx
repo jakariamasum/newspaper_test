@@ -44,13 +44,11 @@ const IndexPage: React.FC = () => {
         subCategory: category.subCategory,
         banners,
       };
-      console.log(payload);
       const response = await axiosPublic.post("/story/admin", payload, {
         headers: {
           Authorization: `Beares ${localStorage.getItem("authToken")}`,
         },
       });
-      console.log(response);
       if (response.status === 200) {
         toast.success("Stories published successfully!");
         router.push("/admin/stories");

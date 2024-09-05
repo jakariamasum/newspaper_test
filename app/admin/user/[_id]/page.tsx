@@ -72,7 +72,6 @@ const UserTypePage = () => {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editedNews) {
-      console.log(editedNews);
       const response = await axiosPublic.put(
         `/news/${editedNews._id}`,
         editedNews
