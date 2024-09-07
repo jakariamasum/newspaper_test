@@ -44,6 +44,7 @@ const ModuleTypePage = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [currentNews, setCurrentNews] = useState<TNews | null>(null);
   const [editedNews, setEditedNews] = useState<TNews | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Handlers for edit and delete actions
   const handleEdit = (item: TNews) => {
@@ -115,16 +116,18 @@ const ModuleTypePage = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
+      setLoading(true);
       const newsData = await useNewsByLanguage(link as string);
       setNews(newsData);
+      setLoading(false);
     };
 
     fetchNews();
     setLang(link as string);
   }, [link, setLang]);
 
-  if (news.length < 1) {
-    return <div className="text-center">Loding.....</div>;
+  if (loading) {
+    return <div className="text-center">Loading....</div>;
   }
 
   return (
@@ -282,6 +285,12 @@ const ModuleTypePage = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {news?.length === 0 && (
+        <div className="text-center text-red-500 mt-5 font-semibold">
+          Sorry. There is no news.
         </div>
       )}
       <Toaster position="top-right" richColors closeButton />
