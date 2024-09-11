@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useSettings } from "../context/settingContext";
+import Link from "next/link";
 type TLanguageCount = {
   lang: string;
   count: number;
+  latestNews: any[];
 };
 
 const IndexPage: React.FC = () => {
@@ -54,14 +56,23 @@ const IndexPage: React.FC = () => {
     news.reduce(
       (acc: { [key: string]: TLanguageCount }, item: { lang: string }) => {
         if (!acc[item.lang]) {
-          acc[item.lang] = { lang: item.lang, count: 0 };
+          acc[item.lang] = { lang: item.lang, count: 0, latestNews: [] };
         }
         acc[item.lang].count += 1;
+        acc[item.lang].latestNews.push(item);
         return acc;
       },
       {}
     )
-  );
+  ).map((langCount) => ({
+    ...langCount,
+    latestNews: langCount.latestNews
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+      .slice(0, 5),
+  }));
   const colorMapping: { [key: string]: string } = {
     en: "blue-500",
     bd: "green-500",
@@ -113,7 +124,7 @@ const IndexPage: React.FC = () => {
             <p>123546</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4  py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4  py-8">
           {languageCounts.map((news, index) => (
             <div
               key={index}
@@ -138,6 +149,52 @@ const IndexPage: React.FC = () => {
                   }`}
                   style={{ width: `${(news.count / 150) * 100}%` }}
                 ></div>
+              </div>
+              {/* Latest News Table */}
+              <div className="overflow-x-auto py-4">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/3">
+                        Title
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/3">
+                        Content
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/4">
+                        Date
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {news.latestNews.map((item) => (
+                      <tr
+                        key={item._id}
+                        className="hover:bg-gray-100 border-t border-gray-200 transition-colors"
+                      >
+                        <td
+                          className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:text-clip"
+                          title={item.title}
+                        >
+                          {item.title}
+                        </td>
+                        <td className="py-3 px-4 text-gray-800">
+                          <Link
+                            href={`/news/${item._id}`}
+                            className="text-blue-500 hover:underline"
+                          >
+                            <span className="hover:underline hover:text-blue-600">
+                              See Details
+                            </span>
+                          </Link>
+                        </td>
+                        <td className="py-3 px-4 text-gray-800">
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           ))}
