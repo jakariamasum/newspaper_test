@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useSettings } from "../context/settingContext";
+type TLanguageCount = {
+  lang: string;
+  count: number;
+};
 
 const IndexPage: React.FC = () => {
   const { settings } = useSettings();
@@ -16,7 +20,7 @@ const IndexPage: React.FC = () => {
   const [stories, setStories] = useState([]);
   useEffect(() => {
     const fetchNewsData = async () => {
-      const response = await axiosPublic.get("/news");
+      const response = await axiosPublic.get("/news?lang=all");
       setNews(response.data.data);
     };
     fetchNewsData();
@@ -41,9 +45,33 @@ const IndexPage: React.FC = () => {
     };
     fetchStoryData();
   }, []);
+  // console.log(news);
 
   const newsItems = postFormat(news, categories);
   const videoItems = postFormat(videos, categories);
+
+  const languageCounts: TLanguageCount[] = Object.values(
+    news.reduce(
+      (acc: { [key: string]: TLanguageCount }, item: { lang: string }) => {
+        if (!acc[item.lang]) {
+          acc[item.lang] = { lang: item.lang, count: 0 };
+        }
+        acc[item.lang].count += 1;
+        return acc;
+      },
+      {}
+    )
+  );
+  const colorMapping: { [key: string]: string } = {
+    en: "blue-500",
+    bd: "green-500",
+    bl: "red-500",
+    fr: "purple-500",
+    es: "yellow-500",
+    de: "pink-500",
+    // add more if needed
+    default: "gray-500",
+  };
   return (
     <>
       <div className="container my-4">
@@ -84,6 +112,35 @@ const IndexPage: React.FC = () => {
             <h1 className="font-bold text-xl">Banner</h1>
             <p>123546</p>
           </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4  py-8">
+          {languageCounts.map((news, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-lg rounded-lg p-6 hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span
+                  className={`text-xl font-semibold text-${
+                    colorMapping[news.lang] || colorMapping.default
+                  }`}
+                >
+                  {news.lang.toUpperCase()}
+                </span>
+                <span className="text-4xl font-bold text-gray-700">
+                  {news.count}
+                </span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full">
+                <div
+                  className={`h-2 rounded-full bg-${
+                    colorMapping[news.lang] || colorMapping.default
+                  }`}
+                  style={{ width: `${(news.count / 150) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
