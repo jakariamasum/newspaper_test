@@ -73,6 +73,7 @@ const IndexPage: React.FC = () => {
       )
       .slice(0, 5),
   }));
+  languageCounts.forEach((item) => console.log(item.latestNews.length));
   const colorMapping: { [key: string]: string } = {
     en: "blue-500",
     bd: "green-500",
@@ -150,6 +151,7 @@ const IndexPage: React.FC = () => {
                   style={{ width: `${(news.count / 150) * 100}%` }}
                 ></div>
               </div>
+
               {/* Latest News Table */}
               <div className="overflow-x-auto py-4">
                 <table className="min-w-full bg-white border border-gray-200 rounded-lg">

@@ -6,6 +6,10 @@ import Link from "next/link";
 import Comment from "@/components/Comment";
 import axiosPublic from "@/lib/axiosPublic";
 import AdDisplay from "@/app/utils/AdDisplay";
+import { useParams } from "next/navigation";
+import moment from "moment";
+import { postFormat } from "@/app/utils/postFormat";
+import { getRandomPosts } from "@/app/utils/getRandomPosts";
 
 interface IAds {
   id: string;
@@ -14,16 +18,52 @@ interface IAds {
   type: string;
   content: any;
 }
+type TNews = {
+  _id: string;
+  title: string;
+  content: string;
+  author: { title: string; img: string };
+  createdAt: string;
+  img: string;
+  category: { category: { title: string; _id: string } };
+};
 const IndexPage: React.FC = () => {
   const [page] = useState<number>(1);
   const [ads, setAds] = useState<IAds[]>([]);
+  const path = useParams();
+  const [news, setNews] = useState<TNews>();
+  const [allNews, setAllNews] = useState([]);
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
+    const fetchAllNews = async () => {
+      const response = await axiosPublic.get(`/news?lang=all`);
+      setAllNews(response.data.data);
+    };
+    fetchAllNews();
+    const fetchNews = async () => {
+      const response = await axiosPublic.get(`/news/each-news/${path.id}`);
+      setNews(response.data.data);
+    };
+    fetchNews();
+    const fetchCategory = async () => {
+      const response = await axiosPublic.get("/categories");
+      setCategories(response.data.data);
+    };
+    fetchCategory();
     const fetchAds = async () => {
       const response = await axiosPublic.get("/ads");
       setAds(response.data.data);
     };
     fetchAds();
   }, []);
+
+  const contentParts = news?.content?.split(/<\/p>/) || [];
+  const halfwayIndex = Math.floor(contentParts?.length / 2);
+  const allPost = postFormat(allNews, categories);
+  const relatedPosts = allPost?.filter(
+    (item) => item.category === news?.category?.category?.title
+  );
+  const mostPopularPosts = getRandomPosts(relatedPosts, 5);
 
   return (
     <>
@@ -36,26 +76,27 @@ const IndexPage: React.FC = () => {
                   href="/"
                   className="bg-main text-white px-2 py-0 rounded-sm mb-2 leading-none"
                 >
-                  Fashion
+                  {news?.category?.category?.title || ""}
                 </Link>
                 <AdDisplay ads={ads} adId="detailsTitleTop" />
                 <h1 className="md:text-2xl text-xl font-semibold leading-normal">
-                  China Wholesale Cheap Hand Made Brazilian Virgin Remy Long
-                  Human Hair Natural Bone Straight 360 Full HD Transparent
+                  {news?.title}
                 </h1>
                 <AdDisplay ads={ads} adId="detailsTitleBottom" />
                 <div className="flex items-center flex-col md:flex-row justify-between mt-2">
                   <div className="flex items-center space-x-1 text-sm">
                     <Image
-                      src={"/user/1.jpg" || "/default.jpg"}
+                      src={news?.author?.img || "/default.jpg"}
                       width={20}
                       height={20}
                       alt="ads"
                       className="rounded-full"
                     />
                     <span>By</span>
-                    <strong>Armin Vans</strong>
-                    <span className="pl-4">August 7, 2019</span>
+                    <strong>{news?.author?.title}</strong>
+                    <span className="pl-4">
+                      {moment(news?.createdAt).format("MMMM Do YYYY")}
+                    </span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-white">
@@ -142,7 +183,7 @@ const IndexPage: React.FC = () => {
                       </svg>
                     </Link>
                     <Link
-                      href="/print/1"
+                      href={`/print/${news?._id}`}
                       className="bg-[#7bbf6a] p-2 rounded-sm"
                       target="_blank"
                     >
@@ -188,10 +229,10 @@ const IndexPage: React.FC = () => {
               <div className="bg-white p-2">
                 <AdDisplay ads={ads} adId="detailsImagesTop" />
                 <Image
-                  src="/post/1.jpg"
+                  src={news?.img || "/default.jpg"}
                   width={696}
                   height={464}
-                  alt="ads"
+                  alt={news?.title || "post"}
                   className="w-full h-auto"
                 />
               </div>
@@ -199,90 +240,28 @@ const IndexPage: React.FC = () => {
 
               <div className="bg-white p-2 text-base block space-y-2">
                 <AdDisplay ads={ads} adId="detailsDescriptionTop" />
-                <p className="mb-2">
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                  The point of using Lorem Ipsum is that it has a more-or-less
-                  normal distribution of letters, as opposed to using Content
-                  here, content here, making it look like readable English.
-                </p>
-                <p className="mb-2">
-                  Many desktop publishing packages and web page editors now use
-                  Lorem Ipsum as their default model text, and a search for
-                  lorem ipsum will uncover many web sites still in their
-                  infancy. Various versions have evolved over the years,
-                  sometimes by accident, sometimes on purpose (injected humour
-                  and the like).
-                </p>
+                <div
+                  className="mb-2"
+                  dangerouslySetInnerHTML={{
+                    __html: contentParts?.slice(0, halfwayIndex).join("</p>"),
+                  }}
+                />
 
                 <AdDisplay ads={ads} adId="detailsDescriptionCentre" />
-
-                <h4 className="mb-2 font-bold">Key Responsibilities</h4>
-                <ul className="list-disc ml-8">
-                  <li>
-                    Be involved in every step of the product design cycle from
-                    discovery to developer handoff and user acceptance testing.
-                  </li>
-                  <li>
-                    Work with BAs, product managers and tech teams to lead the
-                    Product Design
-                  </li>
-                  <li>
-                    Maintain quality of the design process and ensure that when
-                    designs are translated into code they accurately reflect the
-                    design specifications.
-                  </li>
-                  <li>
-                    Accurately estimate design tickets during planning sessions.
-                  </li>
-                  <li>
-                    Contribute to sketching sessions involving
-                    non-designersCreate, iterate and maintain UI deliverables
-                    including sketch files, style guides, high fidelity
-                    prototypes, micro interaction specifications and pattern
-                    libraries.
-                  </li>
-                  <li>
-                    Ensure design choices are data led by identifying
-                    assumptions to test each sprint, and work with the analysts
-                    in your team to plan moderated usability test sessions.
-                  </li>
-                  <li>
-                    Design pixel perfect responsive UI’s and understand that
-                    adopting common interface patterns is better for UX than
-                    reinventing the wheel
-                  </li>
-                  <li>
-                    Present your work to the wider business at Show &amp; Tell
-                    sessions.
-                  </li>
-                </ul>
+                <div
+                  className="mb-2"
+                  dangerouslySetInnerHTML={{
+                    __html: contentParts?.slice(halfwayIndex).join("</p>"),
+                  }}
+                />
 
                 <Image
-                  src="/post/2.jpg"
+                  src={news?.img || "/default.jpg"}
                   width={696}
                   height={464}
-                  alt="ads"
+                  alt={news?.title || "post"}
                   className="w-min mx-auto h-auto"
                 />
-                <h4 className="mb-2 font-bold">Work &amp; Experience</h4>
-
-                <ul className="list-disc ml-8">
-                  <li>
-                    You have at least 3 years experience working as a Product
-                    Designer.
-                  </li>
-                  <li>
-                    You have experience using Sketch and InVision or Framer X
-                  </li>
-                  <li>
-                    You have some previous experience working in an agile
-                    environment – Think two-week sprints.
-                  </li>
-                  <li>
-                    You are familiar using Jira and Confluence in your workflow
-                  </li>
-                </ul>
               </div>
 
               <AdDisplay ads={ads} adId="detailsDescriptionBottom" />
@@ -296,43 +275,7 @@ const IndexPage: React.FC = () => {
                 limit={5}
                 box={14}
                 style={2}
-                item={[
-                  {
-                    category: "hello",
-                    post: [
-                      {
-                        img: "/post/1.jpg",
-                        link: "/news/1",
-                        title:
-                          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                      },
-                      {
-                        img: "/post/2.jpg",
-                        link: "/news/1",
-                        title:
-                          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                      {
-                        img: "/post/3.jpg",
-                        link: "/news/1",
-                        title:
-                          "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                      {
-                        img: "/post/4.jpg",
-                        link: "/news/1",
-                        title:
-                          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                      },
-                      {
-                        img: "/post/5.jpg",
-                        link: "/news/1",
-                        title:
-                          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                    ],
-                  },
-                ]}
+                item={relatedPosts}
               />
               <AdDisplay ads={ads} adId="detailsRelatedPostBottom" />
             </div>
@@ -352,43 +295,7 @@ const IndexPage: React.FC = () => {
                   limit={5}
                   box={2}
                   style={2}
-                  item={[
-                    {
-                      category: "hello",
-                      post: [
-                        {
-                          img: "/post/1.jpg",
-                          link: "/news/1",
-                          title:
-                            "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                        },
-                        {
-                          img: "/post/2.jpg",
-                          link: "/news/1",
-                          title:
-                            "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                        {
-                          img: "/post/3.jpg",
-                          link: "/news/1",
-                          title:
-                            "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                        {
-                          img: "/post/4.jpg",
-                          link: "/news/1",
-                          title:
-                            "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                        },
-                        {
-                          img: "/post/5.jpg",
-                          link: "/news/1",
-                          title:
-                            "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                      ],
-                    },
-                  ]}
+                  item={mostPopularPosts}
                 />
                 <Link href="/" className="mb-2 block bg-white p-2">
                   <Image
@@ -409,10 +316,10 @@ const IndexPage: React.FC = () => {
             <div className="w-fill md:w-3/4 block space-y-2">
               <div className="bg-white p-2">
                 <Image
-                  src="/post/1.jpg"
+                  src={news?.img || "/default.jpg"}
                   width={696}
                   height={464}
-                  alt="ads"
+                  alt={news?.title || `post`}
                   className="w-full h-auto"
                 />
               </div>
@@ -432,24 +339,25 @@ const IndexPage: React.FC = () => {
                   href="/"
                   className="bg-main text-white px-2 py-0 rounded-sm mb-2 leading-none"
                 >
-                  Fashion
+                  {news?.category?.category?.title || "Category"}
                 </Link>
                 <h1 className="md:text-2xl text-xl font-semibold leading-normal">
-                  China Wholesale Cheap Hand Made Brazilian Virgin Remy Long
-                  Human Hair Natural Bone Straight 360 Full HD Transparent
+                  {news?.title || ""}
                 </h1>
                 <div className="flex items-center flex-col md:flex-row justify-between mt-2">
                   <div className="flex items-center space-x-1 text-sm">
                     <Image
-                      src={"/user/1.jpg" || "/default.jpg"}
+                      src={news?.author?.img || "/default.jpg"}
                       width={20}
                       height={20}
-                      alt="ads"
+                      alt={news?.author?.title || ""}
                       className="rounded-full"
                     />
                     <span>By</span>
-                    <strong>Armin Vans</strong>
-                    <span className="pl-4">August 7, 2019</span>
+                    <strong>{news?.title || ""}</strong>
+                    <span className="pl-4">
+                      {moment(news?.createdAt).format("MMMM Do YYYY")}
+                    </span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-white">
@@ -590,62 +498,6 @@ const IndexPage: React.FC = () => {
               </Link>
 
               <div className="bg-white p-2 text-base block space-y-2">
-                <p className="mb-2">
-                  It is a long established fact that a reader will be distracted
-                  by the readable content of a page when looking at its layout.
-                  The point of using Lorem Ipsum is that it has a more-or-less
-                  normal distribution of letters, as opposed to using Content
-                  here, content here, making it look like readable English.
-                </p>
-                <p className="mb-2">
-                  Many desktop publishing packages and web page editors now use
-                  Lorem Ipsum as their default model text, and a search for
-                  lorem ipsum will uncover many web sites still in their
-                  infancy. Various versions have evolved over the years,
-                  sometimes by accident, sometimes on purpose (injected humour
-                  and the like).
-                </p>
-                <h4 className="mb-2 font-bold">Key Responsibilities</h4>
-                <ul className="list-disc ml-8">
-                  <li>
-                    Be involved in every step of the product design cycle from
-                    discovery to developer handoff and user acceptance testing.
-                  </li>
-                  <li>
-                    Work with BAs, product managers and tech teams to lead the
-                    Product Design
-                  </li>
-                  <li>
-                    Maintain quality of the design process and ensure that when
-                    designs are translated into code they accurately reflect the
-                    design specifications.
-                  </li>
-                  <li>
-                    Accurately estimate design tickets during planning sessions.
-                  </li>
-                  <li>
-                    Contribute to sketching sessions involving
-                    non-designersCreate, iterate and maintain UI deliverables
-                    including sketch files, style guides, high fidelity
-                    prototypes, micro interaction specifications and pattern
-                    libraries.
-                  </li>
-                  <li>
-                    Ensure design choices are data led by identifying
-                    assumptions to test each sprint, and work with the analysts
-                    in your team to plan moderated usability test sessions.
-                  </li>
-                  <li>
-                    Design pixel perfect responsive UI’s and understand that
-                    adopting common interface patterns is better for UX than
-                    reinventing the wheel
-                  </li>
-                  <li>
-                    Present your work to the wider business at Show &amp; Tell
-                    sessions.
-                  </li>
-                </ul>
-
                 <Image
                   src="/post/2.jpg"
                   width={696}
@@ -653,24 +505,6 @@ const IndexPage: React.FC = () => {
                   alt="ads"
                   className="w-min mx-auto h-auto"
                 />
-                <h4 className="mb-2 font-bold">Work &amp; Experience</h4>
-
-                <ul className="list-disc ml-8">
-                  <li>
-                    You have at least 3 years experience working as a Product
-                    Designer.
-                  </li>
-                  <li>
-                    You have experience using Sketch and InVision or Framer X
-                  </li>
-                  <li>
-                    You have some previous experience working in an agile
-                    environment – Think two-week sprints.
-                  </li>
-                  <li>
-                    You are familiar using Jira and Confluence in your workflow
-                  </li>
-                </ul>
               </div>
 
               <Link href="/" className="mb-2 block bg-white p-2">
@@ -701,43 +535,7 @@ const IndexPage: React.FC = () => {
                 limit={5}
                 box={14}
                 style={2}
-                item={[
-                  {
-                    category: "hello",
-                    post: [
-                      {
-                        img: "/post/1.jpg",
-                        link: "/news/1",
-                        title:
-                          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                      },
-                      {
-                        img: "/post/2.jpg",
-                        link: "/news/1",
-                        title:
-                          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                      {
-                        img: "/post/3.jpg",
-                        link: "/news/1",
-                        title:
-                          "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                      {
-                        img: "/post/4.jpg",
-                        link: "/news/1",
-                        title:
-                          "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                      },
-                      {
-                        img: "/post/5.jpg",
-                        link: "/news/1",
-                        title:
-                          "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                      },
-                    ],
-                  },
-                ]}
+                item={relatedPosts}
               />
 
               <Link href="/" className="mb-2 block bg-white p-2">
@@ -766,43 +564,7 @@ const IndexPage: React.FC = () => {
                   limit={5}
                   box={2}
                   style={2}
-                  item={[
-                    {
-                      category: "hello",
-                      post: [
-                        {
-                          img: "/post/1.jpg",
-                          link: "/news/1",
-                          title:
-                            "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                        },
-                        {
-                          img: "/post/2.jpg",
-                          link: "/news/1",
-                          title:
-                            "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                        {
-                          img: "/post/3.jpg",
-                          link: "/news/1",
-                          title:
-                            "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                        {
-                          img: "/post/4.jpg",
-                          link: "/news/1",
-                          title:
-                            "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                        },
-                        {
-                          img: "/post/5.jpg",
-                          link: "/news/1",
-                          title:
-                            "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                        },
-                      ],
-                    },
-                  ]}
+                  item={mostPopularPosts}
                 />
                 <Link href="/" className="mb-2 block bg-white p-2">
                   <Image
