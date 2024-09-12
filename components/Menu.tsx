@@ -38,6 +38,7 @@ type MenuProps = {
 const Menu: React.FC<MenuProps> = ({ items }) => {
   const [activeTab, setActiveTab] = useState<number>(0); // Track active tab index, default to 0
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  console.log(items);
 
   return (
     <div className="z-50 block sticky top-0 bg-main">

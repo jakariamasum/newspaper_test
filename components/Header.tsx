@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
 import Dates from "./Date";
-import { fetchMenusData, MenuItem } from "@/app/utils/Menu";
+import { useMenusData } from "@/app/utils/Menu";
 import { useLang } from "@/app/context/langContext";
 import axiosPublic from "@/lib/axiosPublic";
 
@@ -76,22 +76,15 @@ const menusItem = [
 
 const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
   const { lang, setLang } = useLang();
-  const [menus, setMenus] = useState<MenuItem[]>([]);
   const [languages, setLanguages] = useState<ILanguage[]>([]);
+  const menus = useMenusData();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchMenusData();
-      setMenus(data);
-    };
-
     const fetchLanguages = async () => {
       const response = await axiosPublic.get("/language");
       setLanguages(response.data.data);
     };
     fetchLanguages();
-
-    fetchData();
   }, []);
   return (
     <>

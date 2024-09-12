@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useAllCategory } from "@/lib/useAllCategory";
-import { useAllNews } from "@/lib/useAllNews";
-import { useAllSubCategories } from "@/lib/useAllSubCategory";
+"use client";
+import { useEffect, useState } from "react";
+import axiosPublic from "@/lib/axiosPublic";
+import { useLang } from "../context/langContext";
 
 export interface MenuItem {
   title: string;
@@ -18,13 +18,8 @@ interface PostItem {
   title: string;
   img: string;
   link: string;
-  category: {
-    subCategory: string;
-    category: {
-      _id: string;
-      subCategory: string;
-    };
-  };
+  category?: any;
+  subCategory?: string;
 }
 
 interface TabItem {
@@ -44,117 +39,118 @@ interface SubCategoryItem {
   category: string;
 }
 
-export const fetchMenusData = async (): Promise<MenuItem[]> => {
-  const categories: CategoryItem[] = await useAllCategory();
-  const subCategories: SubCategoryItem[] = await useAllSubCategories();
-  const posts: PostItem[] = await useAllNews();
+export const useMenusData = () => {
+  const { lang } = useLang();
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategoryItem[]>([]);
+  const [posts, setPosts] = useState<PostItem[]>([]);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
 
-  const categoryMap = new Map<string, MenuItem>();
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosPublic.get(`/categories/type/${lang}`);
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
 
-  for (const category of categories) {
-    // Determine subItems for the current category
-    const relatedSubCategories = subCategories.filter(
-      (sub) => sub.category === category._id
-    );
-    const subItems: MenuItem[] = relatedSubCategories.map((sub) => ({
-      title: sub.title,
-      link: `/category/${sub._id}`,
-    }));
+    const fetchSubCategories = async () => {
+      try {
+        const response = await axiosPublic.get(`/sub-categories/${lang}`);
+        setSubCategories(response.data.data);
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      }
+    };
 
-    // Determine posts for the current category
-    const relatedPosts = posts.filter(
-      (post) => post.category.category._id === category._id
-    );
-    const postItems: PostItem[] = relatedPosts.map((post) => ({
-      _id: post._id,
-      title: post.title,
-      img: post.img,
-      link: `/news/${post._id}`,
-      category: post.category,
-    }));
+    const fetchNews = async () => {
+      try {
+        const response = await axiosPublic.get(`/news?lang=${lang}`);
+        setPosts(response.data.data);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
 
-    // Determine tabs and their subItems for the current category
-    const tabItems: TabItem[] = relatedSubCategories
-      .map((sub) => ({
-        title: sub.title,
-        link: `/category/${sub._id}`,
-        post: posts
-          .filter((post) => post.category.subCategory === sub._id)
-          .map((post) => ({
-            _id: post._id,
-            title: post.title,
-            img: post.img,
-            link: `/news/${post._id}`,
-            category: post.category,
-          })),
-      }))
-      .filter((tab) => tab.post.length > 0); // Remove tabs with no posts
+    fetchCategories();
+    fetchSubCategories();
+    fetchNews();
+  }, [lang]);
 
-    // Prepare menu item based on available options
-    if (subItems.length > 0) {
-      const menuItem: MenuItem = {
+  useEffect(() => {
+    const categoryMap = new Map<string, MenuItem>();
+
+    categories.forEach((category) => {
+      const subItems = subCategories
+        .filter((sub) => sub.category === category._id)
+        .map((sub) => ({
+          title: sub.title,
+          link: `/news/all-category/${category._id}?lang=${lang}`,
+        }));
+
+      const postItems = posts
+        .filter((post) => post.category?.category._id === category._id)
+        .map((post) => ({
+          _id: post._id,
+          title: post.title,
+          img: post.img,
+          link: `/news/${post._id}`,
+        }));
+
+      const postTabs = subCategories
+        .filter((sub) => sub.category === category._id)
+        .map((sub) => ({
+          title: sub.title,
+          link: `/category/${sub._id}`,
+          post: posts
+            .filter((post) => post.subCategory === sub._id)
+            .map((post) => ({
+              _id: post._id,
+              title: post.title,
+              img: post.img,
+              link: `/news/${post._id}`,
+            })),
+        }))
+        .filter((tab) => tab.post.length > 0);
+
+      let menuItem: MenuItem = {
         title: category.title,
         link: `/category/${category._id}`,
-        option: "sub",
-        subItems,
       };
-      categoryMap.set(category._id, menuItem);
-    }
 
-    if (postItems.length > 0) {
-      const existingItem = categoryMap.get(category._id);
-      if (existingItem) {
-        existingItem.post = postItems;
-        existingItem.limit = postItems.length > 5 ? "5" : undefined;
-        existingItem.option = "post";
-      } else {
-        const menuItem: MenuItem = {
-          title: category.title,
-          link: `/category/${category._id}`,
-          option: "post",
-          limit: postItems.length > 5 ? "5" : undefined,
+      if (subItems.length > 0) {
+        menuItem = {
+          ...menuItem,
+          option: "sub",
+          subItems,
+        };
+      }
+
+      if (postItems.length > 0) {
+        menuItem = {
+          ...menuItem,
+          option: menuItem.option || "post",
           post: postItems,
+          limit: postItems.length > 5 ? "5" : "3",
         };
-        categoryMap.set(category._id, menuItem);
       }
-    }
 
-    if (tabItems.length > 0) {
-      const existingItem = categoryMap.get(category._id);
-      if (existingItem) {
-        existingItem.postTabs = tabItems;
-        existingItem.limit = tabItems.some((tab) => tab.post.length > 5)
-          ? "5"
-          : undefined;
-        existingItem.option = "tab";
-      } else {
-        const menuItem: MenuItem = {
-          title: category.title,
-          link: `/category/${category._id}`,
-          option: "tab",
-          limit: tabItems.some((tab) => tab.post.length > 5) ? "5" : undefined,
-          postTabs: tabItems,
+      if (postTabs.length > 0) {
+        menuItem = {
+          ...menuItem,
+          option: menuItem.option || "tab",
+          postTabs,
+          limit: postTabs.some((tab) => tab.post.length > 5) ? "5" : "3",
         };
-        categoryMap.set(category._id, menuItem);
       }
-    }
 
-    // Add the category if it doesn't fit into subItems, post, or postTabs
-    if (
-      subItems.length === 0 &&
-      postItems.length === 0 &&
-      tabItems.length === 0
-    ) {
-      const menuItem: MenuItem = {
-        title: category.title,
-        link: `/category/${category._id}`,
-      };
       categoryMap.set(category._id, menuItem);
-    }
-  }
+    });
 
-  // Convert the categoryMap values to an array
-  const menus = Array.from(categoryMap.values());
+    setMenus(Array.from(categoryMap.values()));
+  }, [categories, subCategories, posts, lang]);
 
   return menus;
 };

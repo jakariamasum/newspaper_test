@@ -28,17 +28,21 @@ const IndexPage: React.FC = () => {
   const [allNews, setAllNews] = useState<INews[]>([]);
   const [displayedNews, setDisplayedNews] = useState<INews[]>([]);
   const [newsToShow, setNewsToShow] = useState(5);
+  const [loading, setLoading] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver>();
   const { _id } = useParams();
 
   useEffect(() => {
     const fetchAllNews = async () => {
       try {
+        setLoading(true);
         const response = await axiosPublic.get(`/news/category-news/${_id}`);
         setAllNews(response.data.data);
         setDisplayedNews(response.data.data.slice(0, 5));
+        setLoading(false);
       } catch (error) {
         console.error("Failed to load news", error);
+        setLoading(false);
       }
     };
 
@@ -60,11 +64,9 @@ const IndexPage: React.FC = () => {
     });
     if (node) observer.current.observe(node);
   };
-
-  if (displayedNews.length < 1) {
-    return <>Loading.......</>;
+  if (loading) {
+    return <div className="text-red-500 text-center">Loading</div>;
   }
-
   return (
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
