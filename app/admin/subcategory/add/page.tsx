@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // IndexPage.tsx
 "use client";
+import { useLang } from "@/app/context/langContext";
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
-import { useAllCategory } from "@/lib/useAllCategory";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast, Toaster } from "sonner";
@@ -25,11 +25,15 @@ const IndexPage: React.FC = () => {
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [categories, setCategories] = useState([]);
+  const { lang } = useLang();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await useAllCategory();
-      setCategories(response);
+      setLoading(false);
+      const response = await axiosPublic.get(`/categories/type/${lang}`);
+      setCategories(response.data.data);
+      setLoading(true);
     };
     fetchCategories();
   }, []);
@@ -39,6 +43,7 @@ const IndexPage: React.FC = () => {
       img,
       description,
       category,
+      lang,
     };
     try {
       const response = await axiosPublic.post(

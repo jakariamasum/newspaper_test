@@ -44,7 +44,7 @@ const ModuleTypePage = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [currentNews, setCurrentNews] = useState<TNews | null>(null);
   const [editedNews, setEditedNews] = useState<TNews | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Handlers for edit and delete actions
   const handleEdit = (item: TNews) => {

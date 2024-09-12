@@ -64,12 +64,12 @@ const IndexPage: React.FC = () => {
     };
     fetchAreas();
     const fetchCategories = async () => {
-      const response = await axiosPublic.get("/categories");
+      const response = await axiosPublic.get(`/categories/type/${lang}`);
       setCategories(response.data.data);
     };
     fetchCategories();
     const fetchSubCategories = async () => {
-      const response = await axiosPublic.get("/sub-categories");
+      const response = await axiosPublic.get(`/sub-categories/${lang}`);
       setSubCategories(response.data.data);
     };
     fetchSubCategories();

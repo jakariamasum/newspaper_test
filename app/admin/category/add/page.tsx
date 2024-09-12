@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
 import CatOp from "@/components/admin/CatOp";
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import { toast, Toaster } from "sonner";
 import axiosPublic from "@/lib/axiosPublic";
 import { useRouter } from "next/navigation";
+import { useLang } from "@/app/context/langContext";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -14,6 +14,7 @@ const IndexPage: React.FC = () => {
   const [description, setDescription] = useState("");
   const [position, setPosition] = useState(1);
   const [img, setImg] = useState("");
+  const { lang } = useLang();
 
   const handlePublish = async () => {
     const categoryData = {
@@ -21,6 +22,7 @@ const IndexPage: React.FC = () => {
       description,
       position,
       img,
+      lang,
     };
     try {
       const response = await axiosPublic.post(
