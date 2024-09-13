@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,7 +66,7 @@ const IndexPage: React.FC = () => {
     if (node) observer.current.observe(node);
   };
   if (loading) {
-    return <div className="text-red-500 text-center">Loading</div>;
+    return <Loader />;
   }
   return (
     <div className="p-4">

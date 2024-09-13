@@ -1,6 +1,7 @@
 "use client";
 import { useLang } from "@/app/context/langContext";
 import Table from "@/components/admin/Table";
+import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import { useEffect, useState } from "react";
 
@@ -18,7 +19,7 @@ const IndexPage: React.FC = () => {
     fetchCategories();
   }, []);
   if (loading) {
-    return <div className="text-center">Loading......</div>;
+    return <Loader />;
   }
   return (
     <>

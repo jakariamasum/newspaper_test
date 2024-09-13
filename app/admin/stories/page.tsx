@@ -5,6 +5,7 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 interface Banner {
   img: string;
@@ -41,7 +42,7 @@ const IndexPage: React.FC = () => {
     fetchStories();
   }, []);
 
-  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (

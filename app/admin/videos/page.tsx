@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 
 interface ICategory {
   category: { title: string };
@@ -74,7 +75,7 @@ const IndexPage: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
 
   return (

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../context/authContext";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
+import Loader from "@/components/Loader";
 
 interface PrivateRouteProps {
   children: ReactNode;
@@ -74,7 +75,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   }, [loading, user, pathname, router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   // Prevent loading the restricted page

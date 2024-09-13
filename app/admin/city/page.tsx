@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import moment from "moment";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 interface ICity {
   _id: string;
@@ -32,7 +33,7 @@ const IndexPage: React.FC = () => {
     fetchCities();
   }, []);
 
-  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (

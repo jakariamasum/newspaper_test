@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
 import Link from "next/link";
@@ -99,7 +100,7 @@ const IndexPage: React.FC = () => {
     fetchUsers();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
   return (
     <div className="overflow-x-auto mx-2 lg:mx-16 mt-3">

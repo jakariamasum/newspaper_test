@@ -4,6 +4,11 @@ import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
+interface ILanguage {
+  _id: string;
+  language_code: string;
+}
+
 interface TSetting {
   metaDescription: string;
   description: string;
@@ -37,6 +42,7 @@ interface TSetting {
   order: string;
   orderText: string;
   _id: string;
+  content: string;
 }
 const IndexPage: React.FC = () => {
   const [settings, setSettings] = useState<TSetting>();
@@ -71,6 +77,8 @@ const IndexPage: React.FC = () => {
   const [kindlyNote, setKindlyNote] = useState("");
   const [order, setOrder] = useState("");
   const [orderText, setOrderText] = useState("");
+  const [content, setContent] = useState("");
+  const [language, setLanguage] = useState<ILanguage[]>([]);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -111,8 +119,10 @@ const IndexPage: React.FC = () => {
           kindlyNote,
           order,
           orderText,
+          content,
         } = data[0];
 
+        setContent(content || "");
         setMetaDescription(metaDescription || "");
         setDescription(description || "");
         setPrivacy(privacy || "");
@@ -168,6 +178,12 @@ const IndexPage: React.FC = () => {
     };
 
     fetchSettings();
+
+    const fetchLanguage = async () => {
+      const response = await axiosPublic.get("/language");
+      setLanguage(response.data.data);
+    };
+    fetchLanguage();
   }, []);
 
   const handlePublish = async () => {
@@ -199,7 +215,9 @@ const IndexPage: React.FC = () => {
       kindlyNote,
       order,
       orderText,
+      content,
     };
+    console.log(settingData.content);
     try {
       const response = await axiosPublic.put(
         `/settings/admin/${settings?._id}`,
@@ -218,6 +236,7 @@ const IndexPage: React.FC = () => {
       toast.error("Failed to update settings. Please try again.");
     }
   };
+
   return (
     <>
       <div className="container my-4">
@@ -235,7 +254,7 @@ const IndexPage: React.FC = () => {
             onChange={setMetaImg}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-4">
+        <div className="grid grid-cols-1 items-center md:grid-cols-2 w-full gap-4">
           <div className="flex flex-col md:flex-row md:items-center">
             <p className="md:w-60">Website Title</p>
             <input
@@ -245,6 +264,23 @@ const IndexPage: React.FC = () => {
               className="p-2 mt-2 w-full outline-none rounded-md"
               onChange={(e) => setTitle(e.target.value)}
             />
+          </div>
+          <div className="relative w-full flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Website Content</p>
+
+            <select
+              onChange={(e) => setContent(e.target.value)}
+              value={content}
+              className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            >
+              <option value="">Select content type</option>
+              <option value="off">Off</option>
+              {language?.map((lang) => (
+                <option key={lang._id} value={lang.language_code}>
+                  {lang.language_code}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col md:flex-row md:items-center">
             <p className="md:w-60">Website BG color</p>

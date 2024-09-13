@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
+import Loader from "@/components/Loader";
 interface TNews {
   _id: string;
   title: string;
@@ -57,7 +58,7 @@ const IndexPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loader />;
   }
 
   return (

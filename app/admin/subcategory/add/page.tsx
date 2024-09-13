@@ -4,6 +4,7 @@
 import { useLang } from "@/app/context/langContext";
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
+import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -26,14 +27,14 @@ const IndexPage: React.FC = () => {
   const [title, setTitle] = useState("");
   const [categories, setCategories] = useState([]);
   const { lang } = useLang();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoading(false);
+      setLoading(true);
       const response = await axiosPublic.get(`/categories/type/${lang}`);
       setCategories(response.data.data);
-      setLoading(true);
+      setLoading(false);
     };
     fetchCategories();
   }, []);
@@ -64,6 +65,10 @@ const IndexPage: React.FC = () => {
       toast.error("Failed to create sub-category. Please try again.");
     }
   };
+
+  if (loading) {
+    <Loader />;
+  }
 
   return (
     <>

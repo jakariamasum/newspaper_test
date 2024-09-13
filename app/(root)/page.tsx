@@ -4,6 +4,7 @@ import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useLang } from "../context/langContext";
+import Loader from "@/components/Loader";
 
 interface Section {
   _id: string;
@@ -36,44 +37,57 @@ const IndexPage: React.FC = () => {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const { lang } = useLang();
 
   useEffect(() => {
     const fetchPageData = async () => {
       try {
+        setLoading(true);
         // const response = await axios.get("/pageData.json");
         const response = await axiosPublic.get(`/pages/get-page/${lang}`);
         setPageData(response.data.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
     };
 
-    fetchPageData();
     const fetchNewsData = async () => {
       try {
+        setLoading(true);
+
         const response = await axiosPublic.get(`/news?lang=${lang}`);
         setNews(response.data.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
     };
-
-    fetchNewsData();
 
     const fetchCategories = async () => {
       try {
+        setLoading(true);
+
         const response = await axiosPublic.get("/categories");
         setCategory(response.data.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
     };
+    fetchPageData();
+    fetchNewsData();
     fetchCategories();
   }, [lang]);
 
   const newsData = postFormat(news, category);
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto">

@@ -6,6 +6,7 @@ import { useSettings } from "../context/settingContext";
 import Link from "next/link";
 import { useLang } from "../context/langContext";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 type TLanguageCount = {
   lang: string;
   count: number;
@@ -57,7 +58,7 @@ const IndexPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center">Loading.....</div>;
+    return <Loader />;
   }
 
   return (

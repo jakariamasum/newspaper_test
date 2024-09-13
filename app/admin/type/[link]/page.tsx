@@ -11,6 +11,7 @@ import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import moment from "moment";
 import { useLang } from "@/app/context/langContext";
+import Loader from "@/components/Loader";
 
 interface TNews {
   _id: string;
@@ -127,7 +128,7 @@ const ModuleTypePage = () => {
   }, [link, setLang]);
 
   if (loading) {
-    return <div className="text-center">Loading....</div>;
+    return <Loader />;
   }
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { postFormat } from "@/app/utils/postFormat";
+import Loader from "@/components/Loader";
 import News from "@/components/News";
 import axiosPublic from "@/lib/axiosPublic";
 import { useParams } from "next/navigation";
@@ -38,10 +39,12 @@ const IndexPage: React.FC = () => {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPageData = async () => {
       try {
+        setLoading(true);
         // const response = await axios.get("/pageData.json");
         const response = await axiosPublic.get(
           `/pages/get-page/${pathname.lang}`
@@ -49,38 +52,44 @@ const IndexPage: React.FC = () => {
         setPageData(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
     };
 
-    fetchPageData();
     const fetchNewsData = async () => {
       try {
+        setLoading(true);
         const response = await axiosPublic.get(`/news?lang=${pathname.lang}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
     };
 
-    fetchNewsData();
-
     const fetchCategories = async () => {
       try {
+        setLoading(true);
+
         const response = await axiosPublic.get("/categories");
         setCategory(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
+        setLoading(false);
       }
+      setLoading(false);
     };
+    fetchPageData();
+    fetchNewsData();
     fetchCategories();
   }, []);
 
   const newsData = postFormat(news, category);
   // console.log(news, newsData, pageData);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto">
