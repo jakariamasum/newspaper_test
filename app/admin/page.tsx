@@ -1,11 +1,11 @@
 "use client";
-import News from "@/components/News";
 import { useAuth } from "../context/authContext";
 import { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
-import { postFormat } from "../utils/postFormat";
 import { useSettings } from "../context/settingContext";
 import Link from "next/link";
+import { useLang } from "../context/langContext";
+import { useRouter } from "next/navigation";
 type TLanguageCount = {
   lang: string;
   count: number;
@@ -13,44 +13,21 @@ type TLanguageCount = {
 };
 
 const IndexPage: React.FC = () => {
+  const { setLang } = useLang();
+  const router = useRouter();
   const { settings } = useSettings();
   const { user } = useAuth();
   const [news, setNews] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetchNewsData = async () => {
+      setLoading(true);
       const response = await axiosPublic.get("/news?lang=all");
       setNews(response.data.data);
+      setLoading(false);
     };
     fetchNewsData();
-    const fetchCategoryData = async () => {
-      const response = await axiosPublic.get("/categories");
-      setCategories(response.data.data);
-    };
-    fetchCategoryData();
-    const fetchSubCategoryData = async () => {
-      const response = await axiosPublic.get("/sub-categories");
-      setSubCategories(response.data.data);
-    };
-    fetchSubCategoryData();
-    const fetchVideosData = async () => {
-      const response = await axiosPublic.get("/videos");
-      setVideos(response.data.data);
-    };
-    fetchVideosData();
-    const fetchStoryData = async () => {
-      const response = await axiosPublic.get("/story");
-      setStories(response.data.data);
-    };
-    fetchStoryData();
   }, []);
-  // console.log(news);
-
-  const newsItems = postFormat(news, categories);
-  const videoItems = postFormat(videos, categories);
 
   const languageCounts: TLanguageCount[] = Object.values(
     news.reduce(
@@ -73,17 +50,16 @@ const IndexPage: React.FC = () => {
       )
       .slice(0, 5),
   }));
-  languageCounts.forEach((item) => console.log(item.latestNews.length));
-  const colorMapping: { [key: string]: string } = {
-    en: "blue-500",
-    bd: "green-500",
-    bl: "red-500",
-    fr: "purple-500",
-    es: "yellow-500",
-    de: "pink-500",
-    // add more if needed
-    default: "gray-500",
+
+  const handleAddNews = (lang: string) => {
+    setLang(lang);
+    router.push(`/admin/post/add`);
   };
+
+  if (loading) {
+    return <div className="text-center">Loading.....</div>;
+  }
+
   return (
     <>
       <div className="container my-4">
@@ -100,30 +76,27 @@ const IndexPage: React.FC = () => {
       </div>
       <div className="container my-4">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <div className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Orders</h1>
-            <p>123546</p>
-          </div>
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Products</h1>
-            <p>123546</p>
-          </div>
-          <div className="bg-gradient-to-r from-fuchsia-600 to-pink-600 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Category</h1>
-            <p>{categories?.length || 0}</p>
-          </div>
-          <div className="bg-gradient-to-r from-blue-600 to-violet-600 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Brands</h1>
-            <p>123546</p>
-          </div>
-          <div className="bg-gradient-to-r from-emerald-500 to-emerald-900 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Banner</h1>
-            <p>123546</p>
-          </div>
-          <div className="bg-gradient-to-r from-fuchsia-600 to-purple-600 rounded-md px-2 py-4 text-center block space-y-3 text-white">
-            <h1 className="font-bold text-xl">Banner</h1>
-            <p>123546</p>
-          </div>
+          {languageCounts.map((news, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center space-y-5 border border-gray-200"
+            >
+              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                <h1 className="font-bold text-2xl text-blue-600">
+                  {news.lang}
+                </h1>
+              </div>
+              <div className="text-center">
+                <p className="text-lg text-gray-500">{news.count}</p>
+              </div>
+              <button
+                onClick={() => handleAddNews(news.lang)}
+                className="mt-4 px-5 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full font-semibold hover:from-blue-600 hover:to-indigo-600 transition duration-200"
+              >
+                Add News
+              </button>
+            </div>
+          ))}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4  py-8">
           {languageCounts.map((news, index) => (
@@ -132,24 +105,9 @@ const IndexPage: React.FC = () => {
               className="bg-white shadow-lg rounded-lg p-6 hover:shadow-2xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-4">
-                <span
-                  className={`text-xl font-semibold text-${
-                    colorMapping[news.lang] || colorMapping.default
-                  }`}
-                >
+                <span className={`text-xl font-semibold `}>
                   {news.lang.toUpperCase()}
                 </span>
-                <span className="text-4xl font-bold text-gray-700">
-                  {news.count}
-                </span>
-              </div>
-              <div className="h-2 bg-gray-200 rounded-full">
-                <div
-                  className={`h-2 rounded-full bg-${
-                    colorMapping[news.lang] || colorMapping.default
-                  }`}
-                  style={{ width: `${(news.count / 150) * 100}%` }}
-                ></div>
               </div>
 
               {/* Latest News Table */}
@@ -200,71 +158,6 @@ const IndexPage: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="container my-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <News
-            title="News list"
-            link="/"
-            limit={5}
-            box={2}
-            style={1}
-            item={newsItems}
-          />
-          <News
-            title="Videos list"
-            link="/"
-            limit={5}
-            box={2}
-            style={1}
-            item={videoItems}
-          />
-          <News
-            title="Stories list"
-            link="/"
-            limit={5}
-            box={2}
-            style={1}
-            item={[
-              {
-                category: "hello",
-                post: [
-                  {
-                    img: "/post/1.jpg",
-                    link: "/news/1",
-                    title:
-                      "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                  },
-                  {
-                    img: "/post/2.jpg",
-                    link: "/news/1",
-                    title:
-                      "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                  },
-                  {
-                    img: "/post/3.jpg",
-                    link: "/news/1",
-                    title:
-                      "Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                  },
-                  {
-                    img: "/post/4.jpg",
-                    link: "/news/1",
-                    title:
-                      "Supply a Four Piece Set of American Solid Color European and American Style Chemical Fiber Bed Sheets",
-                  },
-                  {
-                    img: "/post/5.jpg",
-                    link: "/news/1",
-                    title:
-                      "China Wholesale Cheap Hand Made Brazilian Virgin Remy Long Human Hair Natural Bone Straight 360 Full HD Transparent Swiss Lace Front Wigs for Black Women",
-                  },
-                ],
-              },
-            ]}
-          />
         </div>
       </div>
     </>
