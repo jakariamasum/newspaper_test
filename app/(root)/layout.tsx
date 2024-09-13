@@ -70,27 +70,33 @@ export default function RootLayout({
     return (
       <main>
         <Header top={1} header={1} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
           <div
-            className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            className="bg-gradient-to-r from-blue-500 to-green-500 shadow-lg rounded-xl p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer text-white"
             onClick={() => handleCardClick("all")}
           >
-            See All
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-3xl font-bold mb-2">🌍</div> {/* Icon */}
+              <div className="text-xl font-bold">See All</div>
+            </div>
           </div>
+
           {language?.map((lang) => (
             <div
               key={lang._id}
-              className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              className="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
               onClick={() => handleCardClick(lang.language_code)}
             >
-              <div className="text-center block">
-                <div className="text-lg font-bold text-gray-800 mb-2">
+              <div className="flex flex-col items-center justify-center">
+                <div className="text-3xl font-bold text-blue-500 mb-2">🌐</div>{" "}
+                <div className="text-lg font-bold text-gray-800 mb-1">
                   {lang.title}
                 </div>
               </div>
             </div>
           ))}
         </div>
+
         <Footer />
       </main>
     );
