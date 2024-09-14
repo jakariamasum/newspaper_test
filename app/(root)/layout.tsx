@@ -7,6 +7,7 @@ import axiosPublic from "@/lib/axiosPublic";
 import { useRouter, usePathname } from "next/navigation";
 import { useLang } from "../context/langContext";
 import Loader from "@/components/Loader";
+import Image from "next/image";
 
 type TLanguage = {
   _id: string;
@@ -20,26 +21,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { settings } = useSettings();
-  const { setLang } = useLang();
+  const { setLang, lang } = useLang();
   const [language, setLanguage] = useState<TLanguage[]>([]);
   const router = useRouter();
   const pathname = usePathname();
   const [showOptions, setShowOptions] = useState(true);
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  console.log(lang);
+
+  const getLangFromPath = () => {
+    const pathParts = pathname.split("/").filter(Boolean);
+    if (pathParts.length > 0) {
+      return pathParts[0];
+    }
+    return null;
+  };
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("selectedLanguage");
-    if (savedLang === settings?.content && settings?.content !== "off") {
+    const savedLang = sessionStorage.getItem("selectedLanguage");
+    const langFromPath = getLangFromPath();
+
+    if (
+      savedLang &&
+      settings?.content !== "off" &&
+      savedLang === settings?.content
+    ) {
       setLang(savedLang as string);
-    } else if (settings?.content && settings.content !== "off") {
+    } else if (langFromPath && settings?.content) {
+      setLang(langFromPath);
+      sessionStorage.setItem("selectedLanguage", langFromPath);
+    } else if (settings?.content && settings?.content !== "off") {
       setLang(settings.content);
-      localStorage.setItem("selectedLanguage", settings.content);
+      sessionStorage.setItem("selectedLanguage", settings.content);
     } else if (settings?.content === "off") {
-      localStorage.removeItem("selectedLanguage");
-      setLang("all");
+      sessionStorage.removeItem("selectedLanguage");
     }
-  }, [settings?.content, setLang]);
+  }, [settings?.content, setLang, pathname]);
 
   useEffect(() => {
     const fetchLanguage = async () => {
@@ -60,20 +78,26 @@ export default function RootLayout({
   }, [settings?.content]);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("selectedLanguage");
+    const savedLang = sessionStorage.getItem("selectedLanguage");
+    const langFromPath = getLangFromPath();
 
-    if (isSettingsLoaded && savedLang && pathname === "/") {
-      setLoading(true);
-      setLang(savedLang);
-      router.push(`/${savedLang}`);
-      setLoading(false);
+    if (isSettingsLoaded && pathname === "/") {
+      if (savedLang) {
+        setLoading(true);
+        setLang(savedLang);
+        router.push(`/${savedLang}`);
+        setLoading(false);
+      } else if (langFromPath) {
+        setLang(langFromPath);
+        sessionStorage.setItem("selectedLanguage", langFromPath);
+      }
     }
   }, [isSettingsLoaded, pathname, setLang, router]);
 
   const handleCardClick = (languageCode: string) => {
     setShowOptions(false);
     setLang(languageCode);
-    localStorage.setItem("selectedLanguage", languageCode);
+    sessionStorage.setItem("selectedLanguage", languageCode);
     router.push(`/${languageCode}`);
   };
 
@@ -84,6 +108,15 @@ export default function RootLayout({
   if (settings?.content === "off" && showOptions && pathname === "/") {
     return (
       <main>
+        <div className="flex justify-center mt-2">
+          <Image
+            src={settings?.logo || "/logo.svg"}
+            width={150}
+            height={45}
+            alt="logo"
+            className="outline-0"
+          />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
           {language?.map((lang) => (
             <div

@@ -7,6 +7,8 @@ import Dates from "./Date";
 import { useMenusData } from "@/app/utils/Menu";
 import { useLang } from "@/app/context/langContext";
 import axiosPublic from "@/lib/axiosPublic";
+import { useRouter } from "next/navigation";
+import { useSettings } from "@/app/context/settingContext";
 
 interface HeaderProps {
   top?: number;
@@ -76,8 +78,15 @@ const menusItem = [
 
 const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
   const { lang, setLang } = useLang();
+  const { settings } = useSettings();
   const [languages, setLanguages] = useState<ILanguage[]>([]);
   const menus = useMenusData();
+  const router = useRouter();
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLanguage = e.target.value;
+    setLang(selectedLanguage);
+    router.push(`/${selectedLanguage}`);
+  };
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -148,10 +157,11 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
                   </svg>
                 </Link>
                 <select
-                  onChange={(e) => setLang(e.target.value)}
+                  onChange={handleLanguageChange}
+                  value={lang}
                   className="bg-black text-white"
                 >
-                  <option value="all">All</option>
+                  <option value="">Home</option>
                   {languages?.map((lang) => (
                     <option key={lang?._id} value={lang?.language_code}>
                       {lang?.language_code?.toLocaleUpperCase()}
@@ -172,7 +182,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
             <div className="flex items-center justify-between">
               <Link href="/">
                 <Image
-                  src="/logo.svg"
+                  src={settings?.logo || "/logo.svg"}
                   width={200}
                   height={50}
                   alt="logo"
