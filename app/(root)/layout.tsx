@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { useSettings } from "../context/settingContext";
 import { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useLang } from "../context/langContext";
 import Loader from "@/components/Loader";
 
@@ -23,12 +23,24 @@ export default function RootLayout({
   const { setLang } = useLang();
   const [language, setLanguage] = useState<TLanguage[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
   const [showOptions, setShowOptions] = useState(true);
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
-  if (settings?.content !== "off") {
-    setLang(settings?.content);
-  }
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("selectedLanguage");
+    if (savedLang === settings?.content && settings?.content !== "off") {
+      setLang(savedLang as string);
+    } else if (settings?.content && settings.content !== "off") {
+      setLang(settings.content);
+      localStorage.setItem("selectedLanguage", settings.content);
+    } else if (settings?.content === "off") {
+      localStorage.removeItem("selectedLanguage");
+      setLang("all");
+    }
+  }, [settings?.content, setLang]);
+
   useEffect(() => {
     const fetchLanguage = async () => {
       try {
@@ -48,17 +60,20 @@ export default function RootLayout({
   }, [settings?.content]);
 
   useEffect(() => {
-    if (isSettingsLoaded && settings?.content !== "off") {
+    const savedLang = localStorage.getItem("selectedLanguage");
+
+    if (isSettingsLoaded && savedLang && pathname === "/") {
       setLoading(true);
-      setLang(settings?.content);
-      router.push(`/${settings?.content}`);
+      setLang(savedLang);
+      router.push(`/${savedLang}`);
       setLoading(false);
     }
-  }, [isSettingsLoaded, settings?.content, setLang, router]);
+  }, [isSettingsLoaded, pathname, setLang, router]);
 
   const handleCardClick = (languageCode: string) => {
     setShowOptions(false);
     setLang(languageCode);
+    localStorage.setItem("selectedLanguage", languageCode);
     router.push(`/${languageCode}`);
   };
 
@@ -66,7 +81,7 @@ export default function RootLayout({
     return <Loader />;
   }
 
-  if (settings?.content === "off" && showOptions) {
+  if (settings?.content === "off" && showOptions && pathname === "/") {
     return (
       <main>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
