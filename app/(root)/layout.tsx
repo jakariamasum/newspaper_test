@@ -69,18 +69,7 @@ export default function RootLayout({
   if (settings?.content === "off" && showOptions) {
     return (
       <main>
-        <Header top={1} header={1} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-green-500 shadow-lg rounded-xl p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer text-white"
-            onClick={() => handleCardClick("all")}
-          >
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-3xl font-bold mb-2">🌍</div> {/* Icon */}
-              <div className="text-xl font-bold">See All</div>
-            </div>
-          </div>
-
           {language?.map((lang) => (
             <div
               key={lang._id}
@@ -96,8 +85,6 @@ export default function RootLayout({
             </div>
           ))}
         </div>
-
-        <Footer />
       </main>
     );
   }
