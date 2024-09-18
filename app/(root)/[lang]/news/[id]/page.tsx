@@ -6,10 +6,11 @@ import Link from "next/link";
 import Comment from "@/components/Comment";
 import axiosPublic from "@/lib/axiosPublic";
 import AdDisplay from "@/app/utils/AdDisplay";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import moment from "moment";
 import { postFormat } from "@/app/utils/postFormat";
 import { getRandomPosts } from "@/app/utils/getRandomPosts";
+import { useLang } from "@/app/context/langContext";
 
 interface IAds {
   id: string;
@@ -28,6 +29,8 @@ type TNews = {
   category: { category: { title: string; _id: string } };
 };
 const IndexPage: React.FC = () => {
+  const { lang } = useLang();
+  const router = useRouter();
   const [page] = useState<number>(1);
   const [ads, setAds] = useState<IAds[]>([]);
   const path = useParams();
@@ -64,6 +67,10 @@ const IndexPage: React.FC = () => {
     (item) => item.category === news?.category?.category?.title
   );
   const mostPopularPosts = getRandomPosts(relatedPosts, 5);
+  const handleImageClick = (lang: string, news: any) => {
+    const imgSrc = encodeURIComponent(news?.img || "default.jpg");
+    window.location.href = `/${lang}/gallery?image=${imgSrc}`;
+  };
 
   return (
     <>
@@ -233,7 +240,8 @@ const IndexPage: React.FC = () => {
                   width={696}
                   height={464}
                   alt={news?.title || "post"}
-                  className="w-full h-auto"
+                  className="w-full h-auto cursor-pointer"
+                  onClick={() => handleImageClick(lang, news)}
                 />
               </div>
               <AdDisplay ads={ads} adId="detailsImagesBottom" />
@@ -260,7 +268,8 @@ const IndexPage: React.FC = () => {
                   width={696}
                   height={464}
                   alt={news?.title || "post"}
-                  className="w-min mx-auto h-auto"
+                  className="w-min mx-auto h-auto cursor-pointer"
+                  onClick={() => handleImageClick(lang, news)}
                 />
               </div>
 
@@ -320,7 +329,8 @@ const IndexPage: React.FC = () => {
                   width={696}
                   height={464}
                   alt={news?.title || `post`}
-                  className="w-full h-auto"
+                  className="w-full h-auto cursor-pointer"
+                  onClick={() => handleImageClick(lang, news)}
                 />
               </div>
 
@@ -351,7 +361,8 @@ const IndexPage: React.FC = () => {
                       width={20}
                       height={20}
                       alt={news?.author?.title || ""}
-                      className="rounded-full"
+                      className="rounded-full cursor-pointer"
+                      onClick={() => handleImageClick(lang, news)}
                     />
                     <span>By</span>
                     <strong>{news?.title || ""}</strong>
