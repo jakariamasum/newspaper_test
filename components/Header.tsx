@@ -180,7 +180,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
         <div className="bg-white">
           <div className="container">
             <div className="flex items-center justify-between">
-              <Link href="/">
+              <Link href={`/${lang}`}>
                 <Image
                   src={settings?.logo || "/logo.svg"}
                   width={200}

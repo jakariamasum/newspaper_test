@@ -6,10 +6,17 @@ import { useRouter } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import Loader from "@/components/Loader";
+import { useLang } from "@/app/context/langContext";
 interface TNews {
   _id: string;
   title: string;
   lang: string;
+  category: {
+    _id: string;
+    category: {
+      title: string;
+    };
+  };
 }
 const IndexPage: React.FC = () => {
   const [news, setNews] = useState<TNews[]>([]);
@@ -17,12 +24,15 @@ const IndexPage: React.FC = () => {
   const [editItem, setEditItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const router = useRouter();
+  const { lang } = useLang();
 
   useEffect(() => {
     const fetchNews = async () => {
+      if (!lang) return;
+
       setLoading(true);
       try {
-        const response = await axiosPublic.get("/news");
+        const response = await axiosPublic.get(`/news/${lang}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Failed to fetch news:", error);
@@ -32,7 +42,7 @@ const IndexPage: React.FC = () => {
     };
 
     fetchNews();
-  }, []);
+  }, [lang]);
 
   const handleEdit = (item: TNews) => {
     router.push(`/admin/post/edit/${item._id}`);
@@ -80,10 +90,10 @@ const IndexPage: React.FC = () => {
                 Title
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Languages
+                Details
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Details
+                Category
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Actions
@@ -96,12 +106,10 @@ const IndexPage: React.FC = () => {
                 key={item._id}
                 className="hover:bg-gray-50 transition-colors duration-200"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 whitespace-normal break-words text-sm font-medium text-gray-900 max-w-xs">
                   {item.title}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {item.lang ? item.lang : "No languages available"}
-                </td>
+
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   <Link
                     href={`/news/${item._id}`}
@@ -110,6 +118,10 @@ const IndexPage: React.FC = () => {
                     See Details
                   </Link>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  {item?.category?.category?.title || "N/A"}
+                </td>
+
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-x-2">
                   <button
                     onClick={() => handleEdit(item)}
