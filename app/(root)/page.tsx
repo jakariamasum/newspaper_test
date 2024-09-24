@@ -117,7 +117,7 @@ const IndexPage: React.FC = () => {
                 >
                   <News
                     title={"Test"}
-                    link={`/news/all-category/${section._id}`}
+                    link={`/categories/${section._id}`}
                     limit={Number(section?.sectionLimit) || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}

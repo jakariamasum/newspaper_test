@@ -87,7 +87,7 @@ export const useMenusData = () => {
         .filter((sub) => sub.category === category._id)
         .map((sub) => ({
           title: sub.title,
-          link: `/${lang}/news/all-category/${category._id}?lang=${lang}`,
+          link: `/${lang}/categories/${category._id}?lang=${lang}`,
         }));
 
       const postItems = posts
@@ -103,7 +103,7 @@ export const useMenusData = () => {
         .filter((sub) => sub.category === category._id)
         .map((sub) => ({
           title: sub.title,
-          link: `/${lang}/news/all-category/${sub._id}`,
+          link: `/${lang}/categories/${sub._id}`,
           post: posts
             .filter((post) => post.subCategory === sub._id)
             .map((post) => ({
@@ -117,7 +117,7 @@ export const useMenusData = () => {
 
       let menuItem: MenuItem = {
         title: category.title,
-        link: `/${lang}/news/all-category/${category._id}`,
+        link: `/${lang}/categories/${category._id}`,
       };
 
       if (subItems.length > 0) {

@@ -1,4 +1,5 @@
 "use client";
+import { useLang } from "@/app/context/langContext";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
@@ -32,12 +33,15 @@ const IndexPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const observer = useRef<IntersectionObserver>();
   const { _id } = useParams();
+  const { lang } = useLang();
 
   useEffect(() => {
     const fetchAllNews = async () => {
       try {
         setLoading(true);
-        const response = await axiosPublic.get(`/news/category-news/${_id}`);
+        const response = await axiosPublic.get(
+          `/news/category-news/${_id}?lang=${lang}`
+        );
         setAllNews(response.data.data);
         setDisplayedNews(response.data.data.slice(0, 5));
         setLoading(false);
@@ -49,6 +53,7 @@ const IndexPage: React.FC = () => {
 
     fetchAllNews();
   }, []);
+  console.log(allNews);
 
   useEffect(() => {
     if (newsToShow > 5) {
