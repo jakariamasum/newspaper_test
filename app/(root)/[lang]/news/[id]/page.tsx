@@ -37,6 +37,7 @@ const IndexPage: React.FC = () => {
   const [news, setNews] = useState<TNews>();
   const [allNews, setAllNews] = useState([]);
   const [categories, setCategories] = useState([]);
+  const url = window.location.href;
   useEffect(() => {
     const fetchAllNews = async () => {
       const response = await axiosPublic.get(`/news?lang=all`);
@@ -126,7 +127,7 @@ const IndexPage: React.FC = () => {
                       <p>Share</p>
                     </div>
                     <Link
-                      href="/"
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
                       className="bg-[#516eab] p-2 rounded-sm"
                       target="_blank"
                     >
@@ -143,7 +144,7 @@ const IndexPage: React.FC = () => {
                       </svg>
                     </Link>
                     <Link
-                      href="/"
+                      href={`https://twitter.com/intent/tweet?text=${url}`}
                       className="bg-[#29c5f6] p-2 rounded-sm"
                       target="_blank"
                     >
@@ -160,7 +161,7 @@ const IndexPage: React.FC = () => {
                       </svg>
                     </Link>
                     <Link
-                      href="/"
+                      href={`https://pinterest.com/pin/create/button/?url=${url}`}
                       className="bg-[#ca212a] p-2 rounded-sm"
                       target="_blank"
                     >
@@ -177,7 +178,7 @@ const IndexPage: React.FC = () => {
                       </svg>
                     </Link>
                     <Link
-                      href="/"
+                      href={`https://wa.me/?text=${url}`}
                       className="bg-[#7bbf6a] p-2 rounded-sm"
                       target="_blank"
                     >
