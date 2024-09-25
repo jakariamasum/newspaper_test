@@ -7,7 +7,11 @@ import Tag from "@/components/admin/Tag";
 import Photo from "@/components/admin/Photo";
 import { Toaster, toast } from "sonner";
 import { useParams } from "next/navigation";
-
+import Time from "@/components/admin/Time";
+interface TUser {
+  _id: string;
+  title: string;
+}
 const EditNews: React.FC = () => {
   const router = useRouter();
   const { _id } = useParams();
@@ -16,6 +20,9 @@ const EditNews: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
   const [author, setAuthor] = useState<string>("");
+  const [users, setUsers] = useState<TUser[]>([]);
+  const [time, setTime] = useState(null);
+  console.log(time);
 
   useEffect(() => {
     if (_id) {
@@ -28,10 +35,20 @@ const EditNews: React.FC = () => {
           setTags(data.tags);
           setImg(data.img);
           setAuthor(data.author.title);
+          setTime(data.createdAt);
         } catch (error) {
           console.error("Failed to fetch news item:", error);
         }
       };
+      const fetchUsers = async () => {
+        const response = await axiosPublic.get("/user/admin", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        setUsers(response.data.data);
+      };
+      fetchUsers();
 
       fetchNewsItem();
     }
@@ -45,6 +62,7 @@ const EditNews: React.FC = () => {
         tags,
         img,
       };
+      console.log(payload);
       const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -77,33 +95,47 @@ const EditNews: React.FC = () => {
                 className="p-2 mt-2 w-full outline-none rounded-md"
               />
             </div>
-            <Content value={description} onChange={setDescription} />
-            <Photo img={img} onChange={setImg} title={""} />
-          </div>
-          <div className="md:w-1/3">
-            <Tag value={tags} onChange={setTags} />
             <div className="mb-4">
-              <p>Reporter</p>
-              <input
-                type="text"
-                placeholder="Reporter"
-                value={author}
-                className="p-2 mt-2 w-full outline-none rounded-md cursor-not-allowed  bg-gray-300"
-                readOnly
-              />
+              <p>Description</p>
+              <Content value={description} onChange={setDescription} />
             </div>
             <div className="mb-4">
+              <p>Keywords</p>
+              <Tag value={tags} onChange={setTags} />
+            </div>
+          </div>
+          <div className="w-full md:w-1/3">
+            <div className="border-2 border-main border-dashed rounded-md p-2 my-8">
               <button
+                type="button"
                 onClick={handlePublish}
-                className="w-full py-2 px-4 bg-main text-white font-bold rounded-md"
+                className="bg-main flex items-center justify-center w-full text-white px-4 py-2 rounded-md"
               >
-                Edit Now
+                Publish
               </button>
+            </div>
+            <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
+            <Time time={time} />
+
+            <div className="mb-4">
+              <p>Reporter</p>
+              <select
+                className="p-2 mt-2 w-full outline-none rounded-md"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              >
+                <option value="">Select a reporter</option>
+                {users?.map((user: TUser) => (
+                  <option value={user?._id} key={user?._id}>
+                    {user?.title}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
       </div>
-      <Toaster richColors position="top-right" />
+      <Toaster position="top-right" richColors closeButton />
     </>
   );
 };

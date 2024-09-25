@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdPublish } from "react-icons/md";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import moment from "moment";
@@ -17,16 +17,10 @@ interface TNews {
   _id: string;
   title: string;
   content: string;
-  summary?: string;
   author: {
     title: string;
   };
-  page_tag: string;
-  publish_date?: string;
   status: string;
-  views: number;
-  likes: number;
-  dislikes: number;
   lang?: string;
   category: {
     _id: string;
@@ -34,6 +28,7 @@ interface TNews {
       title: string;
     };
   };
+  createdAt: string;
 }
 
 const ModuleTypePage = () => {
@@ -41,15 +36,42 @@ const ModuleTypePage = () => {
   const { link } = useParams();
   const { setLang, lang } = useLang();
   const [news, setNews] = useState<TNews[]>([]);
-  const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [currentNews, setCurrentNews] = useState<TNews | null>(null);
-  const [editedNews, setEditedNews] = useState<TNews | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
   // Handlers for edit and delete actions
   const handleEdit = (item: TNews) => {
     router.push(`/admin/post/edit/${item._id}`);
+  };
+
+  const handleApprove = async (id: string) => {
+    try {
+      const payload = {
+        status: "published",
+      };
+      const response = await axiosPublic.put(`/news/admin/${id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        // Assuming `setNews` is the state updater for your news list
+        setNews((prevNews) =>
+          prevNews.map((newsItem) =>
+            newsItem._id === id
+              ? { ...newsItem, status: "published" }
+              : newsItem
+          )
+        );
+        toast.success("News Published successfully!");
+      } else {
+        toast.warning("Failed to publish news");
+      }
+    } catch (error) {
+      console.error("Failed to publish news:", error);
+      toast.warning("Failed to publish news");
+    }
   };
 
   const handleDelete = (newsItem: TNews) => {
@@ -78,41 +100,6 @@ const ModuleTypePage = () => {
       setDeleteConfirmOpen(false);
       setCurrentNews(null);
     }
-  };
-
-  const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editedNews) {
-      const response = await axiosPublic.put(
-        `/news/admin/${editedNews._id}`,
-        editedNews,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("News Updated successfully!");
-        setNews((prevNews) =>
-          prevNews.map((n) => (n._id === editedNews._id ? editedNews : n))
-        );
-      }
-      setEditModalOpen(false);
-      setEditedNews(null);
-      setCurrentNews(null);
-    } else {
-      toast.warning("Something went wrong!");
-    }
-  };
-
-  const handleEditChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setEditedNews((prev) => ({ ...prev!, [name]: value }));
   };
 
   useEffect(() => {
@@ -170,10 +157,9 @@ const ModuleTypePage = () => {
               <th className="py-2 px-4 border-b w-[350px] break-words whitespace-normal">
                 Title
               </th>
-              <th className="py-2 px-4 border-b">Content</th>
               <th className="py-2 px-4 border-b">Author</th>
               <th className="py-2 px-4 border-b">Category</th>
-
+              <th className="py-2 px-4 border-b">Status</th>
               <th className="py-2 px-4 border-b">Publish Date</th>
               <th className="py-2 px-4 border-b flex gap-1 items-center ">
                 Action
@@ -183,19 +169,37 @@ const ModuleTypePage = () => {
           <tbody>
             {news.map((n) => (
               <tr key={n._id}>
-                <td className="py-2 px-4 border-b">{n.title}</td>
-                <td className="py-2 px-4 border-b hover:underline text-blue-500">
-                  <Link href={`/news/${n._id}`}>See details</Link>
+                <td className="py-2 px-4 border-b hover:underline hover:text-blue-500">
+                  <Link href={`/news/${n._id}`}>{n.title}</Link>
                 </td>
                 <td className="py-2 px-4 border-b">{n.author.title}</td>
                 <td className="py-2 px-4 border-b">
                   {n.category.category.title}
                 </td>
+                <td className={`py-2 px-4 border-b text-white `}>
+                  <span
+                    className={` px-3 py-1 text-center rounded-md
+                    ${
+                      n.status === "published" ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  >
+                    {n.status}
+                  </span>
+                </td>
 
                 <td className="py-2 px-4 border-b">
-                  {moment(n.publish_date).format("MMMM Do YYYY")}
+                  {moment(n.createdAt).format("MMMM Do YYYY")}
                 </td>
                 <td className="py-2 px-4 border-b flex gap-2">
+                  {n?.status !== "published" && (
+                    <span onClick={() => handleApprove(n._id)}>
+                      <MdPublish
+                        fill="green"
+                        size={22}
+                        className="cursor-pointer"
+                      />
+                    </span>
+                  )}
                   <span onClick={() => handleEdit(n)}>
                     <FaEdit fill="blue" size={22} className="cursor-pointer" />
                   </span>
@@ -208,63 +212,6 @@ const ModuleTypePage = () => {
           </tbody>
         </table>
       </div>
-      {editModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Edit News</h2>
-            <form onSubmit={handleEditSubmit}>
-              <div className="mb-4">
-                <label className="block mb-2">Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  defaultValue={currentNews?.title}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  onChange={handleEditChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Content</label>
-                <textarea
-                  name="content"
-                  defaultValue={currentNews?.content}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  onChange={handleEditChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Status</label>
-                <select
-                  name="status"
-                  defaultValue={currentNews?.status}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  onChange={handleEditChange}
-                >
-                  <option value="published">published</option>
-                  <option value="draft">draft</option>
-                  <option value="unavailable">unavailable</option>
-                </select>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-gray-300 rounded"
-                  onClick={() => setEditModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {deleteConfirmOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
