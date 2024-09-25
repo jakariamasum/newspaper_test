@@ -25,6 +25,7 @@ const IndexPage: React.FC = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const router = useRouter();
   const { lang } = useLang();
+  console.log(lang);
 
   useEffect(() => {
     const fetchNews = async () => {

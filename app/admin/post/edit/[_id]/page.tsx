@@ -8,21 +8,24 @@ import Photo from "@/components/admin/Photo";
 import { Toaster, toast } from "sonner";
 import { useParams } from "next/navigation";
 import Time from "@/components/admin/Time";
+import { useLang } from "@/app/context/langContext";
+
 interface TUser {
   _id: string;
   title: string;
 }
+
 const EditNews: React.FC = () => {
   const router = useRouter();
   const { _id } = useParams();
+  const { lang, setLang } = useLang(); // Ensure you have a setLang function
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
-  const [author, setAuthor] = useState<string>("");
+  const [author, setAuthor] = useState<string>(""); // Store author ID
   const [users, setUsers] = useState<TUser[]>([]);
-  const [time, setTime] = useState(null);
-  console.log(time);
+  const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {
     if (_id) {
@@ -34,22 +37,27 @@ const EditNews: React.FC = () => {
           setDescription(data.content);
           setTags(data.tags);
           setImg(data.img);
-          setAuthor(data.author.title);
+          setAuthor(data.author._id); // Set author ID here
           setTime(data.createdAt);
         } catch (error) {
           console.error("Failed to fetch news item:", error);
         }
       };
-      const fetchUsers = async () => {
-        const response = await axiosPublic.get("/user/admin", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        });
-        setUsers(response.data.data);
-      };
-      fetchUsers();
 
+      const fetchUsers = async () => {
+        try {
+          const response = await axiosPublic.get("/user/admin", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          });
+          setUsers(response.data.data);
+        } catch (error) {
+          console.error("Failed to fetch users:", error);
+        }
+      };
+
+      fetchUsers();
       fetchNewsItem();
     }
   }, [_id]);
@@ -61,16 +69,18 @@ const EditNews: React.FC = () => {
         description,
         tags,
         img,
+        updatedAt: time,
+        author,
       };
-      console.log(payload);
       const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
+
       if (response.status === 200) {
         toast.success("News updated successfully!");
-        router.push("/admin/post");
+        router.push(`/admin/type/${lang}`);
       } else {
         toast.warning("Failed to update news");
       }
@@ -79,6 +89,13 @@ const EditNews: React.FC = () => {
       toast.warning("Failed to update news");
     }
   };
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      setLang(savedLang);
+    }
+  }, []);
 
   return (
     <>
@@ -115,8 +132,7 @@ const EditNews: React.FC = () => {
               </button>
             </div>
             <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
-            <Time time={time} />
-
+            <Time time={time} setTime={setTime} />
             <div className="mb-4">
               <p>Reporter</p>
               <select
@@ -126,8 +142,8 @@ const EditNews: React.FC = () => {
               >
                 <option value="">Select a reporter</option>
                 {users?.map((user: TUser) => (
-                  <option value={user?._id} key={user?._id}>
-                    {user?.title}
+                  <option value={user._id} key={user._id}>
+                    {user.title}
                   </option>
                 ))}
               </select>
