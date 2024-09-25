@@ -7,10 +7,29 @@ import Link from "next/link";
 import { useLang } from "../context/langContext";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
+import { MdPublish } from "react-icons/md";
+import { toast, Toaster } from "sonner";
+import moment from "moment";
+
 type TLanguageCount = {
   lang: string;
   count: number;
-  latestNews: any[];
+  latestNews: TNews[];
+};
+
+type TLanguage = {
+  _id: string;
+  title: string;
+  language_code: string;
+  createdAt: string;
+};
+
+type TNews = {
+  _id: string;
+  status: string;
+  title: string;
+  publishedDate: string;
+  lang: string;
 };
 
 const IndexPage: React.FC = () => {
@@ -18,8 +37,10 @@ const IndexPage: React.FC = () => {
   const router = useRouter();
   const { settings } = useSettings();
   const { user } = useAuth();
-  const [news, setNews] = useState([]);
+  const [news, setNews] = useState<TNews[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [allLanguages, setAllLanguages] = useState<TLanguage[]>([]);
+
   useEffect(() => {
     const fetchNewsData = async () => {
       setLoading(true);
@@ -28,29 +49,33 @@ const IndexPage: React.FC = () => {
       setLoading(false);
     };
     fetchNewsData();
+    const fetchLanguageData = async () => {
+      setLoading(true);
+      const response = await axiosPublic.get("/language");
+      setAllLanguages(response.data.data);
+      setLoading(false);
+    };
+    fetchLanguageData();
   }, []);
 
-  const languageCounts: TLanguageCount[] = Object.values(
-    news.reduce(
-      (acc: { [key: string]: TLanguageCount }, item: { lang: string }) => {
-        if (!acc[item.lang]) {
-          acc[item.lang] = { lang: item.lang, count: 0, latestNews: [] };
-        }
-        acc[item.lang].count += 1;
-        acc[item.lang].latestNews.push(item);
-        return acc;
-      },
-      {}
-    )
-  ).map((langCount) => ({
-    ...langCount,
-    latestNews: langCount.latestNews
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      .slice(0, 5),
-  }));
+  const languageCounts: TLanguageCount[] = allLanguages.map((language) => {
+    const newsForLang = news.filter(
+      (item: TNews) => item.lang === language.language_code
+    );
+
+    return {
+      lang: language.language_code,
+      count: newsForLang.length,
+      latestNews: newsForLang
+        .filter((item: TNews) => item.status === "pending")
+        .sort(
+          (a, b) =>
+            new Date(b.publishedDate).getTime() -
+            new Date(a.publishedDate).getTime()
+        )
+        .slice(0, 5),
+    };
+  });
 
   const handleAddNews = (lang: string) => {
     setLang(lang);
@@ -60,6 +85,35 @@ const IndexPage: React.FC = () => {
   if (loading) {
     return <Loader />;
   }
+
+  const handleApprove = async (id: string) => {
+    try {
+      const payload = {
+        status: "published",
+      };
+      const response = await axiosPublic.put(`/news/admin/${id}`, payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setNews((prevNews) =>
+          prevNews.map((newsItem) =>
+            newsItem._id === id
+              ? { ...newsItem, status: "published" }
+              : newsItem
+          )
+        );
+        toast.success("News Published successfully!");
+      } else {
+        toast.warning("Failed to publish news");
+      }
+    } catch (error) {
+      console.error("Failed to publish news:", error);
+      toast.warning("Failed to publish news");
+    }
+  };
 
   return (
     <>
@@ -96,7 +150,7 @@ const IndexPage: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4  py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-8">
           {languageCounts.map((news, index) => (
             <div
               key={index}
@@ -108,7 +162,6 @@ const IndexPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Latest News Table */}
               <div className="overflow-x-auto py-4">
                 <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                   <thead className="bg-gray-50">
@@ -120,28 +173,53 @@ const IndexPage: React.FC = () => {
                       <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/4">
                         Date
                       </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/4">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {news.latestNews.map((item) => (
-                      <tr
-                        key={item._id}
-                        className="hover:bg-gray-100 border-t border-gray-200 transition-colors"
-                      >
-                        <Link href={`/news/${item._id}`}>
-                          <td
-                            className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:text-clip"
-                            title={item.title}
-                          >
-                            {item.title}
-                          </td>
-                        </Link>
+                    {news.latestNews.length > 0 ? (
+                      news.latestNews.map((item) => (
+                        <tr
+                          key={item._id}
+                          className="hover:bg-gray-100 border-t border-gray-200 transition-colors"
+                        >
+                          <Link href={`/news/${item._id}`}>
+                            <td
+                              className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:underline hover:text-blue-500 hover:text-clip"
+                              title={item.title}
+                            >
+                              {item.title}
+                            </td>
+                          </Link>
 
-                        <td className="py-3 px-4 text-gray-800">
-                          {new Date(item.createdAt).toLocaleDateString()}
+                          <td className="py-3 px-4 text-gray-800">
+                            {moment(item.publishedDate).format("MMMM Do YYYY")}
+                          </td>
+                          <td className="py-3 px-4 text-gray-800">
+                            {item?.status !== "published" && (
+                              <span onClick={() => handleApprove(item._id)}>
+                                <MdPublish
+                                  fill="blue"
+                                  size={22}
+                                  className="cursor-pointer"
+                                />
+                              </span>
+                            )}{" "}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={2}
+                          className="py-3 px-4 text-center text-gray-500"
+                        >
+                          No pending news
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -149,6 +227,7 @@ const IndexPage: React.FC = () => {
           ))}
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

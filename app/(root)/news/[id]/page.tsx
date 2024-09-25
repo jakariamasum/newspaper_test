@@ -248,19 +248,18 @@ const IndexPage: React.FC = () => {
                 />
 
                 <AdDisplay ads={ads} adId="detailsDescriptionCentre" />
-                <div
-                  className="mb-2"
-                  dangerouslySetInnerHTML={{
-                    __html: contentParts?.slice(halfwayIndex).join("</p>"),
-                  }}
-                />
-
                 <Image
                   src={news?.img || "/default.jpg"}
                   width={696}
                   height={464}
                   alt={news?.title || "post"}
                   className="w-min mx-auto h-auto"
+                />
+                <div
+                  className="mb-2"
+                  dangerouslySetInnerHTML={{
+                    __html: contentParts?.slice(halfwayIndex).join("</p>"),
+                  }}
                 />
               </div>
 
