@@ -44,34 +44,21 @@ const IndexPage: React.FC = () => {
           href="/admin/city/add"
           className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
         >
-          Add New City
+          Add City
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div className="w-full max-w-7xl bg-white border border-gray-300 rounded-lg shadow-lg divide-y divide-gray-200">
         {cities.map((city) => (
           <div
             key={city._id}
-            className="bg-white border border-gray-300 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105 hover:shadow-xl"
+            className="flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition-colors duration-200"
           >
-            <div className="flex items-center space-x-4 mb-4">
-              <FaMapMarkerAlt className="text-gray-700 text-3xl" />
-              <h3 className="text-xl font-semibold text-gray-800">
+            <div className="flex items-center space-x-4">
+              <FaMapMarkerAlt className="text-main text-2xl" />
+              <h3 className="text-lg font-semibold text-gray-800">
                 {city.title}
               </h3>
-            </div>
-            <div className="flex items-center space-x-2 text-gray-600 text-sm mb-4">
-              <span className="flex items-center space-x-1">
-                <FaCalendarAlt className="text-gray-500 text-lg" />
-                <span>{moment(city.createdAt).format("MMMM Do YYYY")}</span>
-              </span>
-            </div>
-            <div className="flex justify-end">
-              <Link
-                href={`/admin/city/`}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-              >
-                View Details
-              </Link>
             </div>
           </div>
         ))}
