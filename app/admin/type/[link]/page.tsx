@@ -28,7 +28,7 @@ interface TNews {
       title: string;
     };
   };
-  updatedAt: string;
+  publishedDate: string;
 }
 
 const ModuleTypePage = () => {
@@ -188,7 +188,7 @@ const ModuleTypePage = () => {
                 </td>
 
                 <td className="py-2 px-4 border-b">
-                  {moment(n.updatedAt).format("MMMM Do YYYY")}
+                  {moment(n.publishedDate).format("MMMM Do YYYY")}
                 </td>
                 <td className="py-2 px-4 border-b flex gap-2">
                   {n?.status !== "published" && (

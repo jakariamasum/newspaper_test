@@ -18,12 +18,12 @@ interface TUser {
 const EditNews: React.FC = () => {
   const router = useRouter();
   const { _id } = useParams();
-  const { lang, setLang } = useLang(); // Ensure you have a setLang function
+  const { lang, setLang } = useLang();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
-  const [author, setAuthor] = useState<string>(""); // Store author ID
+  const [author, setAuthor] = useState<string>("");
   const [users, setUsers] = useState<TUser[]>([]);
   const [time, setTime] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ const EditNews: React.FC = () => {
           setDescription(data.content);
           setTags(data.tags);
           setImg(data.img);
-          setAuthor(data.author._id); // Set author ID here
+          setAuthor(data.author._id);
           setTime(data.createdAt);
         } catch (error) {
           console.error("Failed to fetch news item:", error);
@@ -69,7 +69,7 @@ const EditNews: React.FC = () => {
         description,
         tags,
         img,
-        updatedAt: time,
+        publishedDate: time,
         author,
       };
       const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
@@ -89,13 +89,6 @@ const EditNews: React.FC = () => {
       toast.warning("Failed to update news");
     }
   };
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("lang");
-    if (savedLang) {
-      setLang(savedLang);
-    }
-  }, []);
 
   return (
     <>

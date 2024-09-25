@@ -16,12 +16,7 @@ import { useRouter } from "next/navigation";
 interface TUser {
   _id: string;
   title: string;
-}
-
-interface TCategory {
-  title: string;
-  checked?: boolean;
-  subItems?: TCategory[];
+  preApproved: boolean;
 }
 
 const IndexPage: React.FC = () => {
@@ -42,6 +37,7 @@ const IndexPage: React.FC = () => {
     category: string;
     subCategory?: string;
   }>({ category: "" });
+  const [publishedDate, setPublishedDate] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -91,7 +87,10 @@ const IndexPage: React.FC = () => {
   const transformeCategorydData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
-    const formData = {
+    const selectedReporter = users.find((user) => user._id === reporter);
+
+    const newsStatus = selectedReporter?.preApproved ? "published" : "pending";
+    const payload = {
       title,
       content: description,
       tags,
@@ -100,10 +99,12 @@ const IndexPage: React.FC = () => {
       location,
       category,
       lang,
+      status: newsStatus,
+      publishedDate: publishedDate || new Date().toDateString(),
     };
-
+    console.log(payload);
     try {
-      const response = await axiosPublic.post("/news/admin", formData, {
+      const response = await axiosPublic.post("/news/admin", payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
@@ -155,7 +156,7 @@ const IndexPage: React.FC = () => {
               </button>
             </div>
             <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
-            <Time />
+            <Time time={publishedDate} setTime={setPublishedDate} />
             <Checkbox
               title="Category"
               items={transformeCategorydData}
