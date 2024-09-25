@@ -12,6 +12,7 @@ interface IUser {
   title: string;
   role: string;
   img: string;
+  preApproved: boolean;
 }
 const IndexPage: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -56,6 +57,7 @@ const IndexPage: React.FC = () => {
 
   const handleEditSave = async () => {
     if (currentUser) {
+      console.log(currentUser);
       try {
         const response = await axiosPublic.put(
           `/user/admin/${currentUser._id}`,
@@ -238,8 +240,7 @@ const IndexPage: React.FC = () => {
                 <label className="text-sm font-medium text-gray-700 mb-2">
                   Role
                 </label>
-                <input
-                  type="text"
+                <select
                   name="role"
                   value={currentUser?.role || ""}
                   onChange={(e) =>
@@ -248,7 +249,27 @@ const IndexPage: React.FC = () => {
                     )
                   }
                   className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Role</option>
+                  <option value="admin">Admin</option>
+                  <option value="reporter">Reporter</option>
+                </select>
+              </div>
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  name="preApproved"
+                  checked={currentUser?.preApproved || false}
+                  onChange={(e) =>
+                    setCurrentUser((prev) =>
+                      prev ? { ...prev, preApproved: e.target.checked } : null
+                    )
+                  }
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
+                <label className="ml-2 text-sm font-medium text-gray-700">
+                  Pre-approved
+                </label>
               </div>
               <div className="flex justify-end gap-3 mt-6">
                 <button
