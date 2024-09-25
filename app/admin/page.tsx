@@ -68,10 +68,7 @@ const IndexPage: React.FC = () => {
           <h1 className="text-xl md:text-6xl font-extrabold">
             Welcome {user?.title}!
           </h1>
-          <p
-            className="text-base md:text-2xl"
-            dangerouslySetInnerHTML={{ __html: settings?.description || "" }}
-          />
+
           <strong className="text-2xl">{settings?.title || ""}</strong>
         </div>
       </div>
@@ -119,9 +116,7 @@ const IndexPage: React.FC = () => {
                       <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/3">
                         Title
                       </th>
-                      <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/3">
-                        Content
-                      </th>
+
                       <th className="py-3 px-4 text-left font-medium text-gray-600 w-1/4">
                         Date
                       </th>
@@ -133,22 +128,15 @@ const IndexPage: React.FC = () => {
                         key={item._id}
                         className="hover:bg-gray-100 border-t border-gray-200 transition-colors"
                       >
-                        <td
-                          className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:text-clip"
-                          title={item.title}
-                        >
-                          {item.title}
-                        </td>
-                        <td className="py-3 px-4 text-gray-800">
-                          <Link
-                            href={`/news/${item._id}`}
-                            className="text-blue-500 hover:underline"
+                        <Link href={`/news/${item._id}`}>
+                          <td
+                            className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:text-clip"
+                            title={item.title}
                           >
-                            <span className="hover:underline hover:text-blue-600">
-                              See Details
-                            </span>
-                          </Link>
-                        </td>
+                            {item.title}
+                          </td>
+                        </Link>
+
                         <td className="py-3 px-4 text-gray-800">
                           {new Date(item.createdAt).toLocaleDateString()}
                         </td>
