@@ -3,21 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
 import Builder from "@/components/Builder";
-import Content from "@/components/admin/Content";
-import Photo from "@/components/admin/Photo";
 import { toast, Toaster } from "sonner";
-
-interface SectionData {
-  sectionTitle: string;
-  color: string;
-  backgroundColor: string;
-  desktopGrid: string;
-  mobileGrid: string;
-  sectionLimit: string;
-  imgPosition?: string;
-  width?: string;
-  box: string;
-}
 
 interface ILanguage {
   _id: string;
@@ -25,28 +11,10 @@ interface ILanguage {
   language_code: string;
 }
 
-const paths = [
-  {
-    id: "/home",
-    name: "Home",
-  },
-  {
-    id: "/stories",
-    name: "Stories",
-  },
-  {
-    id: "/videos",
-    name: "Videos",
-  },
-];
-
 const EditPage: React.FC = () => {
   const router = useRouter();
   const { _id } = useParams();
   const [title, setTitle] = useState<string>("");
-  const [path, setPath] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [img, setImg] = useState<string>("");
   const [pageData, setPageData] = useState<any[]>([]);
   const [language, setLanguage] = useState("en");
   const [languages, setLanguages] = useState<ILanguage[]>([]);
@@ -61,9 +29,6 @@ const EditPage: React.FC = () => {
         });
         const page = response.data.data;
         setTitle(page.title);
-        setPath(page.path);
-        setDescription(page.description);
-        setImg(page.img);
         setPageData(page.rows);
         setLanguage(page.language);
       } catch (error) {
@@ -92,11 +57,8 @@ const EditPage: React.FC = () => {
   const handleUpdate = async () => {
     const pageInfo = {
       title,
-      description,
-      img,
       rows: pageData,
       language,
-      path,
     };
     try {
       const response = await axiosPublic.put(`/pages/admin/${_id}`, pageInfo, {
@@ -131,10 +93,7 @@ const EditPage: React.FC = () => {
                 className="p-2 mt-2 w-full outline-none rounded-md"
               />
             </div>
-            <div className="mb-4">
-              <p>Description</p>
-              <Content value={description} onChange={setDescription} />
-            </div>
+
             <div className="mb-4">
               <Builder onRowDataChange={handleRowDataChange} />
             </div>
@@ -149,7 +108,6 @@ const EditPage: React.FC = () => {
                 Update
               </button>
             </div>
-            <Photo title="Photo" img={img} onChange={setImg} />
             <div className="mb-6 w-full my-4">
               <div className="relative">
                 <select
@@ -167,38 +125,6 @@ const EditPage: React.FC = () => {
                       className="text-gray-700"
                     >
                       {lang?.title}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg
-                    className="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-6 w-full my-4">
-              <div className="relative">
-                <select
-                  value={path}
-                  onChange={(e) => setPath(e.target.value)}
-                  className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
-                >
-                  <option value="" className="text-gray-400">
-                    Select Path Name
-                  </option>
-                  {paths?.map((path) => (
-                    <option
-                      key={path?.id}
-                      value={path?.id}
-                      className="text-gray-700"
-                    >
-                      {path?.name}
                     </option>
                   ))}
                 </select>
