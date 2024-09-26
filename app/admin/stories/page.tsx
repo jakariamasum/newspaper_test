@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import { toast, Toaster } from "sonner";
 
 interface Banner {
   img: string;
@@ -23,7 +24,6 @@ const IndexPage: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(stories);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -39,8 +39,31 @@ const IndexPage: React.FC = () => {
     fetchStories();
   }, []);
 
-  const handleDelete = (id: string) => {
-    console.log("Delete story with id: ", id);
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this story?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await axiosPublic.delete(`/story/admin/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setStories((prevStories) =>
+          prevStories.filter((story) => story._id !== id)
+        );
+        toast.success("Story deleted successfully");
+      } else {
+        throw new Error("Failed to delete story");
+      }
+    } catch (error) {
+      console.error("Failed to delete story", error);
+      toast.error("Failed to delete story");
+    }
   };
 
   if (loading) return <Loader />;
@@ -126,6 +149,7 @@ const IndexPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <Toaster richColors position="top-right" />
     </div>
   );
 };
