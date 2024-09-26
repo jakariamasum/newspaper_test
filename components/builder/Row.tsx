@@ -29,7 +29,7 @@ const Row: React.FC<{
   initialSections?: string[];
   initialBackgroundColor?: string;
   initialColor?: string;
-  updateRowData: (data: Partial<any>) => void; // Function to update parent state
+  updateRowData: (data: Partial<any>) => void;
 }> = ({
   id,
   index,

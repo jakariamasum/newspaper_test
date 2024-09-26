@@ -1,28 +1,10 @@
 "use client";
-import React, {
-  useState,
-  useRef,
-  ReactNode,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import React, { useState, useEffect } from "react";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import Photo from "./admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
-import Section from "./builder/Section";
 import Row from "./builder/Row";
-interface SectionData {
-  sectionTitle: string;
-  color: string;
-  backgroundColor: string;
-  desktopGrid: string;
-  mobileGrid: string;
-  sectionLimit: string;
-  imgPosition?: string;
-  width?: string;
-}
+
 interface BuilderProps {
   onRowDataChange: (index: number, updatedData: Partial<any>) => void;
 }
@@ -80,9 +62,6 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
   };
 
   const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const [stories, setStories] = useState([]);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
