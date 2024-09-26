@@ -1,7 +1,5 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
-import { useAllPages } from "@/lib/useAllPage";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,11 +26,8 @@ export type TRowData = {
 export type TPage = {
   _id: string;
   title: string;
-  description: string;
-  img: string;
   rows: TRowData[];
   language: string;
-  path: string;
 };
 
 const IndexPage: React.FC = () => {
@@ -75,18 +70,6 @@ const IndexPage: React.FC = () => {
                 className="text-blue-500 cursor-pointer hover:text-blue-600"
               />
             </div>
-
-            {data.img && (
-              <div className="mb-4">
-                <Image
-                  src={data.img}
-                  alt={data.title}
-                  className="rounded-lg shadow-sm object-cover"
-                  width={200}
-                  height={150}
-                />
-              </div>
-            )}
 
             {data.rows.map((row, rowIndex) => (
               <div
