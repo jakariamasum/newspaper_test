@@ -62,7 +62,6 @@ const IndexPage: React.FC = () => {
         if (response.status === 200) {
           toast.success("Updated");
 
-          // Update the state immediately with the new advertisement data
           setAds((prevAds) =>
             prevAds.map((ad) => (ad._id === editAd._id ? updatedAd : ad))
           );
@@ -89,7 +88,6 @@ const IndexPage: React.FC = () => {
       </div>
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Code Ads</h2>
 
-      {/* Code Ads Section */}
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {ads
@@ -126,7 +124,6 @@ const IndexPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Image Ads Section */}
       <div>
         <h2 className="text-2xl font-semibold text-gray-800 my-4">Image Ads</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -179,7 +176,6 @@ const IndexPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Modal */}
       {isModalOpen && editAd && (
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-gray-900 bg-opacity-50">
           <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
@@ -192,7 +188,7 @@ const IndexPage: React.FC = () => {
                 <input
                   type="text"
                   className="w-full p-2 mb-4 border rounded bg-gray-100 cursor-not-allowed"
-                  value={editAd.position}
+                  value={editAd.id}
                   readOnly
                 />
                 {editAd.type === "code" && (
@@ -200,10 +196,12 @@ const IndexPage: React.FC = () => {
                     <label className="block text-gray-700 font-bold mb-2">
                       HTML code
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       className="w-full p-2 mb-4 border rounded"
-                      value={editAd.content}
+                      rows={6}
+                      value={
+                        typeof editAd.content === "string" ? editAd.content : ""
+                      }
                       onChange={(e) =>
                         setEditAd({
                           ...editAd,
@@ -222,10 +220,25 @@ const IndexPage: React.FC = () => {
                     </label>
                     <Photo
                       title=""
-                      img={editAd.content.image}
-                      onChange={setImage}
+                      img={
+                        typeof editAd.content === "object"
+                          ? editAd.content.image
+                          : ""
+                      }
+                      onChange={(img) =>
+                        setEditAd({
+                          ...editAd,
+                          content: {
+                            ...(typeof editAd.content === "object"
+                              ? editAd.content
+                              : { image: "", link: "" }),
+                            image: img,
+                          },
+                        })
+                      }
                     />
                   </div>
+
                   <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2">
                       Link URL
@@ -233,12 +246,18 @@ const IndexPage: React.FC = () => {
                     <input
                       type="text"
                       className="w-full p-2 mb-4 border rounded"
-                      value={editAd.content.link}
+                      value={
+                        typeof editAd.content === "object"
+                          ? editAd.content.link
+                          : ""
+                      }
                       onChange={(e) =>
                         setEditAd({
                           ...editAd,
                           content: {
-                            ...editAd.content,
+                            ...(typeof editAd.content === "object"
+                              ? editAd.content
+                              : { image: "", link: "" }),
                             link: e.target.value,
                           },
                         })
@@ -247,6 +266,29 @@ const IndexPage: React.FC = () => {
                   </div>
                 </>
               )}
+
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2">
+                  Ad Type
+                </label>
+                <select
+                  value={editAd.type}
+                  onChange={(e) =>
+                    setEditAd({
+                      ...editAd,
+                      type: e.target.value,
+                      content:
+                        e.target.value === "code"
+                          ? ""
+                          : { image: "", link: "" },
+                    })
+                  }
+                  className="w-full p-2 mb-4 border rounded"
+                >
+                  <option value="code">Code</option>
+                  <option value="images">Images</option>
+                </select>
+              </div>
               <div className="flex justify-end">
                 <button
                   onClick={handleUpdate}

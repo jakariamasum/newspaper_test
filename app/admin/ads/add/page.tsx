@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
@@ -11,17 +11,14 @@ interface Section {
 }
 
 const sections: Section[] = [
-  // Header sections
   { id: "headerTop", title: "Header Top", position: "header" },
   { id: "headerBottom", title: "Header Bottom", position: "header" },
   { id: "headerLeft", title: "Header Left", position: "header" },
   { id: "headerRight", title: "Header Right", position: "header" },
-  // Category sections
   { id: "categoryTop", title: "Category Top", position: "category" },
   { id: "categoryBottom", title: "Category Bottom", position: "category" },
   { id: "categoryLeft", title: "Category Left", position: "category" },
   { id: "categoryRight", title: "Category Right", position: "category" },
-  // Details sections
   { id: "detailsTitleTop", title: "Details Title Top", position: "details" },
   {
     id: "detailsTitleBottom",
@@ -61,6 +58,18 @@ const sections: Section[] = [
   },
 ];
 
+export type TAds = {
+  id: string;
+  position: "header" | "category" | "details";
+  type: "code" | "images";
+  content:
+    | string
+    | {
+        image: string;
+        link: string;
+      };
+};
+
 const IndexPage: React.FC = () => {
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
@@ -70,10 +79,32 @@ const IndexPage: React.FC = () => {
       return acc;
     }, {} as { [key: string]: string })
   );
-
   const [linkData, setLinkData] = useState<{ [key: string]: string }>({});
   const [imageData, setImageData] = useState<{ [key: string]: string }>({});
   const [codeData, setCodeData] = useState<{ [key: string]: string }>({});
+  const [existingAds, setExistingAds] = useState<TAds[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAdsData = async () => {
+      try {
+        const response = await axiosPublic.get("/ads");
+        const adsData: TAds[] = response.data.data;
+        setExistingAds(adsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch ads data:", error);
+        toast.error("Failed to load ads data.");
+        setLoading(false);
+      }
+    };
+
+    fetchAdsData();
+  }, []);
+
+  const availableSections = sections.filter(
+    (section) => !existingAds.some((ad) => ad.id === section.id)
+  );
 
   const handleSelectChange = (id: string, value: string) => {
     setSelectedOptions((prev) => ({
@@ -105,7 +136,7 @@ const IndexPage: React.FC = () => {
 
   const handlePublish = async () => {
     try {
-      const data = sections.map((section) => ({
+      const data = availableSections.map((section) => ({
         id: section.id,
         position: section.position,
         type: selectedOptions[section.id],
@@ -118,7 +149,17 @@ const IndexPage: React.FC = () => {
               },
       }));
 
-      await axiosPublic.post("/ads/admin", data, {
+      const adsToPublish = data.filter((ad) => {
+        if (ad.type === "code") {
+          return ad.content !== "";
+        } else if (ad.type === "images" && typeof ad.content === "object") {
+          const content = ad.content as { image: string; link: string };
+          return content.image !== "" || content.link !== "";
+        }
+        return false;
+      });
+
+      await axiosPublic.post("/ads/admin", adsToPublish, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
@@ -130,6 +171,8 @@ const IndexPage: React.FC = () => {
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className="my-4 container">
       <h1 className="text-xl font-bold mb-4">Advertisement</h1>
@@ -140,7 +183,7 @@ const IndexPage: React.FC = () => {
             {position.charAt(0).toUpperCase() + position.slice(1)}
           </h1>
           <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-4">
-            {sections
+            {availableSections
               .filter((section) => section.position === position)
               .map((section) => (
                 <div key={section.id}>
