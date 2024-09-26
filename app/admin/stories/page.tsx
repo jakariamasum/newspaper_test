@@ -98,7 +98,7 @@ const IndexPage: React.FC = () => {
                 </td>
                 <td className="py-4 px-6 text-gray-800">
                   <Link
-                    href={`/story/${story._id}`}
+                    href={`/admin/stories/${story._id}`}
                     className="bg-blue-600 text-white py-1 px-3 rounded-lg shadow hover:bg-blue-700 hover:underline"
                   >
                     Show Details
