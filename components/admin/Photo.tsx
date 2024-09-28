@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 
 interface PhotoProps {
   title: string;
@@ -12,6 +12,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(
     img || null
   );
+  const inputId = useId();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -51,7 +52,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
       </p>
       <div className="flex flex-col items-center my-2 relative">
         <label
-          htmlFor="photoInput"
+          htmlFor={inputId}
           className="cursor-pointer w-full flex items-center justify-center"
         >
           {selectedImage ? (
@@ -61,7 +62,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
               height={600}
               alt="Selected"
               className="bg-white p-2 max-w-full max-h-96 object-contain"
-              unoptimized // optionally, to skip next/image optimizations
+              unoptimized
             />
           ) : (
             <div className="p-4 bg-white w-full">
@@ -85,7 +86,7 @@ const Photo: React.FC<PhotoProps> = ({ title, img, onChange }) => {
             </div>
           )}
           <input
-            id="photoInput"
+            id={inputId}
             type="file"
             accept="image/*"
             className="hidden"

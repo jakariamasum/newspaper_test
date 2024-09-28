@@ -38,6 +38,7 @@ const IndexPage: React.FC = () => {
     subCategory?: string;
   }>({ category: "" });
   const [publishedDate, setPublishedDate] = useState<string | null>(null);
+  const [waterMark, setWaterMark] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -101,6 +102,7 @@ const IndexPage: React.FC = () => {
       lang,
       status: newsStatus,
       publishedDate: publishedDate || new Date().toDateString(),
+      waterMark,
     };
     console.log(payload);
     try {
@@ -156,6 +158,11 @@ const IndexPage: React.FC = () => {
               </button>
             </div>
             <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
+            <Photo
+              title="Watermark (600x600px)"
+              img={waterMark}
+              onChange={setWaterMark}
+            />
             <Time time={publishedDate} setTime={setPublishedDate} />
             <Checkbox
               title="Category"
