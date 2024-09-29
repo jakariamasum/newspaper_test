@@ -121,7 +121,7 @@ const EditPage: React.FC = () => {
                   {languages?.map((lang) => (
                     <option
                       key={lang?._id}
-                      value={lang?.title}
+                      value={lang?.language_code}
                       className="text-gray-700"
                     >
                       {lang?.title}

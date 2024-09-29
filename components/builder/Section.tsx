@@ -123,6 +123,7 @@ const Section: React.FC<{
       categories: selectedCategories,
     }));
     setSectionInfo({ ...sectionInfo, categories: selectedCategories });
+    console.log(selectedCategories);
   };
 
   const handleInputChange = (field: keyof SectionData, value: string) => {

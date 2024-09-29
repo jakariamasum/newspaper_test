@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
 
 interface Option {
@@ -19,9 +19,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   placeholder,
   value = [],
 }) => {
-  const handleChange = (selected: MultiValue<Option>) => {
-    onChange(selected);
-  };
+  const handleChange = useCallback(
+    (selected: MultiValue<Option>) => {
+      onChange(selected);
+    },
+    [onChange]
+  );
 
   const customStyles: StylesConfig<Option, true> = {
     control: (provided) => ({
@@ -54,7 +57,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       isMulti
       options={options}
       onChange={handleChange}
-      value={value}
+      value={value.length > 0 ? value : undefined}
       placeholder={placeholder}
       className="basic-multi-select"
       classNamePrefix="select"
