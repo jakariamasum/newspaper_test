@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Select, { MultiValue, StylesConfig } from "react-select";
 
 interface Option {
@@ -10,12 +10,14 @@ interface MultiSelectProps {
   options: Option[];
   onChange: (selected: MultiValue<Option>) => void;
   placeholder?: string;
+  value?: Option[];
 }
 
 export const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   onChange,
   placeholder,
+  value = [],
 }) => {
   const handleChange = (selected: MultiValue<Option>) => {
     onChange(selected);
@@ -52,6 +54,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       isMulti
       options={options}
       onChange={handleChange}
+      value={value}
       placeholder={placeholder}
       className="basic-multi-select"
       classNamePrefix="select"

@@ -95,7 +95,7 @@ const EditPage: React.FC = () => {
             </div>
 
             <div className="mb-4">
-              <Builder onRowDataChange={handleRowDataChange} />
+              <Builder onRowDataChange={handleRowDataChange} data={pageData} />
             </div>
           </div>
           <div className="w-full md:w-1/3">

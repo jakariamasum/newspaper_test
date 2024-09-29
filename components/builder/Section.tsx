@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MultiSelect } from "../MultiSelect";
 import { MultiValue } from "react-select";
@@ -40,6 +40,7 @@ const Section: React.FC<{
   deleteSection: (index: number) => void;
   moveSectionUp: () => void;
   moveSectionDown: () => void;
+  defaultData?: any;
 }> = ({
   section,
   index,
@@ -49,6 +50,7 @@ const Section: React.FC<{
   moveSectionDown,
   setSectionInfo,
   categories,
+  defaultData = {},
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
@@ -89,33 +91,45 @@ const Section: React.FC<{
     value: cat._id,
     label: cat.title,
   }));
-
   const [sectionInfo, setSectionInfoState] = useState<SectionData>({
-    sectionTitle: `Section ${index}`,
-    color: "#000000",
-    backgroundColor: "#ffffff",
-    desktopGrid: "",
-    mobileGrid: "",
-    sectionLimit: "",
-    imgPosition: "",
-    width: "",
-    box: "",
-    categories: [],
+    sectionTitle: defaultData.sectionTitle || `Section ${index}`,
+    color: defaultData.color || "#000000",
+    backgroundColor: defaultData.backgroundColor || "#ffffff",
+    desktopGrid: defaultData.desktopGrid || "",
+    mobileGrid: defaultData.mobileGrid || "",
+    sectionLimit: defaultData.sectionLimit || "",
+    imgPosition: defaultData.imgPosition || "",
+    width: defaultData.width || "",
+    box: defaultData.box || "",
+    categories: defaultData.categories || [],
   });
 
+  useEffect(() => {
+    if (defaultData) {
+      setSectionInfoState((prev) => ({
+        ...prev,
+        ...defaultData,
+      }));
+    }
+  }, [defaultData]);
+
   const handleSelectionChange = (selected: MultiValue<Option>) => {
-    const categories = selected.map((cat) => ({
+    const selectedCategories = selected.map((cat) => ({
       value: cat.value,
       label: cat.label,
     }));
-    setSectionInfoState((prev) => ({ ...prev, categories }));
-    setSectionInfo({ ...sectionInfo, categories });
+    setSectionInfoState((prev) => ({
+      ...prev,
+      categories: selectedCategories,
+    }));
+    setSectionInfo({ ...sectionInfo, categories: selectedCategories });
   };
 
   const handleInputChange = (field: keyof SectionData, value: string) => {
     setSectionInfoState((prev) => ({ ...prev, [field]: value }));
-    setSectionInfo(sectionInfo);
+    setSectionInfo({ ...sectionInfo, [field]: value });
   };
+
   return (
     <div
       ref={ref}
@@ -141,6 +155,7 @@ const Section: React.FC<{
             <MultiSelect
               options={selectOptions}
               onChange={handleSelectionChange}
+              value={defaultData.categories}
               placeholder="Select categories"
             />
           </div>

@@ -7,12 +7,47 @@ import Row from "./builder/Row";
 
 interface BuilderProps {
   onRowDataChange: (index: number, updatedData: Partial<any>) => void;
+  data?: {
+    id: number;
+    sections: any[];
+    bgColor: string;
+    textColor: string;
+  }[];
 }
-const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
-  const [rows, setRows] = useState<
-    { id: number; sections: string[]; backgroundColor: string; color: string }[]
-  >([]);
+
+const Builder: React.FC<BuilderProps> = ({ onRowDataChange, data = [] }) => {
+  const [rows, setRows] =
+    useState<
+      { id: number; sections: any[]; bgColor: string; textColor: string }[]
+    >(data);
   const [nextId, setNextId] = useState(1);
+
+  const isNewPage = data.length === 0;
+
+  useEffect(() => {
+    const savedRows = localStorage.getItem("rows");
+    if (savedRows && !isNewPage) {
+      const parsedRows = JSON.parse(savedRows);
+      setRows(parsedRows);
+      setNextId(
+        parsedRows.length > 0
+          ? Math.max(...parsedRows.map((d: any) => d.id)) + 1
+          : 1
+      );
+    } else {
+      setRows(isNewPage ? [] : data);
+      setNextId(data.length > 0 ? Math.max(...data.map((d) => d.id)) + 1 : 0);
+      if (isNewPage) {
+        localStorage.removeItem("rows");
+      }
+    }
+  }, [isNewPage]);
+
+  useEffect(() => {
+    if (rows.length > 0) {
+      localStorage.setItem("rows", JSON.stringify(rows));
+    }
+  }, [rows]);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
     const newRows = [...rows];
@@ -22,15 +57,14 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
   };
 
   const addRow = () => {
-    setRows([
-      ...rows,
-      {
-        id: nextId,
-        sections: [],
-        backgroundColor: "#ffffff",
-        color: "#000000",
-      },
-    ]);
+    const newRow = {
+      id: nextId,
+      sections: [],
+      bgColor: "#ffffff",
+      textColor: "#000000",
+    };
+
+    setRows((prevRows) => [...prevRows, newRow]);
     setNextId(nextId + 1);
   };
 
@@ -83,6 +117,7 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
             New Row
           </button>
         </div>
+
         {rows.map((row, index) => (
           <Row
             key={row.id}
@@ -95,9 +130,10 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange }) => {
             moveRowUp={moveRowUp}
             moveRowDown={moveRowDown}
             initialSections={row.sections}
-            initialBackgroundColor={row.backgroundColor}
-            initialColor={row.color}
-            updateRowData={(data) => onRowDataChange(index, data)}
+            defaultData={data[index]?.sections}
+            initialBackgroundColor={row.bgColor}
+            initialColor={row.textColor}
+            updateRowData={(updatedData) => onRowDataChange(index, updatedData)}
           />
         ))}
       </div>

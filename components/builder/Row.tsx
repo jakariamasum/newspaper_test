@@ -30,6 +30,7 @@ const Row: React.FC<{
   initialBackgroundColor?: string;
   initialColor?: string;
   updateRowData: (data: Partial<any>) => void;
+  defaultData?: SectionData[];
 }> = ({
   id,
   index,
@@ -42,9 +43,11 @@ const Row: React.FC<{
   initialSections = [],
   initialBackgroundColor = "",
   initialColor = "",
+  defaultData = [],
 
   updateRowData,
 }) => {
+  console.log(defaultData);
   const ref = useRef<HTMLDivElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<string>(
@@ -62,7 +65,9 @@ const Row: React.FC<{
       }
     },
   });
-  const [sectionDataArray, setSectionDataArray] = useState<SectionData[]>([]);
+
+  const [sectionDataArray, setSectionDataArray] =
+    useState<SectionData[]>(defaultData);
 
   const SectionInfo = (index: number, data: Partial<SectionData>) => {
     const categories = data?.categories?.map((category) => ({
@@ -321,6 +326,7 @@ const Row: React.FC<{
             deleteSection={deleteSection}
             moveSectionUp={() => handleMoveSectionUp(idx)}
             moveSectionDown={() => handleMoveSectionDown(idx)}
+            defaultData={defaultData[idx]}
           />
         ))}
       </div>
