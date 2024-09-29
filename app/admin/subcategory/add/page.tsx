@@ -28,6 +28,7 @@ const IndexPage: React.FC = () => {
   const [categories, setCategories] = useState([]);
   const { lang } = useLang();
   const [loading, setLoading] = useState<boolean>(false);
+  const type = "news";
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -45,6 +46,7 @@ const IndexPage: React.FC = () => {
       description,
       category,
       lang,
+      type,
     };
     try {
       const response = await axiosPublic.post(

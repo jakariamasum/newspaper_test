@@ -40,8 +40,10 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await useAllCategory();
-      setCategories(response);
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=video`
+      );
+      setCategories(response.data.data);
     };
     fetchCategories();
     const fetchSubCategories = async () => {

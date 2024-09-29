@@ -6,16 +6,16 @@ import axiosPublic from "@/lib/axiosPublic";
 import { useEffect, useState } from "react";
 
 const IndexPage: React.FC = () => {
-  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { lang } = useLang();
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       const response = await axiosPublic.get(
-        `/categories/category/types?type=video`
+        `/sub-categories/sub-category/types?type=video`
       );
-      setCategories(response.data.data);
+      setSubCategories(response.data.data);
       setLoading(false);
     };
     fetchCategories();
@@ -26,9 +26,9 @@ const IndexPage: React.FC = () => {
   return (
     <>
       <Table
-        title="Category"
-        link="/admin/videos/categories"
-        post={categories}
+        title="SubCategory"
+        link="/admin/videos/subcategories"
+        post={subCategories}
       />
     </>
   );

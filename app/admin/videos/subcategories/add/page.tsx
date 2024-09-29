@@ -1,34 +1,59 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+// IndexPage.tsx
 "use client";
-import { useState } from "react";
-import CatOp from "@/components/admin/CatOp";
+import { useLang } from "@/app/context/langContext";
 import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
-import { toast, Toaster } from "sonner";
+import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import { useRouter } from "next/navigation";
-import { useLang } from "@/app/context/langContext";
+import { useState, useEffect } from "react";
+import { toast, Toaster } from "sonner";
+
+interface TCat {
+  _id: string;
+  title: string;
+  description?: string;
+  parent_category_id?: string;
+  position?: number;
+  img?: string;
+}
 
 const IndexPage: React.FC = () => {
-  const type = "news";
   const router = useRouter();
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [position, setPosition] = useState(1);
   const [img, setImg] = useState("");
+  const [category, setCategory] = useState("");
+  const [title, setTitle] = useState("");
+  const [subCategories, setSubCategories] = useState([]);
   const { lang } = useLang();
+  const [loading, setLoading] = useState<boolean>(false);
+  const type = "video";
 
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      setLoading(true);
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=video`
+      );
+      setSubCategories(response.data.data);
+      setLoading(false);
+    };
+    fetchSubCategories();
+  }, []);
   const handlePublish = async () => {
-    const categoryData = {
+    const subCategoryInfo = {
       title,
-      description,
-      position,
       img,
+      description,
+      category,
       lang,
+      type,
     };
     try {
       const response = await axiosPublic.post(
-        "/categories/admin",
-        categoryData,
+        "/sub-categories/admin",
+        subCategoryInfo,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -37,13 +62,17 @@ const IndexPage: React.FC = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Category created successfully!");
-        router.push("/admin/category");
+        toast.success("Sub-category created successfully!");
+        router.push("/admin/videos/subcategories");
       }
     } catch (error) {
-      toast.error("Failed to create category. Please try again.");
+      toast.error("Failed to create sub-category. Please try again.");
     }
   };
+
+  if (loading) {
+    <Loader />;
+  }
 
   return (
     <>
@@ -55,11 +84,30 @@ const IndexPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="title"
-                className="p-2 mt-2 w-full outline-none rounded-md"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                className="p-2 mt-2 w-full outline-none rounded-md"
               />
             </div>
+
+            <div className="mb-4">
+              <p>Category</p>
+              <select
+                className="p-2 mt-2 w-full outline-none rounded-md"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="" disabled>
+                  Select a category
+                </option>
+                {subCategories?.map((cat: TCat) => (
+                  <option key={cat?._id} value={cat?._id}>
+                    {cat?.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="mb-4">
               <p>Description</p>
               <Content value={description} onChange={setDescription} />
@@ -75,19 +123,6 @@ const IndexPage: React.FC = () => {
                 Publish
               </button>
             </div>
-            <div>
-              <p>Position</p>
-              <input
-                type="number"
-                placeholder="1"
-                className="p-2 mt-2 w-full outline-none rounded-md"
-                value={position}
-                onChange={(e) => setPosition(Number(e.target.value))}
-              />
-            </div>
-
-            <CatOp />
-
             <Photo title="Photo" img={img} onChange={setImg} />
           </div>
         </div>

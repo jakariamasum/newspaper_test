@@ -84,18 +84,20 @@ const IndexPage: React.FC = () => {
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">
           Manage Videos
         </h1>
-        <Link
-          className={`hover:bg-main hover:text-white p-2 block`}
-          href="/admin/videos/categories"
-        >
-          Category
-        </Link>
-        <Link
-          className={`hover:bg-main hover:text-white p-2 block`}
-          href="/admin/videos/subcategories"
-        >
-          SubCategory
-        </Link>
+        <div className="flex gap-1">
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/videos/categories"
+          >
+            Category
+          </Link>
+          <Link
+            className={`hover:bg-main hover:text-white p-2 block`}
+            href="/admin/videos/subcategories"
+          >
+            SubCategory
+          </Link>
+        </div>
         <Link
           href="/admin/videos/add"
           className="bg-main py-1 px-4 rounded-md text-white"

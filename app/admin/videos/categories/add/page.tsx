@@ -9,13 +9,13 @@ import { useRouter } from "next/navigation";
 import { useLang } from "@/app/context/langContext";
 
 const IndexPage: React.FC = () => {
-  const type = "news";
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [position, setPosition] = useState(1);
   const [img, setImg] = useState("");
   const { lang } = useLang();
+  const type = "video";
 
   const handlePublish = async () => {
     const categoryData = {
@@ -24,7 +24,9 @@ const IndexPage: React.FC = () => {
       position,
       img,
       lang,
+      type,
     };
+    console.log(categoryData);
     try {
       const response = await axiosPublic.post(
         "/categories/admin",
@@ -38,7 +40,7 @@ const IndexPage: React.FC = () => {
 
       if (response.status === 200) {
         toast.success("Category created successfully!");
-        router.push("/admin/category");
+        router.push("/admin/videos/categories");
       }
     } catch (error) {
       toast.error("Failed to create category. Please try again.");
