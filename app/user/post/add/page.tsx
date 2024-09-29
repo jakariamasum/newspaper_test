@@ -47,10 +47,12 @@ const IndexPage: React.FC = () => {
   const [areas, setAreas] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [preApproved, serPreApproved] = useState<boolean>(false);
   const [category, setCategory] = useState<{
     category: string;
     subCategory?: string;
   }>({ category: "" });
+  const [publishedDate, setPublishedDate] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -78,8 +80,12 @@ const IndexPage: React.FC = () => {
       setLanguages(response.data.data);
     };
     fetchLanguages();
+    const fetchUser = async () => {
+      const response = await axiosPublic.get(`/user/${user?.email}`);
+      serPreApproved(response.data.data.preApproved);
+    };
+    fetchUser();
   }, []);
-
   const transformData = (
     areas: { title: string; city: { _id: string } }[],
     cities: { _id: string; title: string }[]
@@ -96,6 +102,8 @@ const IndexPage: React.FC = () => {
   const transformeCategorydData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
+    const newsStatus = preApproved ? "published" : "pending";
+
     const formData = {
       title,
       content: description,
@@ -105,6 +113,8 @@ const IndexPage: React.FC = () => {
       location,
       category,
       lang: language,
+      status: newsStatus,
+      publishedDate: publishedDate || new Date().toDateString(),
     };
 
     try {
@@ -160,7 +170,7 @@ const IndexPage: React.FC = () => {
               </button>
             </div>
             <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
-            <Time />
+            <Time time={publishedDate} setTime={setPublishedDate} />
             <Checkbox
               title="Category"
               items={transformeCategorydData}

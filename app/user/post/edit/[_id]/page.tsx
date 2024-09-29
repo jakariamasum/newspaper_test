@@ -7,6 +7,7 @@ import Tag from "@/components/admin/Tag";
 import Photo from "@/components/admin/Photo";
 import { Toaster, toast } from "sonner";
 import { useParams } from "next/navigation";
+import Time from "@/components/admin/Time";
 
 const EditNews: React.FC = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const EditNews: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
   const [author, setAuthor] = useState<string>("");
+  const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {
     if (_id) {
@@ -28,6 +30,7 @@ const EditNews: React.FC = () => {
           setTags(data.tags);
           setImg(data.img);
           setAuthor(data.author.title);
+          setTime(data.publishedDate);
         } catch (error) {
           console.error("Failed to fetch news item:", error);
         }
@@ -44,6 +47,7 @@ const EditNews: React.FC = () => {
         description,
         tags,
         img,
+        publishedDate: time,
       };
       const response = await axiosPublic.put(
         `/news/user/news/edit/${_id}`,
@@ -82,10 +86,14 @@ const EditNews: React.FC = () => {
               />
             </div>
             <Content value={description} onChange={setDescription} />
-            <Photo img={img} onChange={setImg} title={""} />
+            <div className="mb-4">
+              <p>Keywords</p>
+              <Tag value={tags} onChange={setTags} />
+            </div>
           </div>
           <div className="md:w-1/3">
-            <Tag value={tags} onChange={setTags} />
+            <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
+            <Time time={time} setTime={setTime} />
             <div className="mb-4">
               <p>Reporter</p>
               <input
