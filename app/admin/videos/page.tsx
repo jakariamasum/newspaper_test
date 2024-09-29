@@ -85,6 +85,18 @@ const IndexPage: React.FC = () => {
           Manage Videos
         </h1>
         <Link
+          className={`hover:bg-main hover:text-white p-2 block`}
+          href="/admin/videos/categories"
+        >
+          Category
+        </Link>
+        <Link
+          className={`hover:bg-main hover:text-white p-2 block`}
+          href="/admin/videos/subcategories"
+        >
+          SubCategory
+        </Link>
+        <Link
           href="/admin/videos/add"
           className="bg-main py-1 px-4 rounded-md text-white"
         >
