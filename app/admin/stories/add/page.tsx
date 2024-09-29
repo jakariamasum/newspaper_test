@@ -4,8 +4,6 @@ import { categoryFormat } from "@/app/utils/categoryFormate";
 import Banners from "@/components/admin/Banners";
 import Checkbox from "@/components/admin/Checkbox";
 import axiosPublic from "@/lib/axiosPublic";
-import { useAllCategory } from "@/lib/useAllCategory";
-import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
@@ -23,13 +21,17 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await useAllCategory();
-      setCategories(response);
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=story`
+      );
+      setCategories(response.data.data);
     };
     fetchCategories();
     const fetchSubCategories = async () => {
-      const response = await useAllSubCategories();
-      setSubCategories(response);
+      const response = await axiosPublic.get(
+        `/sub-categories/sub-category/types?type=story`
+      );
+      setSubCategories(response.data.data);
     };
     fetchSubCategories();
   }, []);
