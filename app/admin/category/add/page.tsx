@@ -24,6 +24,7 @@ const IndexPage: React.FC = () => {
       position,
       img,
       lang,
+      type,
     };
     try {
       const response = await axiosPublic.post(
