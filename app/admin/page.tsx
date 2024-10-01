@@ -199,7 +199,10 @@ const IndexPage: React.FC = () => {
                           </td>
                           <td className="py-3 px-4 text-gray-800">
                             {item?.status !== "published" && (
-                              <span onClick={() => handleApprove(item._id)}>
+                              <span
+                                title="Publish"
+                                onClick={() => handleApprove(item._id)}
+                              >
                                 <MdPublish
                                   fill="blue"
                                   size={22}
