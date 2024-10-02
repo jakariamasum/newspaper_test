@@ -1,5 +1,6 @@
 "use client";
 
+import { useLang } from "@/app/context/langContext";
 import { postFormat } from "@/app/utils/postFormat";
 import Loader from "@/components/Loader";
 import News from "@/components/News";
@@ -40,6 +41,7 @@ const IndexPage: React.FC = () => {
   const [news, setNews] = useState([]);
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { lang } = useLang();
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -119,7 +121,10 @@ const IndexPage: React.FC = () => {
                 >
                   <News
                     title={`Section ${indx}`}
-                    link={section.link || "/"}
+                    link={
+                      `/${lang}/categories/` +
+                      (section?.categories[0]?.value || "/")
+                    }
                     limit={Number(section?.sectionLimit) || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}

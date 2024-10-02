@@ -132,7 +132,10 @@ const IndexPage: React.FC = () => {
             <div className="w-fill md:w-3/4 block space-y-2">
               <div className="bg-white p-2  ">
                 <Link
-                  href="/"
+                  href={
+                    `/${lang}/categories/` +
+                      (news?.category?.category?._id as string) || "/"
+                  }
                   className="bg-main text-white px-2 py-0 rounded-sm mb-2 leading-none"
                 >
                   {news?.category?.category?.title || ""}
@@ -373,7 +376,10 @@ const IndexPage: React.FC = () => {
 
               <News
                 title="RELATED ARTICLES"
-                link="/"
+                link={
+                  `/${lang}/categories/` +
+                    (news?.category?.category?._id as string) || "/"
+                }
                 limit={5}
                 box={14}
                 style={2}
@@ -393,7 +399,10 @@ const IndexPage: React.FC = () => {
                 </Link>
                 <News
                   title="MOST POPULAR"
-                  link="/"
+                  link={
+                    `/${lang}/categories/` +
+                      (news?.category?.category?._id as string) || "/"
+                  }
                   limit={5}
                   box={2}
                   style={2}
@@ -439,7 +448,10 @@ const IndexPage: React.FC = () => {
 
               <div className="bg-white p-2">
                 <Link
-                  href="/"
+                  href={
+                    ((`/${lang}/categories/` +
+                      news?.category?.category?._id) as string) || "/"
+                  }
                   className="bg-main text-white px-2 py-0 rounded-sm mb-2 leading-none"
                 >
                   {news?.category?.category?.title || "Category"}
@@ -637,7 +649,10 @@ const IndexPage: React.FC = () => {
 
               <News
                 title="RELATED ARTICLES"
-                link="/"
+                link={
+                  ((`/${lang}/categories/` +
+                    news?.category?.category?._id) as string) || "/"
+                }
                 limit={5}
                 box={14}
                 style={2}
@@ -666,7 +681,10 @@ const IndexPage: React.FC = () => {
                 </Link>
                 <News
                   title="MOST POPULAR"
-                  link="/"
+                  link={
+                    ((`/${lang}/categories/` +
+                      news?.category?.category?._id) as string) || "/"
+                  }
                   limit={5}
                   box={2}
                   style={2}

@@ -53,7 +53,6 @@ const IndexPage: React.FC = () => {
 
     fetchAllNews();
   }, []);
-  console.log(allNews);
 
   useEffect(() => {
     if (newsToShow > 5) {
@@ -77,7 +76,7 @@ const IndexPage: React.FC = () => {
     <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayedNews.map((newsItem, index) => (
-          <Link href={`/news/${newsItem._id}`} key={newsItem._id}>
+          <Link href={`/${lang}/news/${newsItem._id}`} key={newsItem._id}>
             <div
               ref={
                 index === displayedNews.length - 1 ? lastNewsElementRef : null

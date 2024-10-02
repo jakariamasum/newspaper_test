@@ -101,7 +101,7 @@ const IndexPage: React.FC = () => {
           }}
         >
           <div className="flex flex-col md:flex-row">
-            {row.sections.map((section) => {
+            {row.sections.map((section, indx) => {
               const filteredNewsData = newsData.filter((news) =>
                 section.categories.some(
                   (cat) =>
@@ -116,8 +116,11 @@ const IndexPage: React.FC = () => {
                   className="p-2"
                 >
                   <News
-                    title={"Test"}
-                    link={`/categories/${section._id}`}
+                    title={`Section ${indx}`}
+                    link={
+                      `/${lang}/categories/` +
+                      (section?.categories[0]?.value || "/")
+                    }
                     limit={Number(section?.sectionLimit) || 5}
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
