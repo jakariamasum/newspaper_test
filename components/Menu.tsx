@@ -47,10 +47,12 @@ const Menu: React.FC<MenuProps> = ({ items }) => {
     }
   };
   return (
-    <div className="z-50 block sticky top-0 bg-main mb-12 lg:mb-0">
+    <div className={`z-50 block sticky top-0 bg-main mb-12 lg:mb-0 `}>
       <div className="container">
         <button
-          className="lg:hidden absolute left-0 z-10 p-2 text-white bg-gray-900 bg-opacity-60 hover:bg-opacity-80 rounded-full shadow-md top-[30px]"
+          className={`lg:hidden absolute left-0 z-10 p-2 text-white bg-gray-900 bg-opacity-60 hover:bg-opacity-80 rounded-full shadow-md top-[30px] ${
+            items.length === 0 ? "hidden" : ""
+          }`}
           onClick={() => handleScroll("left")}
         >
           <FaArrowLeft className="text-2xl" />
@@ -175,7 +177,9 @@ const Menu: React.FC<MenuProps> = ({ items }) => {
           ))}
         </div>
         <button
-          className="lg:hidden absolute right-0 z-10 p-2 text-white bg-gray-900 bg-opacity-60 hover:bg-opacity-80 rounded-full shadow-md top-[30px]"
+          className={`lg:hidden absolute right-0 z-10 p-2 text-white bg-gray-900 bg-opacity-60 hover:bg-opacity-80 rounded-full shadow-md top-[30px] ${
+            items.length !== 0 ? "" : "hidden"
+          }`}
           onClick={() => handleScroll("right")}
         >
           <FaArrowRight className="text-2xl" />

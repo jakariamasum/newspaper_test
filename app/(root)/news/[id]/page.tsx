@@ -6,10 +6,11 @@ import Link from "next/link";
 import Comment from "@/components/Comment";
 import axiosPublic from "@/lib/axiosPublic";
 import AdDisplay from "@/app/utils/AdDisplay";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import moment from "moment";
 import { postFormat } from "@/app/utils/postFormat";
 import { getRandomPosts } from "@/app/utils/getRandomPosts";
+import { useAuth } from "@/app/context/authContext";
 
 interface IAds {
   id: string;
@@ -34,6 +35,8 @@ const IndexPage: React.FC = () => {
   const [news, setNews] = useState<TNews>();
   const [allNews, setAllNews] = useState([]);
   const [categories, setCategories] = useState([]);
+  const { user } = useAuth();
+  const router = useRouter();
   useEffect(() => {
     const fetchAllNews = async () => {
       const response = await axiosPublic.get(`/news?lang=all`);
@@ -69,6 +72,26 @@ const IndexPage: React.FC = () => {
     <>
       {page === 1 && (
         <div className="container my-2">
+          <button
+            onClick={() => router.back()}
+            className="flex mb-2 items-center space-x-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow hover:bg-gray-700 transition duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12H3m0 0l7 7m-7-7l7-7"
+              />
+            </svg>
+            <span>Back</span>
+          </button>
           <div className="w-full flex md:flex-row flex-col gap-4">
             <div className="w-fill md:w-3/4 block space-y-2">
               <div className="bg-white p-2  ">
@@ -311,6 +334,26 @@ const IndexPage: React.FC = () => {
       )}
       {page === 2 && (
         <div className="container my-2">
+          <button
+            onClick={() => router.back()}
+            className="flex mb-2 items-center space-x-2 bg-blue-600 text-white font-semibold px-4 py-2 rounded-md shadow hover:bg-gray-700 transition duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12H3m0 0l7 7m-7-7l7-7"
+              />
+            </svg>
+            <span>Back</span>
+          </button>
           <div className="w-full flex md:flex-row flex-col gap-4">
             <div className="w-fill md:w-3/4 block space-y-2">
               <div className="bg-white p-2">
