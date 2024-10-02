@@ -1,5 +1,6 @@
 "use client";
 import { useLang } from "@/app/context/langContext";
+import AdDisplay from "@/app/utils/AdDisplay";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
@@ -34,6 +35,7 @@ const IndexPage: React.FC = () => {
   const observer = useRef<IntersectionObserver>();
   const { _id } = useParams();
   const { lang } = useLang();
+  const [ads, setAds] = useState([]);
 
   useEffect(() => {
     const fetchAllNews = async () => {
@@ -52,6 +54,11 @@ const IndexPage: React.FC = () => {
     };
 
     fetchAllNews();
+    const fetchAds = async () => {
+      const response = await axiosPublic.get("/ads");
+      setAds(response.data.data);
+    };
+    fetchAds();
   }, []);
 
   useEffect(() => {
@@ -74,6 +81,7 @@ const IndexPage: React.FC = () => {
   }
   return (
     <div className="p-4">
+      <AdDisplay ads={ads} adId="headerBottom" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayedNews.map((newsItem, index) => (
           <Link href={`/${lang}/news/${newsItem._id}`} key={newsItem._id}>
@@ -107,6 +115,8 @@ const IndexPage: React.FC = () => {
           </Link>
         ))}
       </div>
+      <AdDisplay ads={ads} adId="categoryBottom" />
+
       {newsToShow >= allNews.length && (
         <div className="text-center py-4">No more news available.</div>
       )}

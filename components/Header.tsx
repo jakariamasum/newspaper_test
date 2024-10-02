@@ -9,6 +9,7 @@ import { useLang } from "@/app/context/langContext";
 import axiosPublic from "@/lib/axiosPublic";
 import { useRouter } from "next/navigation";
 import { useSettings } from "@/app/context/settingContext";
+import AdDisplay from "@/app/utils/AdDisplay";
 
 interface HeaderProps {
   top?: number;
@@ -82,6 +83,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
   const [languages, setLanguages] = useState<ILanguage[]>([]);
   const menus = useMenusData();
   const router = useRouter();
+  const [ads, setAds] = useState([]);
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLanguage = e.target.value;
     setLang(selectedLanguage);
@@ -94,6 +96,11 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
       setLanguages(response.data.data);
     };
     fetchLanguages();
+    const fetchAds = async () => {
+      const response = await axiosPublic.get("/ads");
+      setAds(response.data.data);
+    };
+    fetchAds();
   }, []);
   return (
     <>
@@ -180,6 +187,9 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
         <div className="bg-white">
           <div className="container">
             <div className="flex items-center justify-between">
+              <div className="w-[250px] h-auto">
+                <AdDisplay ads={ads} adId="headerLeft" />
+              </div>
               <Link href={`/${lang}`}>
                 <Image
                   src={settings?.logo || "/logo.svg"}
@@ -189,22 +199,21 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
                   className="w-40"
                 />
               </Link>
-              <Link href="/" className="md:block hidden bg-white py-0">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-min h-auto"
-                />
-              </Link>
+              <div className="w-[250px] h-auto">
+                <AdDisplay ads={ads} adId="headerRight" />
+              </div>
             </div>
           </div>
         </div>
       )}
       {header === 2 && <div className="header-content">hello 2</div>}
-
+      <div className="w-[250px] h-auto">
+        <AdDisplay ads={ads} adId="headerTop" />
+      </div>
       {menu === 1 && <Menu items={menus} />}
+      <div className="w-[250px] h-auto">
+        <AdDisplay ads={ads} adId="headerBottom" />
+      </div>
       {menu === 2 && <div className="menu-content">menu 2</div>}
     </>
   );
