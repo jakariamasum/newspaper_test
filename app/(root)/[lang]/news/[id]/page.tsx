@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import News from "@/components/News";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { postFormat } from "@/app/utils/postFormat";
 import { getRandomPosts } from "@/app/utils/getRandomPosts";
 import { useLang } from "@/app/context/langContext";
 import { toast, Toaster } from "sonner";
+import { FaCompress } from "react-icons/fa";
 
 interface IAds {
   id: string;
@@ -39,7 +40,42 @@ const IndexPage: React.FC = () => {
   const [allNews, setAllNews] = useState([]);
   const [categories, setCategories] = useState([]);
   const url = window.location.href;
-  const [copyClipboard, setCopyClipboard] = useState<any>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const imageContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (document.fullscreenElement) {
+        setIsFullScreen(true);
+      } else {
+        setIsFullScreen(false);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+    };
+  }, []);
+
+  const handleImageClick1 = () => {
+    if (imageContainerRef.current) {
+      if (!document.fullscreenElement) {
+        imageContainerRef.current.requestFullscreen().catch((err) => {
+          console.error(`Error attempting to enable full-screen mode: ${err}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  const handleExitFullScreenClick = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  };
+
   useEffect(() => {
     const fetchAllNews = async () => {
       const response = await axiosPublic.get(`/news?lang=all`);
@@ -252,14 +288,25 @@ const IndexPage: React.FC = () => {
 
               <div className="bg-white p-2">
                 <AdDisplay ads={ads} adId="detailsImagesTop" />
-                <Image
-                  src={news?.img || "/default.jpg"}
-                  width={696}
-                  height={464}
-                  alt={news?.title || "post"}
-                  className="w-full h-auto cursor-pointer"
-                  onClick={() => handleImageClick(lang, news)}
-                />
+                <div ref={imageContainerRef}>
+                  <Image
+                    src={news?.img || "/default.jpg"}
+                    alt={news?.title || "post"}
+                    layout="responsive"
+                    width={696}
+                    height={464}
+                    className="cursor-pointer object-contain"
+                    onClick={handleImageClick1}
+                  />
+                  {isFullScreen && (
+                    <div
+                      className="absolute top-4 right-4 text-white text-4xl cursor-pointer"
+                      onClick={handleExitFullScreenClick}
+                    >
+                      <FaCompress size={24} fill="blue" />
+                    </div>
+                  )}
+                </div>
               </div>
               <AdDisplay ads={ads} adId="detailsImagesBottom" />
 
@@ -273,14 +320,44 @@ const IndexPage: React.FC = () => {
                 />
 
                 <AdDisplay ads={ads} adId="detailsDescriptionCentre" />
-                <Image
-                  src={news?.img || "/default.jpg"}
-                  width={696}
-                  height={464}
-                  alt={news?.title || "post"}
-                  className="w-min mx-auto h-auto cursor-pointer"
-                  onClick={() => handleImageClick(lang, news)}
-                />
+                <div
+                  ref={imageContainerRef}
+                  className={`relative ${
+                    isFullScreen
+                      ? "fixed inset-0 flex justify-center items-center bg-black z-50"
+                      : "w-full h-auto"
+                  }`}
+                >
+                  {isFullScreen ? (
+                    <Image
+                      src={news?.img || "/default.jpg"}
+                      alt={news?.title || "post"}
+                      layout="responsive"
+                      width={1920}
+                      height={1080}
+                      className="cursor-pointer object-contain"
+                      onClick={handleExitFullScreenClick}
+                    />
+                  ) : (
+                    <Image
+                      src={news?.img || "/default.jpg"}
+                      width={696}
+                      height={464}
+                      alt={news?.title || "post"}
+                      className="w-min mx-auto h-auto cursor-pointer"
+                      onClick={handleImageClick1}
+                    />
+                  )}
+
+                  {isFullScreen && (
+                    <div
+                      className="absolute top-4 right-4 text-white text-4xl cursor-pointer"
+                      onClick={handleExitFullScreenClick}
+                    >
+                      <FaCompress size={24} fill="blue" />
+                    </div>
+                  )}
+                </div>
                 <div
                   className="mb-2"
                   dangerouslySetInnerHTML={{
