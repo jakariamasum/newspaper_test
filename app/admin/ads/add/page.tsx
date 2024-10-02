@@ -59,6 +59,7 @@ const sections: Section[] = [
 ];
 
 export type TAds = {
+  _id: string;
   id: string;
   position: "header" | "category" | "details";
   type: "code" | "images";
@@ -73,17 +74,13 @@ export type TAds = {
 const IndexPage: React.FC = () => {
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
-  }>(
-    sections.reduce((acc, section) => {
-      acc[section.id] = "code";
-      return acc;
-    }, {} as { [key: string]: string })
-  );
+  }>({});
   const [linkData, setLinkData] = useState<{ [key: string]: string }>({});
   const [imageData, setImageData] = useState<{ [key: string]: string }>({});
   const [codeData, setCodeData] = useState<{ [key: string]: string }>({});
   const [existingAds, setExistingAds] = useState<TAds[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchAdsData = async () => {
@@ -92,6 +89,37 @@ const IndexPage: React.FC = () => {
         const adsData: TAds[] = response.data.data;
         setExistingAds(adsData);
         setLoading(false);
+
+        const newSelectedOptions: { [key: string]: string } = {};
+        const newLinkData: { [key: string]: string } = {};
+        const newImageData: { [key: string]: string } = {};
+        const newCodeData: { [key: string]: string } = {};
+
+        adsData.forEach((ad) => {
+          newSelectedOptions[ad.id] = ad.type;
+          if (ad.type === "code") {
+            newCodeData[ad.id] = ad.content as string;
+          } else {
+            newImageData[ad.id] = (
+              ad.content as { image: string; link: string }
+            ).image;
+            newLinkData[ad.id] = (
+              ad.content as { image: string; link: string }
+            ).link;
+          }
+        });
+
+        sections.forEach((section) => {
+          if (!newSelectedOptions[section.id]) {
+            newSelectedOptions[section.id] = "code";
+            newCodeData[section.id] = "";
+          }
+        });
+
+        setSelectedOptions(newSelectedOptions);
+        setLinkData(newLinkData);
+        setImageData(newImageData);
+        setCodeData(newCodeData);
       } catch (error) {
         console.error("Failed to fetch ads data:", error);
         toast.error("Failed to load ads data.");
@@ -101,10 +129,6 @@ const IndexPage: React.FC = () => {
 
     fetchAdsData();
   }, []);
-
-  const availableSections = sections.filter(
-    (section) => !existingAds.some((ad) => ad.id === section.id)
-  );
 
   const handleSelectChange = (id: string, value: string) => {
     setSelectedOptions((prev) => ({
@@ -136,7 +160,7 @@ const IndexPage: React.FC = () => {
 
   const handlePublish = async () => {
     try {
-      const data = availableSections.map((section) => ({
+      const data = sections.map((section) => ({
         id: section.id,
         position: section.position,
         type: selectedOptions[section.id],
@@ -159,12 +183,35 @@ const IndexPage: React.FC = () => {
         return false;
       });
 
-      await axiosPublic.post("/ads/admin", adsToPublish, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      toast.success("Ads Published successfully!");
+      if (adsToPublish.length === 0) {
+        toast.warning("No valid ads to publish.");
+        return;
+      }
+
+      const existingAdsResponse = await axiosPublic.get("/ads");
+      const existingAds: TAds[] = existingAdsResponse.data.data;
+
+      for (const ad of adsToPublish) {
+        const existingAd = existingAds.find(
+          (existing) => existing.id === ad.id
+        );
+
+        if (existingAd) {
+          await axiosPublic.put(`/ads/admin/${existingAd._id}`, ad, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          });
+        } else {
+          await axiosPublic.post("/ads/admin", [ad], {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          });
+        }
+      }
+
+      toast.success("Ads updated");
     } catch (error) {
       console.error("Failed to publish:", error);
       toast.warning("Failed to publish.");
@@ -183,7 +230,7 @@ const IndexPage: React.FC = () => {
             {position.charAt(0).toUpperCase() + position.slice(1)}
           </h1>
           <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-4">
-            {availableSections
+            {sections
               .filter((section) => section.position === position)
               .map((section) => (
                 <div key={section.id}>
@@ -191,7 +238,7 @@ const IndexPage: React.FC = () => {
                     <p>{section.title}</p>
                     <select
                       className="px-2 max-w-sm outline-none"
-                      value={selectedOptions[section.id]}
+                      value={selectedOptions[section.id] || "code"}
                       onChange={(e) =>
                         handleSelectChange(section.id, e.target.value)
                       }
@@ -201,26 +248,28 @@ const IndexPage: React.FC = () => {
                     </select>
                   </div>
                   {selectedOptions[section.id] === "code" ? (
-                    <textarea
-                      rows={4}
-                      placeholder="html code"
-                      className="p-2 mt-2 w-full outline-none rounded-md"
-                      value={codeData[section.id] || ""}
-                      onChange={(e) =>
-                        handleCodeChange(section.id, e.target.value)
-                      }
-                    />
+                    <>
+                      <textarea
+                        rows={4}
+                        placeholder="html code"
+                        className="p-2 mt-2 w-full border border-main rounded"
+                        value={codeData[section.id] || ""}
+                        onChange={(e) =>
+                          handleCodeChange(section.id, e.target.value)
+                        }
+                      />
+                    </>
                   ) : (
                     <>
                       <Photo
-                        title="Photo (600x600px)"
-                        img={imageData[section.id] || ""}
                         onChange={(img) => handleImageChange(section.id, img)}
+                        img={imageData[section.id] || ""}
+                        title={""}
                       />
                       <input
                         type="text"
                         placeholder="Link"
-                        className="p-2 mt-2 w-full outline-none rounded-md"
+                        className="p-2 mt-2 w-full border border-main rounded"
                         value={linkData[section.id] || ""}
                         onChange={(e) =>
                           handleLinkChange(section.id, e.target.value)
@@ -234,13 +283,15 @@ const IndexPage: React.FC = () => {
         </div>
       ))}
 
-      <button
-        onClick={handlePublish}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-      >
-        Publish
-      </button>
-      <Toaster richColors position="top-center" />
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={handlePublish}
+          className="bg-main text-white p-2 rounded-md hover:bg-darkMain"
+        >
+          {isEditing ? "Edit" : "Publish"}
+        </button>
+      </div>
+      <Toaster position="top-center" richColors />
     </div>
   );
 };
