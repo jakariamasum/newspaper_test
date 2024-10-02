@@ -186,11 +186,14 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
       {header === 1 && (
         <div className="bg-white">
           <div className="container">
+            <div className="lg:w-[350px] h-auto">
+              <AdDisplay ads={ads} adId="headerTop" />
+            </div>
             <div className="flex items-center justify-between">
-              <div className="w-[250px] h-auto">
+              <div className="w-[350px] h-auto">
                 <AdDisplay ads={ads} adId="headerLeft" />
               </div>
-              <Link href={`/${lang}`}>
+              <Link href={lang === "all" || lang === "news" ? "/" : `/${lang}`}>
                 <Image
                   src={settings?.logo || "/logo.svg"}
                   width={200}
@@ -199,21 +202,20 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
                   className="w-40"
                 />
               </Link>
-              <div className="w-[250px] h-auto">
+              <div className="w-[250px] h-auto mt-2">
                 <AdDisplay ads={ads} adId="headerRight" />
               </div>
+            </div>
+            <div className="lg:w-[350px] h-auto">
+              <AdDisplay ads={ads} adId="headerBottom" />
             </div>
           </div>
         </div>
       )}
       {header === 2 && <div className="header-content">hello 2</div>}
-      <div className="w-[250px] h-auto">
-        <AdDisplay ads={ads} adId="headerTop" />
-      </div>
+
       {menu === 1 && <Menu items={menus} />}
-      <div className="w-[250px] h-auto">
-        <AdDisplay ads={ads} adId="headerBottom" />
-      </div>
+
       {menu === 2 && <div className="menu-content">menu 2</div>}
     </>
   );
