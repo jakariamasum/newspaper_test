@@ -185,7 +185,7 @@ const IndexPage: React.FC = () => {
                           key={item._id}
                           className="hover:bg-gray-100 border-t border-gray-200 transition-colors"
                         >
-                          <Link href={`/news/${item._id}`}>
+                          <Link href={`/news/${item._id}`} target="_blank">
                             <td
                               className="py-3 px-4 text-gray-800 truncate max-w-[150px] hover:underline hover:text-blue-500 hover:text-clip"
                               title={item.title}
