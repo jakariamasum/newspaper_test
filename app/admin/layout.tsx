@@ -191,7 +191,7 @@ export default function RootLayout({
             className={`hover:bg-main hover:text-white p-2 block ${
               isActive(["/admin/ads"]) ? "bg-main text-white" : ""
             }`}
-            href="/admin/ads"
+            href="/admin/ads/add"
           >
             Ads
           </Link>
