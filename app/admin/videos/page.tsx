@@ -81,9 +81,6 @@ const IndexPage: React.FC = () => {
   return (
     <div className="container mx-auto my-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-          Manage Videos
-        </h1>
         <div className="flex gap-1">
           <Link
             className={`hover:bg-main hover:text-white p-2 block`}
