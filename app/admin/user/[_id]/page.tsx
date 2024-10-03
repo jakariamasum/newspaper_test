@@ -175,7 +175,7 @@ const UserTypePage = () => {
       {editModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Edit News</h2>
+            <h2 className="text-xl font-bold mb-4">Publish</h2>
             <form onSubmit={handleEditSubmit}>
               <div className="mb-4">
                 <label className="block mb-2">Title</label>

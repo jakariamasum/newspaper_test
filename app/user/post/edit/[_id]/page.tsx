@@ -109,7 +109,7 @@ const EditNews: React.FC = () => {
                 onClick={handlePublish}
                 className="w-full py-2 px-4 bg-main text-white font-bold rounded-md"
               >
-                Edit Now
+                Publish
               </button>
             </div>
           </div>
