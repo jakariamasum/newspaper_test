@@ -98,7 +98,7 @@ const IndexPage: React.FC = () => {
       {pageData?.rows.map((row) => (
         <div
           key={row._id}
-          className="my-4 p-4"
+          className="my-4"
           style={{
             backgroundColor: row.bgColor,
             color: row.textColor,
