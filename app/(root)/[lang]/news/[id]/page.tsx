@@ -13,6 +13,7 @@ import { getRandomPosts } from "@/app/utils/getRandomPosts";
 import { useLang } from "@/app/context/langContext";
 import { toast, Toaster } from "sonner";
 import { FaCompress } from "react-icons/fa";
+import Head from "next/head";
 
 interface IAds {
   id: string;
@@ -140,6 +141,21 @@ const IndexPage: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>{news?.title}</title>
+
+        <meta property="og:title" content={news?.title} />
+        <meta property="og:image" content={news?.img} />
+        <meta property="og:url" content={url} />
+        <meta property="og:type" content="article" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={news?.title} />
+        <meta name="twitter:image" content={news?.img} />
+
+        <meta property="og:image" content={news?.img} />
+        <meta name="pinterest-rich-pin" content="true" />
+      </Head>
       {page === 1 && (
         <div className="container my-2">
           <div className="w-full flex md:flex-row flex-col gap-4">
