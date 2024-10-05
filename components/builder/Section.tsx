@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MultiSelect } from "../MultiSelect";
 import { MultiValue } from "react-select";
+
 interface SectionData {
   sectionTitle: string;
   color: string;
@@ -21,6 +22,11 @@ export interface Option {
   label: string;
 }
 
+interface Category {
+  _id: string;
+  title: string;
+}
+
 const boxStyles = Array.from({ length: 18 }, (_, i) => ({
   id: (i + 1).toString(),
   name: `Box ${i + 1}`,
@@ -33,14 +39,14 @@ const gridStyles = Array.from({ length: 12 }, (_, i) => ({
 
 const Section: React.FC<{
   section: string;
-  categories: any[];
+  categories: Category[];
   setSectionInfo: (data: Partial<SectionData>) => void;
   index: number;
   moveSection: (dragIndex: number, hoverIndex: number) => void;
   deleteSection: (index: number) => void;
   moveSectionUp: () => void;
   moveSectionDown: () => void;
-  defaultData?: any;
+  defaultData?: Partial<SectionData>;
 }> = ({
   section,
   index,
@@ -123,7 +129,6 @@ const Section: React.FC<{
       categories: selectedCategories,
     }));
     setSectionInfo({ ...sectionInfo, categories: selectedCategories });
-    console.log(selectedCategories);
   };
 
   const handleInputChange = (field: keyof SectionData, value: string) => {
@@ -255,7 +260,7 @@ const Section: React.FC<{
                 </div>
 
                 <div className="flex items-center justify-between py-1.5">
-                  <p>{section} BG Color</p>
+                  <p>Category BG Color</p>
                   <input
                     type="color"
                     className="h-6 border max-w-sm text-xs leading-none outline-none rounded-md"
@@ -267,7 +272,7 @@ const Section: React.FC<{
                   />
                 </div>
                 <div className="flex items-center justify-between py-1.5">
-                  <p>{section} Text Color</p>
+                  <p>Category Text Color</p>
                   <input
                     type="color"
                     className="h-6 border max-w-sm text-xs leading-none outline-none rounded-m"
@@ -281,7 +286,7 @@ const Section: React.FC<{
                   <div className="relative">
                     <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
                       <option value="" className="text-gray-400">
-                        {section} Style
+                        Category Style
                       </option>
                       <option value="1">Grid</option>
                       <option value="2">Slider</option>
@@ -302,7 +307,7 @@ const Section: React.FC<{
                   <div className="relative">
                     <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
                       <option value="" className="text-gray-400">
-                        Select {section} Title
+                        Select Category Title
                       </option>
                       <option value="1">On</option>
                       <option value="2">Off</option>
@@ -420,7 +425,7 @@ const Section: React.FC<{
 
                 <div className="flex items-center gap-2 py-1">
                   <p className="text-sm font-medium text-gray-700">
-                    {section} Limit
+                    Category Limit
                   </p>
                   <input
                     type="number"
@@ -435,7 +440,7 @@ const Section: React.FC<{
 
                 <div className="flex items-center gap-2 py-1">
                   <p className="text-sm font-medium text-gray-700">
-                    {section} Width
+                    Category Width
                   </p>
                   <input
                     type="number"
@@ -446,18 +451,6 @@ const Section: React.FC<{
                   />
                 </div>
 
-                {section === "banner" && (
-                  <>
-                    <div className="flex items-center justify-between py-1.5">
-                      <p>{section} height</p>
-                      <input
-                        type="number"
-                        className="px-1 py-0.5 border max-w-sm text-xs leading-none outline-none rounded-m"
-                        placeholder="Enter number"
-                      />
-                    </div>
-                  </>
-                )}
                 <div className="mb-6 w-full my-1">
                   <div className="relative">
                     <select
