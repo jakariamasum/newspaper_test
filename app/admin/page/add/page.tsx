@@ -54,7 +54,10 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const fetchLanguages = async () => {
       const response = await axiosPublic.get("/language");
-      setLanguages(response.data.data);
+      const activeLanguages = response.data.data.filter(
+        (lang: any) => lang.status === "active"
+      );
+      setLanguages(activeLanguages);
     };
     fetchLanguages();
   }, []);

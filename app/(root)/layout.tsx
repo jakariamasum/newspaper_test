@@ -63,7 +63,10 @@ export default function RootLayout({
     const fetchLanguage = async () => {
       try {
         const response = await axiosPublic.get(`/language`);
-        setLanguage(response.data.data);
+        const activeLanguages = response.data.data.filter(
+          (lang: any) => lang.status === "active"
+        );
+        setLanguage(activeLanguages);
       } catch (error) {
         console.error("Error fetching languages:", error);
       }

@@ -10,6 +10,7 @@ interface ILanguage {
   lang: string;
   title: string;
   link: string;
+  status: string;
 }
 
 const IndexPage: React.FC = () => {
@@ -20,6 +21,7 @@ const IndexPage: React.FC = () => {
   );
   const [editTitle, setEditTitle] = useState("");
   const [editLink, setEditLink] = useState("");
+  const [editStatus, setEditStatus] = useState("");
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -33,6 +35,7 @@ const IndexPage: React.FC = () => {
     setSelectedLanguage(language);
     setEditTitle(language.title);
     setEditLink(language.link);
+    setEditStatus(language.status);
     setIsModalOpen(true);
   };
 
@@ -48,6 +51,7 @@ const IndexPage: React.FC = () => {
           ...selectedLanguage,
           title: editTitle,
           link: editLink,
+          status: editStatus,
         };
         const response = await axiosPublic.put(
           `/language/admin/${selectedLanguage._id}`,
@@ -134,10 +138,24 @@ const IndexPage: React.FC = () => {
               <input
                 type="text"
                 value={editLink}
-                onChange={(e) => setEditLink(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                readOnly
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100 cursor-not-allowed"
               />
             </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Status
+              </label>
+              <select
+                value={editStatus}
+                onChange={(e) => setEditStatus(e.target.value)}
+                className="block w-full py-2 px-3 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+
             <div className="flex justify-end">
               <button
                 onClick={closeModal}
