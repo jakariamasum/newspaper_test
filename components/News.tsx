@@ -21,6 +21,7 @@ interface NewssProps {
   box: number;
   style: number;
   item: Item[];
+  seeAll?: string;
 }
 
 const News: React.FC<NewssProps> = ({
@@ -30,6 +31,7 @@ const News: React.FC<NewssProps> = ({
   box,
   style,
   item,
+  seeAll,
 }) => {
   const [activeCategory, setActiveCategory] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
@@ -119,7 +121,7 @@ const News: React.FC<NewssProps> = ({
             )}
             {categoriesCount === 1 && (
               <Link href={link} className="text-main hover:underline block">
-                See all
+                {seeAll ? seeAll : "See all"}
               </Link>
             )}
           </div>
@@ -150,7 +152,7 @@ const News: React.FC<NewssProps> = ({
             )}
             {categoriesCount === 1 && (
               <Link href={link} className="text-main hover:underline block">
-                See all
+                {seeAll ? seeAll : "See all"}
               </Link>
             )}
           </div>

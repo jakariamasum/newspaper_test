@@ -11,6 +11,13 @@ interface ILanguage {
   title: string;
   link: string;
   status: string;
+  relatedPost: string;
+  popularPost: string;
+  orderPolicy: string;
+  copyright: string;
+  privacy: string;
+  seeAll: string;
+  terms: string;
 }
 
 const IndexPage: React.FC = () => {
@@ -22,6 +29,13 @@ const IndexPage: React.FC = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editLink, setEditLink] = useState("");
   const [editStatus, setEditStatus] = useState("");
+  const [relatedPost, setRelatedPost] = useState("");
+  const [popularPost, setPopularPost] = useState("");
+  const [seeAll, setSeeAll] = useState("");
+  const [copyright, setCopyright] = useState("");
+  const [terms, setTerms] = useState("");
+  const [privacy, setPrivacy] = useState("");
+  const [orderPolicy, setOrderPolicy] = useState("");
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -32,10 +46,17 @@ const IndexPage: React.FC = () => {
   }, []);
 
   const openEditModal = (language: ILanguage) => {
-    setSelectedLanguage(language);
-    setEditTitle(language.title);
-    setEditLink(language.link);
-    setEditStatus(language.status);
+    setSelectedLanguage(language || "");
+    setEditTitle(language.title || "");
+    setEditLink(language.link || "");
+    setEditStatus(language.status || "");
+    setRelatedPost(language.relatedPost || "");
+    setCopyright(language.copyright || "");
+    setOrderPolicy(language.orderPolicy || "");
+    setPopularPost(language.popularPost || "");
+    setPrivacy(language.privacy || "");
+    setSeeAll(language.seeAll || "");
+    setTerms(language.terms || "");
     setIsModalOpen(true);
   };
 
@@ -52,6 +73,13 @@ const IndexPage: React.FC = () => {
           title: editTitle,
           link: editLink,
           status: editStatus,
+          relatedPost: relatedPost,
+          popularPost: popularPost,
+          seeAll: seeAll,
+          copyright: copyright,
+          terms: terms,
+          privacy: privacy,
+          orderPolicy: orderPolicy,
         };
         const response = await axiosPublic.put(
           `/language/admin/${selectedLanguage._id}`,
@@ -118,45 +146,134 @@ const IndexPage: React.FC = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl overflow-y-auto h-auto max-h-screen">
             <h2 className="text-xl font-bold mb-4">Edit Language</h2>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Link
-              </label>
-              <input
-                type="text"
-                value={editLink}
-                readOnly
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100 cursor-not-allowed"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Status
-              </label>
-              <select
-                value={editStatus}
-                onChange={(e) => setEditStatus(e.target.value)}
-                className="block w-full py-2 px-3 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Link
+                </label>
+                <input
+                  type="text"
+                  value={editLink}
+                  readOnly
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Status
+                </label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="block w-full py-2 px-3 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Related Post
+                </label>
+                <input
+                  type="text"
+                  value={relatedPost}
+                  onChange={(e) => setRelatedPost(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Popular Post
+                </label>
+                <input
+                  type="text"
+                  value={popularPost}
+                  onChange={(e) => setPopularPost(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  See All
+                </label>
+                <input
+                  type="text"
+                  value={seeAll}
+                  onChange={(e) => setSeeAll(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Copyright
+                </label>
+                <input
+                  type="text"
+                  value={copyright}
+                  onChange={(e) => setCopyright(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Terms & Conditions
+                </label>
+                <input
+                  type="text"
+                  value={terms}
+                  onChange={(e) => setTerms(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Privacy Policy
+                </label>
+                <input
+                  type="text"
+                  value={privacy}
+                  onChange={(e) => setPrivacy(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Order Policy
+                </label>
+                <input
+                  type="text"
+                  value={orderPolicy}
+                  onChange={(e) => setOrderPolicy(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <button
                 onClick={closeModal}
                 className="bg-gray-500 text-white py-1 px-4 rounded-md mr-2"

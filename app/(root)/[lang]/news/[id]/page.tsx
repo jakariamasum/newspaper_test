@@ -30,6 +30,11 @@ type TNews = {
   img: string;
   category: { category: { title: string; _id: string } };
 };
+type TLanguage = {
+  relatedPost: string;
+  popularPost: string;
+  seeAll: string;
+};
 const IndexPage: React.FC = () => {
   const { lang } = useLang();
   const router = useRouter();
@@ -42,6 +47,7 @@ const IndexPage: React.FC = () => {
   const url = window.location.href;
   const [isFullScreen, setIsFullScreen] = useState(false);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
+  const [langDetails, setLangDetails] = useState<TLanguage | null>(null);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
@@ -97,8 +103,16 @@ const IndexPage: React.FC = () => {
       setAds(response.data.data);
     };
     fetchAds();
+    const fetchLanguage = async () => {
+      try {
+        const response = await axiosPublic.get(`/language?lang=${lang}`);
+        setLangDetails(response.data.data);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+      }
+    };
+    fetchLanguage();
   }, []);
-
   const contentParts = news?.content?.split(/<\/p>/) || [];
   const halfwayIndex = Math.floor(contentParts?.length / 2);
   const allPost = postFormat(allNews, categories);
@@ -375,7 +389,7 @@ const IndexPage: React.FC = () => {
               <AdDisplay ads={ads} adId="detailsRelatedPostTop" />
 
               <News
-                title="RELATED ARTICLES"
+                title={langDetails?.relatedPost || "RELATED ARTICLES"}
                 link={
                   `/${lang}/categories/` +
                     (news?.category?.category?._id as string) || "/"
@@ -384,6 +398,7 @@ const IndexPage: React.FC = () => {
                 box={14}
                 style={2}
                 item={relatedPosts}
+                seeAll={langDetails?.seeAll}
               />
               <AdDisplay ads={ads} adId="detailsRelatedPostBottom" />
             </div>
@@ -398,7 +413,7 @@ const IndexPage: React.FC = () => {
                   />
                 </Link>
                 <News
-                  title="MOST POPULAR"
+                  title={langDetails?.popularPost || "MOST POPULAR"}
                   link={
                     `/${lang}/categories/` +
                       (news?.category?.category?._id as string) || "/"
@@ -407,6 +422,7 @@ const IndexPage: React.FC = () => {
                   box={2}
                   style={2}
                   item={mostPopularPosts}
+                  seeAll={langDetails?.seeAll}
                 />
                 <Link href="/" className="mb-2 block bg-white p-2">
                   <Image
@@ -648,7 +664,7 @@ const IndexPage: React.FC = () => {
               </Link>
 
               <News
-                title="RELATED ARTICLES"
+                title={langDetails?.relatedPost || "RELATED ARTICLES"}
                 link={
                   ((`/${lang}/categories/` +
                     news?.category?.category?._id) as string) || "/"
@@ -657,6 +673,7 @@ const IndexPage: React.FC = () => {
                 box={14}
                 style={2}
                 item={relatedPosts}
+                seeAll={langDetails?.seeAll}
               />
 
               <Link href="/" className="mb-2 block bg-white p-2">
@@ -680,7 +697,7 @@ const IndexPage: React.FC = () => {
                   />
                 </Link>
                 <News
-                  title="MOST POPULAR"
+                  title={langDetails?.popularPost || "MOST POPULAR"}
                   link={
                     ((`/${lang}/categories/` +
                       news?.category?.category?._id) as string) || "/"
@@ -689,6 +706,7 @@ const IndexPage: React.FC = () => {
                   box={2}
                   style={2}
                   item={mostPopularPosts}
+                  seeAll={langDetails?.seeAll}
                 />
                 <Link href="/" className="mb-2 block bg-white p-2">
                   <Image

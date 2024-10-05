@@ -42,6 +42,7 @@ const IndexPage: React.FC = () => {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const { lang } = useLang();
+  const [seeAll, setSeeAll] = useState("");
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -81,6 +82,20 @@ const IndexPage: React.FC = () => {
       }
       setLoading(false);
     };
+    const fetchLanguage = async () => {
+      try {
+        setLoading(true);
+
+        const response = await axiosPublic.get(`/language?lang=${lang}`);
+        const { data } = response.data;
+        setSeeAll(data.seeAll);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+        setLoading(false);
+      }
+    };
+    fetchLanguage();
     fetchPageData();
     fetchNewsData();
     fetchCategories();
@@ -129,6 +144,7 @@ const IndexPage: React.FC = () => {
                     box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}
+                    seeAll={seeAll}
                   />
                 </div>
               );
