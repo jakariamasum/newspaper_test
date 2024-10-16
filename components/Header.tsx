@@ -87,6 +87,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLanguage = e.target.value;
     setLang(selectedLanguage);
+    sessionStorage.setItem("selectedLanguage", selectedLanguage);
     router.push(`/${selectedLanguage}`);
   };
 
@@ -102,13 +103,14 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
     };
     fetchAds();
   }, []);
+  console.log(lang);
   return (
     <>
       {top === 1 && (
         <div className="bg-main">
           <div className="container text-white">
             <div className="flex items-center justify-between py-1">
-              <Dates lan="en-US" />
+              <Dates lan={lang || "en-US"} />
 
               <div className="flex items-center space-x-2 text-white">
                 <Link href="/" target="_blank">
@@ -167,6 +169,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
                   onChange={handleLanguageChange}
                   value={lang}
                   className="bg-black text-white"
+                  aria-label="Select Language"
                 >
                   <option value="">Home</option>
                   {languages?.map((lang) => (
