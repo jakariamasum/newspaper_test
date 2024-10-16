@@ -89,9 +89,13 @@ export default function RootLayout({
         setLoading(true);
         setLang(savedLang);
         router.push(`/${savedLang}`);
+        document.documentElement.lang = savedLang;
+
         setLoading(false);
       } else if (langFromPath) {
         setLang(langFromPath);
+        document.documentElement.lang = langFromPath;
+
         sessionStorage.setItem("selectedLanguage", langFromPath);
       }
     }
@@ -101,6 +105,8 @@ export default function RootLayout({
     setShowOptions(false);
     setLang(languageCode);
     sessionStorage.setItem("selectedLanguage", languageCode);
+    document.documentElement.lang = languageCode;
+
     router.push(`/${languageCode}`);
   };
 
