@@ -85,7 +85,7 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchAllNews = async () => {
-      const response = await axiosPublic.get(`/news?lang=all`);
+      const response = await axiosPublic.get(`/news`);
       setAllNews(response.data.data);
     };
     fetchAllNews();
@@ -121,10 +121,6 @@ const IndexPage: React.FC = () => {
     (item) => item.category === news?.category?.category?.title
   );
   const mostPopularPosts = getRandomPosts(relatedPosts, 5);
-  const handleImageClick = (lang: string, news: any) => {
-    const imgSrc = encodeURIComponent(news?.img || "default.jpg");
-    window.location.href = `/${lang}/gallery?image=${imgSrc}`;
-  };
 
   const handlePrintClick = (id: string) => {
     router.push(`/print/${id}`);
@@ -398,7 +394,6 @@ const IndexPage: React.FC = () => {
                   }}
                 />
               </div>
-
               <AdDisplay ads={ads} adId="detailsDescriptionBottom" />
 
               <Comment />
@@ -464,7 +459,7 @@ const IndexPage: React.FC = () => {
                   height={464}
                   alt={news?.title || `post`}
                   className="w-full h-auto cursor-pointer"
-                  onClick={() => handleImageClick(lang, news)}
+                  onClick={() => handleImageClick1}
                 />
               </div>
 
@@ -488,9 +483,12 @@ const IndexPage: React.FC = () => {
                 >
                   {news?.category?.category?.title || "Category"}
                 </Link>
+                <AdDisplay ads={ads} adId="detailsTitleTop" />
                 <h1 className="md:text-2xl text-xl font-semibold leading-normal">
                   {news?.title || ""}
                 </h1>
+                <AdDisplay ads={ads} adId="detailsTitleBottom" />
+
                 <div className="flex items-center flex-col md:flex-row justify-between mt-2">
                   <div className="flex items-center space-x-1 text-sm">
                     <Image
@@ -499,7 +497,7 @@ const IndexPage: React.FC = () => {
                       height={20}
                       alt={news?.author?.title || ""}
                       className="rounded-full cursor-pointer"
-                      onClick={() => handleImageClick(lang, news)}
+                      onClick={() => handleImageClick1}
                     />
                     <span>By</span>
                     <strong>{news?.title || ""}</strong>
@@ -637,47 +635,32 @@ const IndexPage: React.FC = () => {
                 </div>
               </div>
 
-              <Link href="/" className="mb-2 block bg-white p-2">
+              <AdDisplay ads={ads} adId="detailsImagesTop" />
+              <div ref={imageContainerRef}>
                 <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
-
-              <div className="bg-white p-2 text-base block space-y-2">
-                <Image
-                  src="/post/2.jpg"
+                  src={news?.img || "/default.jpg"}
+                  alt={news?.title || "post"}
+                  layout="responsive"
                   width={696}
                   height={464}
-                  alt="ads"
-                  className="w-min mx-auto h-auto"
+                  className="cursor-pointer object-contain"
+                  onClick={handleImageClick1}
                 />
+                {isFullScreen && (
+                  <div
+                    className="absolute top-4 right-4 text-white text-4xl cursor-pointer"
+                    onClick={handleExitFullScreenClick}
+                  >
+                    <FaCompress size={24} fill="blue" />
+                  </div>
+                )}
               </div>
 
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsImagesBottom" />
 
               <Comment />
 
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsRelatedPostTop" />
 
               <News
                 title={langDetails?.relatedPost || "RELATED ARTICLES"}
@@ -692,15 +675,7 @@ const IndexPage: React.FC = () => {
                 seeAll={langDetails?.seeAll}
               />
 
-              <Link href="/" className="mb-2 block bg-white p-2">
-                <Image
-                  src="/ads/a728.jpg"
-                  width={728}
-                  height={90}
-                  alt="ads"
-                  className="w-full h-auto"
-                />
-              </Link>
+              <AdDisplay ads={ads} adId="detailsRelatedPostBottom" />
             </div>
             <div className="w-fill md:w-1/4">
               <div className="sticky top-0">

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaCompress } from "react-icons/fa";
 
@@ -52,17 +51,21 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
     }
   };
 
+  if (!ad) {
+    return null;
+  }
+
   return (
     <div className="mb-2 block bg-white p-2">
-      {ad?.type === "images" ? (
-        <div ref={imageContainerRef}>
+      {ad.type === "images" ? (
+        <div ref={imageContainerRef} className="relative">
           <Image
             key={ad.id}
             src={ad.content.image as string}
             width={728}
             height={90}
             alt={ad.id}
-            className="w-full h-auto"
+            className="w-full h-auto cursor-pointer"
             onClick={handleImageClick}
           />
           {isFullScreen && (
@@ -74,12 +77,10 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
             </div>
           )}
         </div>
-      ) : ad?.type === "code" ? (
-        <p
+      ) : ad.type === "code" ? (
+        <div
           key={ad.id}
-          dangerouslySetInnerHTML={{
-            __html: ad.content || "",
-          }}
+          dangerouslySetInnerHTML={{ __html: ad.content || "" }}
         />
       ) : null}
     </div>

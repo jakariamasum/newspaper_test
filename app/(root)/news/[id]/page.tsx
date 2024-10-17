@@ -85,7 +85,7 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchAllNews = async () => {
-      const response = await axiosPublic.get(`/news?lang=all`);
+      const response = await axiosPublic.get(`/news`);
       setAllNews(response.data.data);
     };
     fetchAllNews();
