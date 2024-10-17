@@ -44,7 +44,9 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const fetchNewsData = async () => {
       setLoading(true);
-      const response = await axiosPublic.get("/news");
+      const response = await axiosPublic.get("/news", {
+        params: { limit: 1000000 },
+      });
       setNews(response.data.data);
       setLoading(false);
     };
