@@ -1,13 +1,14 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { useSettings } from "../context/settingContext";
-import { useEffect, useState } from "react";
-import axiosPublic from "@/lib/axiosPublic";
-import { useRouter, usePathname } from "next/navigation";
-import { useLang } from "../context/langContext";
 import Loader from "@/components/Loader";
-import Image from "next/image";
+import { useSettings } from "../context/settingContext";
+import { useLang } from "../context/langContext";
+import axiosPublic from "@/lib/axiosPublic";
 
 type TLanguage = {
   _id: string;
@@ -28,12 +29,14 @@ export default function RootLayout({
   const [showOptions, setShowOptions] = useState(true);
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(lang);
 
   const getLangFromPath = () => {
     const pathParts = pathname.split("/").filter(Boolean);
     if (pathParts.length > 0) {
-      return pathParts[0];
+      const possibleLang = pathParts[0];
+      if (language.some((lang) => lang.language_code === possibleLang)) {
+        return possibleLang;
+      }
     }
     return null;
   };
@@ -84,19 +87,17 @@ export default function RootLayout({
     const savedLang = sessionStorage.getItem("selectedLanguage");
     const langFromPath = getLangFromPath();
 
-    if (isSettingsLoaded && pathname === "/") {
-      if (savedLang) {
+    if (isSettingsLoaded) {
+      if (langFromPath) {
+        setLang(langFromPath);
+        document.documentElement.lang = langFromPath;
+        sessionStorage.setItem("selectedLanguage", langFromPath);
+      } else if (pathname === "/" && savedLang) {
         setLoading(true);
         setLang(savedLang);
         router.push(`/${savedLang}`);
         document.documentElement.lang = savedLang;
-
         setLoading(false);
-      } else if (langFromPath) {
-        setLang(langFromPath);
-        document.documentElement.lang = langFromPath;
-
-        sessionStorage.setItem("selectedLanguage", langFromPath);
       }
     }
   }, [isSettingsLoaded, pathname, setLang, router]);
@@ -106,7 +107,6 @@ export default function RootLayout({
     setLang(languageCode);
     sessionStorage.setItem("selectedLanguage", languageCode);
     document.documentElement.lang = languageCode;
-
     router.push(`/${languageCode}`);
   };
 
@@ -134,7 +134,7 @@ export default function RootLayout({
               onClick={() => handleCardClick(lang.language_code)}
             >
               <div className="flex flex-col items-center justify-center">
-                <div className="text-3xl font-bold text-blue-500 mb-2">🌐</div>{" "}
+                <div className="text-3xl font-bold text-blue-500 mb-2">🌐</div>
                 <div className="text-lg font-bold text-gray-800 mb-1">
                   {lang.title}
                 </div>
