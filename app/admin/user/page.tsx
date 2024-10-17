@@ -4,8 +4,9 @@ import axiosPublic from "@/lib/axiosPublic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaKey } from "react-icons/fa";
 import { toast, Toaster } from "sonner";
+
 interface IUser {
   _id: string;
   email: string;
@@ -14,6 +15,7 @@ interface IUser {
   img: string;
   preApproved: boolean;
 }
+
 const IndexPage: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +23,9 @@ const IndexPage: React.FC = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleEdit = (user: IUser) => {
     setCurrentUser(user);
@@ -30,6 +35,11 @@ const IndexPage: React.FC = () => {
   const handleDelete = (user: IUser) => {
     setCurrentUser(user);
     setDeleteConfirmOpen(true);
+  };
+
+  const handlePasswordChange = (user: IUser) => {
+    setCurrentUser(user);
+    setPasswordChangeModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -57,7 +67,6 @@ const IndexPage: React.FC = () => {
 
   const handleEditSave = async () => {
     if (currentUser) {
-      console.log(currentUser);
       try {
         const response = await axiosPublic.put(
           `/user/admin/${currentUser._id}`,
@@ -84,6 +93,35 @@ const IndexPage: React.FC = () => {
     }
   };
 
+  const handlePasswordChangeSave = async () => {
+    if (currentUser && newPassword === confirmPassword) {
+      try {
+        const response = await axiosPublic.put(
+          `/user/admin/change-password/${currentUser._id}`,
+          { password: newPassword },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          toast.success("Password changed successfully!");
+        } else {
+          toast.warning("Failed to change password!");
+        }
+      } catch (error) {
+        toast.error("Failed to change password!");
+      }
+      setPasswordChangeModalOpen(false);
+      setNewPassword("");
+      setConfirmPassword("");
+      setCurrentUser(null);
+    } else if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match!");
+    }
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -94,7 +132,7 @@ const IndexPage: React.FC = () => {
         });
         setUsers(response.data.data);
       } catch (err) {
-        setError("Failed to fetch videos");
+        setError("Failed to fetch users");
       } finally {
         setLoading(false);
       }
@@ -104,6 +142,7 @@ const IndexPage: React.FC = () => {
 
   if (loading) return <Loader />;
   if (error) return <p>Error: {error}</p>;
+
   return (
     <div className="overflow-x-auto mx-2 lg:mx-16 mt-3">
       <div className="text-right my-4">
@@ -155,7 +194,7 @@ const IndexPage: React.FC = () => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {user.role}
               </td>
-              <td className="text-left px-6 py-4 whitespace-nowrap  text-sm font-medium">
+              <td className="text-left px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
                   className="text-indigo-600 hover:text-indigo-900 mr-3"
                   onClick={() => handleEdit(user)}
@@ -163,21 +202,28 @@ const IndexPage: React.FC = () => {
                   <FaEdit />
                 </button>
                 <button
-                  className="text-red-600 hover:text-red-900"
+                  className="text-red-600 hover:text-red-900 mr-3"
                   onClick={() => handleDelete(user)}
                 >
                   <FaTrashAlt />
+                </button>
+                <button
+                  className="text-yellow-600 hover:text-yellow-900"
+                  onClick={() => handlePasswordChange(user)}
+                >
+                  <FaKey />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       {deleteConfirmOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete this news item?</p>
+            <p>Are you sure you want to delete this user?</p>
             <div className="flex justify-end gap-2 mt-4">
               <button
                 className="px-4 py-2 bg-gray-300 rounded"
@@ -196,7 +242,6 @@ const IndexPage: React.FC = () => {
         </div>
       )}
 
-      {/* Edit User Modal */}
       {editModalOpen && currentUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -292,8 +337,65 @@ const IndexPage: React.FC = () => {
         </div>
       )}
 
+      {passwordChangeModalOpen && currentUser && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg max-w-lg w-full">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900 text-center">
+              Change Password
+            </h2>
+            <form className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-main focus:border-transparent"
+                  placeholder="Enter your new password"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm New Password
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-main focus:border-transparent"
+                  placeholder="Confirm your new password"
+                />
+              </div>
+              <div className="flex justify-end gap-4 mt-6">
+                <button
+                  type="button"
+                  className="px-5 py-2 text-sm font-medium bg-gray-200 text-gray-800 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-150 ease-in-out"
+                  onClick={() => {
+                    setPasswordChangeModalOpen(false);
+                    setNewPassword("");
+                    setConfirmPassword("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="px-5 py-2 text-sm font-medium bg-main text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-main transition duration-150 ease-in-out"
+                  onClick={handlePasswordChangeSave}
+                >
+                  Change Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <Toaster richColors position="top-right" />
     </div>
   );
 };
+
 export default IndexPage;
