@@ -2,7 +2,7 @@
 import axiosPublic from "@/lib/axiosPublic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiEdit } from "react-icons/fi";
+import { FiCheck, FiEdit, FiX } from "react-icons/fi";
 import { toast, Toaster } from "sonner";
 
 interface ILanguage {
@@ -120,22 +120,50 @@ const IndexPage: React.FC = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {languages.map((language: ILanguage) => (
+        {languages.map((language) => (
           <div
             key={language._id}
-            className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center relative"
+            className={`bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center relative ${
+              language.status === "active"
+                ? "border-2 border-green-500"
+                : "border-2 border-red-500"
+            }`}
           >
+            <div
+              className={`absolute top-0 left-0 w-full h-1 ${
+                language.status === "active" ? "bg-green-500" : "bg-red-500"
+              }`}
+            />
+
             <h3 className="text-lg font-semibold mb-2">{language.title}</h3>
+
+            <div className="flex items-center mb-4">
+              {language.status === "active" ? (
+                <FiCheck className="text-green-500 mr-2" />
+              ) : (
+                <FiX className="text-red-500 mr-2" />
+              )}
+              <span
+                className={`text-sm font-medium ${
+                  language.status === "active"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {language.status.charAt(0).toUpperCase() +
+                  language.status.slice(1)}
+              </span>
+            </div>
 
             <Link
               href={`type${language.link}`}
-              className="text-blue-600 hover:text-blue-800 font-medium mb-4"
+              className="text-blue-600 hover:text-blue-800 font-medium mb-4 transition duration-300 ease-in-out"
             >
               See News
             </Link>
 
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition duration-300 ease-in-out"
               onClick={() => openEditModal(language)}
             >
               <FiEdit size={20} />
