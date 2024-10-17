@@ -1,15 +1,21 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
 import { useEffect, useState } from "react";
-import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
-import moment from "moment";
+import {
+  FaMapMarkerAlt,
+  FaEdit,
+  FaToggleOn,
+  FaToggleOff,
+} from "react-icons/fa";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import { toast, Toaster } from "sonner";
 
 interface ICity {
   _id: string;
   title: string;
   city: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,20 +24,76 @@ const IndexPage: React.FC = () => {
   const [cities, setCities] = useState<ICity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingCity, setEditingCity] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState<string>("");
 
   useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const response = await axiosPublic.get("/city");
-        setCities(response.data.data);
-      } catch (err) {
-        setError("Failed to fetch cities");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCities();
   }, []);
+
+  const fetchCities = async () => {
+    try {
+      const response = await axiosPublic.get("/city");
+      setCities(response.data.data);
+    } catch (err) {
+      setError("Failed to fetch cities");
+      toast.error("Failed to fetch cities");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (city: ICity) => {
+    setEditingCity(city._id);
+    setEditedName(city.title);
+  };
+
+  const handleSave = async (city: ICity) => {
+    try {
+      await axiosPublic.put(
+        `/city/admin/${city._id}`,
+        { title: editedName },
+        {
+          headers: {
+            Authorization: `Beares ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      setCities(
+        cities.map((c) =>
+          c._id === city._id ? { ...c, title: editedName } : c
+        )
+      );
+      setEditingCity(null);
+      toast.success("City name updated successfully");
+    } catch (err) {
+      toast.error("Failed to update city name");
+    }
+  };
+
+  const handleToggleActive = async (city: ICity) => {
+    try {
+      await axiosPublic.put(
+        `/city/admin/${city._id}`,
+        { isActive: !city.isActive },
+        {
+          headers: {
+            Authorization: `Beares ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      setCities(
+        cities.map((c) =>
+          c._id === city._id ? { ...c, isActive: !c.isActive } : c
+        )
+      );
+      toast.success(
+        `City ${city.isActive ? "deactivated" : "activated"} successfully`
+      );
+    } catch (err) {
+      toast.error("Failed to update city status");
+    }
+  };
 
   if (loading) return <Loader />;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
@@ -42,7 +104,7 @@ const IndexPage: React.FC = () => {
         <h1 className="text-3xl font-extrabold text-gray-900">City List</h1>
         <Link
           href="/admin/city/add"
-          className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
+          className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300 hover:bg-main-dark"
         >
           Add City
         </Link>
@@ -52,17 +114,58 @@ const IndexPage: React.FC = () => {
         {cities.map((city) => (
           <div
             key={city._id}
-            className="flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition-colors duration-200"
+            className={`flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition-colors duration-200 ${
+              city.isActive ? "bg-green-50" : "bg-red-50"
+            }`}
           >
             <div className="flex items-center space-x-4">
-              <FaMapMarkerAlt className="text-main text-2xl" />
-              <h3 className="text-lg font-semibold text-gray-800">
-                {city.title}
-              </h3>
+              <FaMapMarkerAlt
+                className={`text-2xl ${
+                  city.isActive ? "text-green-500" : "text-red-500"
+                }`}
+              />
+              {editingCity === city._id ? (
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="border-2 border-gray-300 rounded-md px-2 py-1"
+                />
+              ) : (
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {city.title}
+                </h3>
+              )}
+            </div>
+            <div className="flex items-center space-x-4">
+              {editingCity === city._id ? (
+                <button
+                  onClick={() => handleSave(city)}
+                  className="text-green-600 hover:text-green-800"
+                >
+                  Save
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleEdit(city)}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  <FaEdit />
+                </button>
+              )}
+              <button
+                onClick={() => handleToggleActive(city)}
+                className={`text-2xl ${
+                  city.isActive ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {city.isActive ? <FaToggleOn /> : <FaToggleOff />}
+              </button>
             </div>
           </div>
         ))}
       </div>
+      <Toaster richColors position="top-right" />
     </div>
   );
 };
