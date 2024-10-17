@@ -56,6 +56,21 @@ const sections: Section[] = [
     title: "Details Related Post Bottom",
     position: "details",
   },
+  {
+    id: "detailsRelatedPostBottom",
+    title: "Details Related Post Bottom",
+    position: "details",
+  },
+  {
+    id: "detailsPopularPostTop",
+    title: "Details Popular Post Top",
+    position: "details",
+  },
+  {
+    id: "detailsPopularPostBottom",
+    title: "Details Popular Post Bottom",
+    position: "details",
+  },
 ];
 
 export type TAds = {
@@ -80,7 +95,7 @@ const IndexPage: React.FC = () => {
   const [codeData, setCodeData] = useState<{ [key: string]: string }>({});
   const [existingAds, setExistingAds] = useState<TAds[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
     const fetchAdsData = async () => {
@@ -160,6 +175,7 @@ const IndexPage: React.FC = () => {
 
   const handlePublish = async () => {
     try {
+      setIsSubmit(true);
       const data = sections.map((section) => ({
         id: section.id,
         position: section.position,
@@ -184,6 +200,7 @@ const IndexPage: React.FC = () => {
       });
 
       if (adsToPublish.length === 0) {
+        setIsSubmit(false);
         toast.warning("No valid ads to publish.");
         return;
       }
@@ -210,9 +227,10 @@ const IndexPage: React.FC = () => {
           });
         }
       }
-
+      setIsSubmit(false);
       toast.success("Ads updated");
     } catch (error) {
+      setIsSubmit(false);
       console.error("Failed to publish:", error);
       toast.warning("Failed to publish.");
     }
@@ -288,7 +306,7 @@ const IndexPage: React.FC = () => {
           onClick={handlePublish}
           className="bg-main text-white p-2 rounded-md hover:bg-darkMain"
         >
-          {isEditing ? "Edit" : "Publish"}
+          {isSubmit ? "Publishing..." : "Publish"}
         </button>
       </div>
       <Toaster position="top-center" richColors />

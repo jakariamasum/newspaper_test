@@ -415,14 +415,8 @@ const IndexPage: React.FC = () => {
             </div>
             <div className="w-fill md:w-1/4">
               <div className="sticky top-0">
-                <Link href="/" className="mb-2 block bg-white p-2">
-                  <Image
-                    src="/ads/a300.jpg"
-                    width={300}
-                    height={300}
-                    alt="ads"
-                  />
-                </Link>
+                <AdDisplay ads={ads} adId="detailsPopularPostTop" />
+
                 <News
                   title={langDetails?.popularPost || "MOST POPULAR"}
                   link={
@@ -435,14 +429,7 @@ const IndexPage: React.FC = () => {
                   item={mostPopularPosts}
                   seeAll={langDetails?.seeAll}
                 />
-                <Link href="/" className="mb-2 block bg-white p-2">
-                  <Image
-                    src="/ads/a300.jpg"
-                    width={300}
-                    height={300}
-                    alt="ads"
-                  />
-                </Link>
+                <AdDisplay ads={ads} adId="detailsPopularPostBottom" />
               </div>
             </div>
           </div>
@@ -679,14 +666,8 @@ const IndexPage: React.FC = () => {
             </div>
             <div className="w-fill md:w-1/4">
               <div className="sticky top-0">
-                <Link href="/" className="mb-2 block bg-white p-2">
-                  <Image
-                    src="/ads/a300.jpg"
-                    width={300}
-                    height={300}
-                    alt="ads"
-                  />
-                </Link>
+                <AdDisplay ads={ads} adId="detailsPopularPostTop" />
+
                 <News
                   title={langDetails?.popularPost || "MOST POPULAR"}
                   link={
@@ -699,14 +680,7 @@ const IndexPage: React.FC = () => {
                   item={mostPopularPosts}
                   seeAll={langDetails?.seeAll}
                 />
-                <Link href="/" className="mb-2 block bg-white p-2">
-                  <Image
-                    src="/ads/a300.jpg"
-                    width={300}
-                    height={300}
-                    alt="ads"
-                  />
-                </Link>
+                <AdDisplay ads={ads} adId="detailsPopularPostBottom" />
               </div>
             </div>
           </div>
