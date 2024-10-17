@@ -33,7 +33,7 @@ export const LanguageSelector = () => {
     setLang(newLang);
     document.documentElement.lang = newLang;
     setCurrentLang(newLang);
-    router.refresh();
+    router.push("/" + newLang);
   };
 
   return (
