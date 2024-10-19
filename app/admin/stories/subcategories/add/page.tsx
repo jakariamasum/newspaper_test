@@ -6,18 +6,10 @@ import Content from "@/components/admin/Content";
 import Photo from "@/components/admin/Photo";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
+import { ICategory } from "@/types/category.types";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast, Toaster } from "sonner";
-
-interface TCat {
-  _id: string;
-  title: string;
-  description?: string;
-  parent_category_id?: string;
-  position?: number;
-  img?: string;
-}
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -100,7 +92,7 @@ const IndexPage: React.FC = () => {
                 <option value="" disabled>
                   Select a category
                 </option>
-                {subCategories?.map((cat: TCat) => (
+                {subCategories?.map((cat: ICategory) => (
                   <option key={cat?._id} value={cat?._id}>
                     {cat?.title}
                   </option>

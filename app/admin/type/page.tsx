@@ -1,24 +1,10 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
+import { ILanguage } from "@/types/language.types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiCheck, FiEdit, FiX } from "react-icons/fi";
 import { toast, Toaster } from "sonner";
-
-interface ILanguage {
-  _id: string;
-  lang: string;
-  title: string;
-  link: string;
-  status: string;
-  relatedPost: string;
-  popularPost: string;
-  orderPolicy: string;
-  copyright: string;
-  privacy: string;
-  seeAll: string;
-  terms: string;
-}
 
 const IndexPage: React.FC = () => {
   const [languages, setLanguages] = useState<ILanguage[]>([]);

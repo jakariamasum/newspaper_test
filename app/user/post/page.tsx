@@ -7,11 +7,8 @@ import Content from "@/components/admin/Content";
 import { toast, Toaster } from "sonner";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-interface TNews {
-  _id: string;
-  title: string;
-  lang: string;
-}
+import { INews } from "@/types/news.types";
+
 const IndexPage: React.FC = () => {
   const router = useRouter();
   const [news, setNews] = useState<any[]>([]);
@@ -39,7 +36,7 @@ const IndexPage: React.FC = () => {
     fetchNews();
   }, []);
 
-  const handleEdit = (item: TNews) => {
+  const handleEdit = (item: INews) => {
     router.push(`/user/post/edit/${item._id}`);
   };
 

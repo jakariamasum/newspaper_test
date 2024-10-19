@@ -10,15 +10,7 @@ import {
 import Link from "next/link";
 import Loader from "@/components/Loader";
 import { toast, Toaster } from "sonner";
-
-interface ICity {
-  _id: string;
-  title: string;
-  city: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ICity } from "@/types/location.types";
 
 const IndexPage: React.FC = () => {
   const [cities, setCities] = useState<ICity[]>([]);

@@ -1,20 +1,16 @@
 "use client";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
+import { ISubCategory } from "@/types/subcategory.types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
 
-interface SubCategory {
-  _id: string;
-  title: string;
-}
-
 const IndexPage: React.FC = () => {
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<SubCategory | null>(
+  const [selectedCategory, setSelectedCategory] = useState<ISubCategory | null>(
     null
   );
   const [newTitle, setNewTitle] = useState<string>("");
@@ -37,7 +33,7 @@ const IndexPage: React.FC = () => {
     fetchSubCategories();
   }, []);
 
-  const handleEdit = (category: SubCategory) => {
+  const handleEdit = (category: ISubCategory) => {
     setSelectedCategory(category);
     setNewTitle(category.title);
   };

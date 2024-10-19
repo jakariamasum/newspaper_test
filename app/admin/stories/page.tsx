@@ -5,23 +5,10 @@ import axiosPublic from "@/lib/axiosPublic";
 import Link from "next/link";
 import Loader from "@/components/Loader";
 import { toast, Toaster } from "sonner";
-
-interface Banner {
-  img: string;
-  title: string;
-  _id: string;
-}
-
-interface Story {
-  _id: string;
-  title: string;
-  category: { title: string };
-  subCategory?: { title: string };
-  banners: Banner[];
-}
+import { IStory } from "@/types/story.types";
 
 const IndexPage: React.FC = () => {
-  const [stories, setStories] = useState<Story[]>([]);
+  const [stories, setStories] = useState<IStory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

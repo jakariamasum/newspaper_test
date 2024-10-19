@@ -1,8 +1,5 @@
+import { ILanguage } from "@/types/language.types";
 import { MetadataRoute } from "next";
-
-interface Language {
-  language_code: string;
-}
 
 async function fetchLanguages(): Promise<string[]> {
   try {
@@ -20,11 +17,11 @@ async function fetchLanguages(): Promise<string[]> {
     const data = await response.json();
 
     if (Array.isArray(data.data)) {
-      return data.data.map((lang: Language) => lang.language_code);
+      return data.data.map((lang: ILanguage) => lang.language_code);
     } else if (typeof data === "object" && data !== null) {
       const languageCodes = Object.values(data)
         .filter(
-          (value): value is Language =>
+          (value): value is ILanguage =>
             typeof value === "object" &&
             value !== null &&
             "language_code" in value

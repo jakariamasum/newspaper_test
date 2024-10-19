@@ -7,19 +7,10 @@ import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import Loader from "@/components/Loader";
 import { useLang } from "@/app/context/langContext";
-interface TNews {
-  _id: string;
-  title: string;
-  lang: string;
-  category: {
-    _id: string;
-    category: {
-      title: string;
-    };
-  };
-}
+import { INews } from "@/types/news.types";
+
 const IndexPage: React.FC = () => {
-  const [news, setNews] = useState<TNews[]>([]);
+  const [news, setNews] = useState<INews[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editItem, setEditItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -45,11 +36,11 @@ const IndexPage: React.FC = () => {
     fetchNews();
   }, [lang]);
 
-  const handleEdit = (item: TNews) => {
+  const handleEdit = (item: INews) => {
     router.push(`/admin/post/edit/${item._id}`);
   };
 
-  const handleDelete = (item: TNews) => {
+  const handleDelete = (item: INews) => {
     setEditItem(item);
     setDeleteConfirmOpen(true);
   };

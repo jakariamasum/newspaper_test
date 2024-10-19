@@ -14,14 +14,8 @@ import { useLang } from "@/app/context/langContext";
 import { toast, Toaster } from "sonner";
 import { FaCompress } from "react-icons/fa";
 import Head from "next/head";
+import { IAds } from "@/types/ads.types";
 
-interface IAds {
-  id: string;
-  _id: string;
-  position: string;
-  type: string;
-  content: any;
-}
 type TNews = {
   _id: string;
   title: string;

@@ -6,32 +6,10 @@ import { usePathname } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
 import { FiFilter } from "react-icons/fi";
 import { BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi";
-
-interface Author {
-  _id: string;
-  title: string;
-}
-
-interface Category {
-  _id: string;
-  title: string;
-}
-
-interface City {
-  _id: string;
-  title: string;
-}
-
-interface NewsItem {
-  _id: string;
-  title: string;
-  content: string;
-  author: Author;
-  createdAt: string;
-  img: string;
-  category: { category: { title: string } };
-  location: { city: string };
-}
+import { INews } from "@/types/news.types";
+import { ICategory } from "@/types/category.types";
+import { ICity } from "@/types/location.types";
+import { IAuthor } from "@/types/author.types";
 
 interface SearchParams {
   dateFrom: string;
@@ -43,10 +21,10 @@ interface SearchParams {
 }
 
 export default function ArchivePage() {
-  const [newsList, setNewsList] = useState<NewsItem[]>([]);
-  const [authors, setAuthors] = useState<Author[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
+  const [newsList, setNewsList] = useState<INews[]>([]);
+  const [authors, setAuthors] = useState<IAuthor[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [cities, setCities] = useState<ICity[]>([]);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     dateFrom: "",
     dateTo: "",

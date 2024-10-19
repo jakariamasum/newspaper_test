@@ -4,12 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import axiosPublic from "@/lib/axiosPublic";
 import Builder from "@/components/Builder";
 import { toast, Toaster } from "sonner";
-
-interface ILanguage {
-  _id: string;
-  title: string;
-  language_code: string;
-}
+import { ILanguage } from "@/types/language.types";
 
 const EditPage: React.FC = () => {
   const router = useRouter();

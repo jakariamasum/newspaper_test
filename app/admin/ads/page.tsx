@@ -1,19 +1,12 @@
 "use client";
 import Photo from "@/components/admin/Photo";
 import axiosPublic from "@/lib/axiosPublic";
+import { IAds } from "@/types/ads.types";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast, Toaster } from "sonner";
-
-interface IAds {
-  id: string;
-  _id: string;
-  position: string;
-  type: string;
-  content: any;
-}
 
 const IndexPage: React.FC = () => {
   const [ads, setAds] = useState<IAds[]>([]);

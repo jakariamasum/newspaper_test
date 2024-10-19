@@ -12,35 +12,18 @@ import { toast, Toaster } from "sonner";
 import moment from "moment";
 import { useLang } from "@/app/context/langContext";
 import Loader from "@/components/Loader";
-
-interface TNews {
-  _id: string;
-  title: string;
-  content: string;
-  author: {
-    title: string;
-  };
-  status: string;
-  lang?: string;
-  category: {
-    _id: string;
-    category: {
-      title: string;
-    };
-  };
-  publishedDate: string;
-}
+import { INews } from "@/types/news.types";
 
 const ModuleTypePage = () => {
   const router = useRouter();
   const { link } = useParams();
   const { setLang, lang } = useLang();
-  const [news, setNews] = useState<TNews[]>([]);
+  const [news, setNews] = useState<INews[]>([]);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [currentNews, setCurrentNews] = useState<TNews | null>(null);
+  const [currentNews, setCurrentNews] = useState<INews | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   // Handlers for edit and delete actions
-  const handleEdit = (item: TNews) => {
+  const handleEdit = (item: INews) => {
     router.push(`/admin/post/edit/${item._id}`);
   };
 
@@ -74,7 +57,7 @@ const ModuleTypePage = () => {
     }
   };
 
-  const handleDelete = (newsItem: TNews) => {
+  const handleDelete = (newsItem: INews) => {
     setCurrentNews(newsItem);
     setDeleteConfirmOpen(true);
   };

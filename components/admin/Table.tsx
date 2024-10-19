@@ -1,19 +1,13 @@
 "use client";
+import { INews } from "@/types/news.types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-interface Post {
-  _id: string;
-  img: string;
-  link: string;
-  title: string;
-}
-
 interface TableProps {
   title: string;
   link: string;
-  post: Post[];
+  post: INews[];
 }
 
 const Table: React.FC<TableProps> = ({ post, title, link }) => {

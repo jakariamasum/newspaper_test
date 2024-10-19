@@ -4,17 +4,7 @@ import { useEffect, useState } from "react";
 import { FaCity } from "react-icons/fa";
 import Link from "next/link";
 import Loader from "@/components/Loader";
-
-interface ICity {
-  _id: string;
-  title: string;
-}
-
-interface IArea {
-  _id: string;
-  title: string;
-  city: ICity;
-}
+import { IArea } from "@/types/location.types";
 
 const IndexPage: React.FC = () => {
   const [areas, setAreas] = useState<IArea[]>([]);

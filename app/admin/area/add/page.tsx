@@ -2,14 +2,10 @@
 "use client";
 import axiosPublic from "@/lib/axiosPublic";
 import { useAllCities } from "@/lib/useAllCities";
+import { ICity } from "@/types/location.types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
-
-interface TCity {
-  _id: string;
-  title: string;
-}
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -69,7 +65,7 @@ const IndexPage: React.FC = () => {
                 <option value="" disabled>
                   Select a City
                 </option>
-                {cities?.map((city: TCity) => (
+                {cities?.map((city: ICity) => (
                   <option key={city._id} value={city._id}>
                     {city.title}
                   </option>

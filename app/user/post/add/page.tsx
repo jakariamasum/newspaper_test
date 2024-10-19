@@ -16,22 +16,7 @@ import { useAllCategory } from "@/lib/useAllCategory";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import { useAuth } from "@/app/context/authContext";
 import { useRouter } from "next/navigation";
-
-interface TUser {
-  _id: string;
-  title: string;
-}
-
-interface TCategory {
-  title: string;
-  checked?: boolean;
-  subItems?: TCategory[];
-}
-interface ILanguage {
-  _id: string;
-  title: string;
-  language_code: string;
-}
+import { ILanguage } from "@/types/language.types";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();

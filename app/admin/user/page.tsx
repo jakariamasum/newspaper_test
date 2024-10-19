@@ -1,43 +1,35 @@
 "use client";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
+import { IAuthor } from "@/types/author.types";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt, FaKey } from "react-icons/fa";
 import { toast, Toaster } from "sonner";
 
-interface IUser {
-  _id: string;
-  email: string;
-  title: string;
-  role: string;
-  img: string;
-  preApproved: boolean;
-}
-
 const IndexPage: React.FC = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<IAuthor[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<IAuthor | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleEdit = (user: IUser) => {
+  const handleEdit = (user: IAuthor) => {
     setCurrentUser(user);
     setEditModalOpen(true);
   };
 
-  const handleDelete = (user: IUser) => {
+  const handleDelete = (user: IAuthor) => {
     setCurrentUser(user);
     setDeleteConfirmOpen(true);
   };
 
-  const handlePasswordChange = (user: IUser) => {
+  const handlePasswordChange = (user: IAuthor) => {
     setCurrentUser(user);
     setPasswordChangeModalOpen(true);
   };
@@ -174,11 +166,11 @@ const IndexPage: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {users.map((user: IUser) => (
+          {users.map((user: IAuthor) => (
             <tr key={user._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <Image
-                  src={user.img}
+                  src={user.img as string}
                   alt={user.title}
                   className="w-12 h-12 object-cover rounded-full"
                   width={400}

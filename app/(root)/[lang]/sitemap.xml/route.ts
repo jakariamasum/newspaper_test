@@ -1,15 +1,6 @@
+import { ILanguage } from "@/types/language.types";
+import { INews } from "@/types/news.types";
 import { NextRequest, NextResponse } from "next/server";
-
-interface NewsItem {
-  _id: string;
-  title: string;
-  updatedAt: string;
-  lang: string;
-}
-
-interface Language {
-  language_code: string;
-}
 
 async function fetchLanguages(): Promise<string[]> {
   try {
@@ -28,11 +19,11 @@ async function fetchLanguages(): Promise<string[]> {
     const data = await response.json();
 
     if (Array.isArray(data.data)) {
-      return data.data.map((lang: Language) => lang.language_code);
+      return data.data.map((lang: ILanguage) => lang.language_code);
     } else if (typeof data.data === "object" && data.data !== null) {
       const languageCodes = Object.values(data.data)
         .filter(
-          (value): value is Language =>
+          (value): value is ILanguage =>
             typeof value === "object" &&
             value !== null &&
             "language_code" in value
@@ -52,7 +43,7 @@ async function fetchLanguages(): Promise<string[]> {
   }
 }
 
-async function fetchNewsByLang(lang: string): Promise<NewsItem[]> {
+async function fetchNewsByLang(lang: string): Promise<INews[]> {
   try {
     const back_url = "https://newspaper-backend-eta.vercel.app/api/v1";
 

@@ -12,12 +12,7 @@ import Time from "@/components/admin/Time";
 import { useLang } from "@/app/context/langContext";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import { useRouter } from "next/navigation";
-
-interface TUser {
-  _id: string;
-  title: string;
-  preApproved: boolean;
-}
+import { IAuthor } from "@/types/author.types";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -28,7 +23,7 @@ const IndexPage: React.FC = () => {
   const [img, setImg] = useState("");
   const [reporter, setReporter] = useState("");
   const [location, setLocation] = useState({ city: "", area: "" });
-  const [users, setUsers] = useState<TUser[]>([]);
+  const [users, setUsers] = useState<IAuthor[]>([]);
   const [cities, setCities] = useState([]);
   const [areas, setAreas] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -177,7 +172,7 @@ const IndexPage: React.FC = () => {
                 onChange={(e) => setReporter(e.target.value)}
               >
                 <option value="">Select a reporter</option>
-                {users?.map((user: TUser) => (
+                {users?.map((user: IAuthor) => (
                   <option value={user?._id} key={user?._id}>
                     {user?.title}
                   </option>

@@ -1,21 +1,15 @@
 "use client";
+import { ICheckboxItem } from "@/types/checkbox.types";
 import React, { useState } from "react";
-
-interface CheckboxItem {
-  title: string;
-  _id: string;
-  checked?: boolean;
-  subCategories?: CheckboxItem[];
-}
 
 interface CheckboxProps {
   title: string;
-  items: CheckboxItem[];
+  items: ICheckboxItem[];
   onChange: (category: { category: string; subCategory: string }) => void;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
-  const initializeCheckedState = (items: CheckboxItem[]): boolean[] =>
+  const initializeCheckedState = (items: ICheckboxItem[]): boolean[] =>
     items.map((item) => !!item.checked);
 
   const [checkedItems, setCheckedItems] = useState<boolean[]>(

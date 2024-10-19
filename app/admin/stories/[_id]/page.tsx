@@ -5,22 +5,7 @@ import axiosPublic from "@/lib/axiosPublic";
 import Loader from "@/components/Loader";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
-
-interface Banner {
-  img: string;
-  title: string;
-  _id: string;
-}
-
-interface Story {
-  _id: string;
-  title: string;
-  category: { title: string };
-  subCategory?: { title: string };
-  banners: Banner[];
-  createdAt: string;
-  updatedAt: string;
-}
+import { IStory } from "@/types/story.types";
 
 interface BuilderProps {
   params: {
@@ -29,7 +14,7 @@ interface BuilderProps {
 }
 
 const StoryDetailsPage: React.FC<BuilderProps> = ({ params }) => {
-  const [story, setStory] = useState<Story | null>(null);
+  const [story, setStory] = useState<IStory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

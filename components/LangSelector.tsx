@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLang } from "@/app/context/langContext";
 import axiosPublic from "@/lib/axiosPublic";
-interface ILanguage {
-  _id: string;
-  language_code: string;
-}
+import { ILanguage } from "@/types/language.types";
 
 export const LanguageSelector = () => {
   const router = useRouter();

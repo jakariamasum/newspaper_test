@@ -4,38 +4,16 @@ import { useLang } from "@/app/context/langContext";
 import AdDisplay from "@/app/utils/AdDisplay";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
+import { INews } from "@/types/news.types";
+import { ISubCategory } from "@/types/subcategory.types";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 
-interface INews {
-  _id: string;
-  title: string;
-  content: string;
-  img: string;
-  tags: string[];
-  author: string;
-  location: {
-    city: string;
-    area: string;
-  };
-  category: {
-    category: { title: string; _id: string };
-    subCategory: string;
-  };
-  lang: string;
-  createdAt: string;
-}
-
 interface CategoryInfo {
   category: string;
   subCategory: string;
-}
-
-interface ISubcategory {
-  _id: string;
-  title: string;
 }
 
 const IndexPage: React.FC = () => {
@@ -51,7 +29,7 @@ const IndexPage: React.FC = () => {
   const { _id } = useParams();
   const { lang } = useLang();
   const [ads, setAds] = useState([]);
-  const [subCategory, setSubCategory] = useState<ISubcategory[]>([]);
+  const [subCategory, setSubCategory] = useState<ISubCategory[]>([]);
 
   useEffect(() => {
     const fetchAllNews = async () => {

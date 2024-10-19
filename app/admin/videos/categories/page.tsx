@@ -1,20 +1,16 @@
 "use client";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
+import { ICategory } from "@/types/category.types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
 
-interface Category {
-  _id: string;
-  title: string;
-}
-
 const IndexPage: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
   const [newTitle, setNewTitle] = useState<string>("");
@@ -37,7 +33,7 @@ const IndexPage: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = (category: ICategory) => {
     setSelectedCategory(category);
     setNewTitle(category.title);
   };

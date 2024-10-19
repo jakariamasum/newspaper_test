@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import Section, { Option } from "./Section";
+import Section from "./Section";
+import { IOption } from "@/types/page.types";
 interface SectionData {
   sectionTitle: string;
   color: string;
@@ -10,7 +11,7 @@ interface SectionData {
   sectionLimit: string;
   imgPosition: string;
   width?: string;
-  categories?: Option[];
+  categories?: IOption[];
 }
 const Row: React.FC<{
   categories: any[];

@@ -9,11 +9,7 @@ import { Toaster, toast } from "sonner";
 import { useParams } from "next/navigation";
 import Time from "@/components/admin/Time";
 import { useLang } from "@/app/context/langContext";
-
-interface TUser {
-  _id: string;
-  title: string;
-}
+import { IAuthor } from "@/types/author.types";
 
 const EditNews: React.FC = () => {
   const router = useRouter();
@@ -24,7 +20,7 @@ const EditNews: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
   const [author, setAuthor] = useState<string>("");
-  const [users, setUsers] = useState<TUser[]>([]);
+  const [users, setUsers] = useState<IAuthor[]>([]);
   const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,7 +130,7 @@ const EditNews: React.FC = () => {
                 onChange={(e) => setAuthor(e.target.value)}
               >
                 <option value="">Select a reporter</option>
-                {users?.map((user: TUser) => (
+                {users?.map((user: IAuthor) => (
                   <option value={user._id} key={user._id}>
                     {user.title}
                   </option>

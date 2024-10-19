@@ -3,29 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MultiSelect } from "../MultiSelect";
 import { MultiValue } from "react-select";
-
-interface SectionData {
-  sectionTitle: string;
-  color: string;
-  backgroundColor: string;
-  desktopGrid: string;
-  mobileGrid: string;
-  sectionLimit: string;
-  imgPosition?: string;
-  width: string;
-  box: string;
-  categories: Option[];
-}
-
-export interface Option {
-  value: string;
-  label: string;
-}
-
-interface Category {
-  _id: string;
-  title: string;
-}
+import { IOption, ISectionData } from "@/types/page.types";
+import { ICategory } from "@/types/category.types";
 
 const boxStyles = Array.from({ length: 18 }, (_, i) => ({
   id: (i + 1).toString(),
@@ -39,14 +18,14 @@ const gridStyles = Array.from({ length: 12 }, (_, i) => ({
 
 const Section: React.FC<{
   section: string;
-  categories: Category[];
-  setSectionInfo: (data: Partial<SectionData>) => void;
+  categories: ICategory[];
+  setSectionInfo: (data: Partial<ISectionData>) => void;
   index: number;
   moveSection: (dragIndex: number, hoverIndex: number) => void;
   deleteSection: (index: number) => void;
   moveSectionUp: () => void;
   moveSectionDown: () => void;
-  defaultData?: Partial<SectionData>;
+  defaultData?: Partial<ISectionData>;
 }> = ({
   section,
   index,
@@ -93,11 +72,11 @@ const Section: React.FC<{
     setColor(e.target.value);
   };
 
-  const selectOptions: Option[] = categories.map((cat) => ({
+  const selectOptions: IOption[] = categories.map((cat) => ({
     value: cat._id,
     label: cat.title,
   }));
-  const [sectionInfo, setSectionInfoState] = useState<SectionData>({
+  const [sectionInfo, setSectionInfoState] = useState<ISectionData>({
     sectionTitle: defaultData.sectionTitle || `Section ${index}`,
     color: defaultData.color || "#000000",
     backgroundColor: defaultData.backgroundColor || "#ffffff",
@@ -119,7 +98,7 @@ const Section: React.FC<{
     }
   }, [defaultData]);
 
-  const handleSelectionChange = (selected: MultiValue<Option>) => {
+  const handleSelectionChange = (selected: MultiValue<IOption>) => {
     const selectedCategories = selected.map((cat) => ({
       value: cat.value,
       label: cat.label,
@@ -131,7 +110,7 @@ const Section: React.FC<{
     setSectionInfo({ ...sectionInfo, categories: selectedCategories });
   };
 
-  const handleInputChange = (field: keyof SectionData, value: string) => {
+  const handleInputChange = (field: keyof ISectionData, value: string) => {
     setSectionInfoState((prev) => ({ ...prev, [field]: value }));
     setSectionInfo({ ...sectionInfo, [field]: value });
   };

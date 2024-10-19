@@ -10,45 +10,24 @@ import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import { useNewsByCategory } from "@/lib/useNewsByCategory";
 import moment from "moment";
-
-interface TNews {
-  _id: string;
-  title: string;
-  content: string;
-  summary?: string;
-  author: {
-    title: string;
-  };
-  page_tag: string;
-  publish_date?: string;
-  status: string;
-  views: number;
-  likes: number;
-  dislikes: number;
-  lang?: string;
-  category: {
-    category: {
-      title: string;
-    };
-  };
-}
+import { INews } from "@/types/news.types";
 
 const CategoryTypePage = () => {
   const { _id } = useParams();
-  const [news, setNews] = useState<TNews[]>([]);
+  const [news, setNews] = useState<INews[]>([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [currentNews, setCurrentNews] = useState<TNews | null>(null);
-  const [editedNews, setEditedNews] = useState<TNews | null>(null);
+  const [currentNews, setCurrentNews] = useState<INews | null>(null);
+  const [editedNews, setEditedNews] = useState<INews | null>(null);
 
   // Handlers for edit and delete actions
-  const handleEdit = (newsItem: TNews) => {
+  const handleEdit = (newsItem: INews) => {
     setCurrentNews(newsItem);
     setEditedNews(newsItem);
     setEditModalOpen(true);
   };
 
-  const handleDelete = (newsItem: TNews) => {
+  const handleDelete = (newsItem: INews) => {
     setCurrentNews(newsItem);
     setDeleteConfirmOpen(true);
   };
@@ -141,11 +120,7 @@ const CategoryTypePage = () => {
               <th className="py-2 px-4 border-b">Content</th>
               <th className="py-2 px-4 border-b">Author</th>
               <th className="py-2 px-4 border-b">Category</th>
-              <th className="py-2 px-4 border-b">Page Tag</th>
               <th className="py-2 px-4 border-b">Status</th>
-              <th className="py-2 px-4 border-b">Views</th>
-              <th className="py-2 px-4 border-b">Likes</th>
-              <th className="py-2 px-4 border-b">Dislikes</th>
               <th className="py-2 px-4 border-b">Publish Date</th>
               <th className="py-2 px-4 border-b flex gap-1 items-center ">
                 Action
@@ -163,13 +138,9 @@ const CategoryTypePage = () => {
                 <td className="py-2 px-4 border-b">
                   {n.category.category.title}
                 </td>
-                <td className="py-2 px-4 border-b">{n.page_tag || "N/A"}</td>
                 <td className="py-2 px-4 border-b">{n.status || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.views || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.likes || "N/A"}</td>
-                <td className="py-2 px-4 border-b">{n.dislikes || "N/A"}</td>
                 <td className="py-2 px-4 border-b">
-                  {moment(n.publish_date).format("MMMM Do YYYY")}
+                  {moment(n.publishedDate).format("MMMM Do YYYY")}
                 </td>
                 <td className="py-2 px-4 border-b flex gap-2">
                   <span onClick={() => handleEdit(n)}>

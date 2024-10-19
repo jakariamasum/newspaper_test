@@ -1,25 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { INews } from "@/types/news.types";
 import { useLang } from "../context/langContext";
+import { ICategory } from "@/types/category.types";
 
-interface NewsData {
-  _id: string;
-  title: string;
-  category: {
-    category: {
-      _id: string;
-    };
-  };
-  img: string;
-}
-interface categoryData {
-  _id: string;
-  title: string;
-}
-
-export const postFormat = (
-  newsData: NewsData[],
-  categoriesData: categoryData[]
-) => {
+export const postFormat = (newsData: INews[], categoriesData: ICategory[]) => {
   const { lang } = useLang();
   return categoriesData.map((category) => {
     const relatedPosts = newsData

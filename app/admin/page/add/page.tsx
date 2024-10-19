@@ -1,15 +1,10 @@
 "use client";
 import Builder from "@/components/Builder";
 import axiosPublic from "@/lib/axiosPublic";
+import { ILanguage } from "@/types/language.types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
-
-interface ILanguage {
-  _id: string;
-  title: string;
-  language_code: string;
-}
 
 const IndexPage: React.FC = () => {
   const router = useRouter();

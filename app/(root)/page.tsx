@@ -5,32 +5,10 @@ import axiosPublic from "@/lib/axiosPublic";
 import { postFormat } from "../utils/postFormat";
 import { useLang } from "../context/langContext";
 import Loader from "@/components/Loader";
-
-interface Section {
-  _id: string;
-  sectionTitle: { _id: string; title: string };
-  link: string;
-  sectionLimit: number;
-  box: string;
-  imgPosition: string;
-  width: string;
-  categories: { value: string; label: string }[];
-}
-
-interface Rows {
-  _id: string;
-  id: number;
-  name: string;
-  bgColor: string;
-  textColor: string;
-  styleType: number;
-  desktopGrid: number;
-  mobileGrid: number;
-  sections: Section[];
-}
+import { IRows } from "@/types/page.types";
 
 interface PageData {
-  rows: Rows[];
+  rows: IRows[];
 }
 
 const IndexPage: React.FC = () => {

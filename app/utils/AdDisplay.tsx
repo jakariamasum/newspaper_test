@@ -1,15 +1,10 @@
+import { IAds } from "@/types/ads.types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FaCompress } from "react-icons/fa";
 
-interface AdContent {
-  id: string;
-  type: string;
-  content: any;
-}
-
 interface AdDisplayProps {
-  ads: AdContent[];
+  ads: IAds[];
   adId: string;
 }
 
