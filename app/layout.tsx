@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "./context/authContext";
 import { LangProvider } from "./context/langContext";
 import { SettingsProvider } from "./context/settingContext";
+import { DynamicTitle } from "@/components/DynamicTitle";
 
 export const metadata: Metadata = {
   title: "Newspaper",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className="bg-gray-200">
         <SettingsProvider>
+          <DynamicTitle />
           <AuthProvider>
             <LangProvider>{children}</LangProvider>
           </AuthProvider>
