@@ -1,35 +1,19 @@
-export interface TSetting {
+export type TSetting = {
+  _id: string;
   metaDescription: string;
   description: string;
   privacy: string;
   terms: string;
-  orderPolicy: string;
   logo: string;
   favicon: string;
   lotoImg: string;
   metaImg: string;
   title: string;
   bgColor: string;
-  country: string;
-  currencySymbol: string;
   copyright: string;
-  priceZero: string;
-  highlights: string;
-  shipInside: string;
-  shipOutside: string;
-  deliveryMethod1: string;
-  deliveryMethod2: string;
-  pickupMethod1: string;
-  pickupMethod2: string;
-  paymentMethod: string;
-  paymentText1: string;
-  paymentText2: string;
-  officeAddress: string;
-  whatsApp: number;
-  telegram: string;
-  kindlyNote: string;
-  order: string;
-  orderText: string;
-  _id: string;
   content: string;
-}
+  header: string;
+  footer: string;
+  categoryStyle: string;
+  detailsStyle: string;
+};

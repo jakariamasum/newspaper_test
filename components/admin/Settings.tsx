@@ -14,6 +14,11 @@ interface SettingsProps {
   languages: ILanguage[];
 }
 
+const Styles = Array.from({ length: 5 }, (_, i) => ({
+  id: (i + 1).toString(),
+  name: `Style ${i + 1}`,
+}));
+
 const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -33,6 +38,14 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [bgColor, setBgColor] = useState(initialSettings.bgColor || "#ab4725");
   const [copyright, setCopyright] = useState(initialSettings.copyright || "");
   const [content, setContent] = useState(initialSettings.content || "");
+  const [header, setHeader] = useState(initialSettings.header || "1");
+  const [footer, setFooter] = useState(initialSettings.footer || "1");
+  const [categoryStyle, setCategoryStyle] = useState(
+    initialSettings.categoryStyle || "1"
+  );
+  const [detailsStyle, setDetailsStyle] = useState(
+    initialSettings.detailsStyle || "1"
+  );
 
   const handlePublish = async () => {
     setLoading(true);
@@ -49,6 +62,10 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
       bgColor,
       copyright,
       content,
+      categoryStyle,
+      detailsStyle,
+      header,
+      footer,
     };
 
     const success = await updateSettings(initialSettings._id, settingData);
@@ -102,6 +119,66 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
               {languages.map((lang) => (
                 <option key={lang._id} value={lang.language_code}>
                   {lang.language_code}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Category Grade</p>
+            <select
+              onChange={(e) => setCategoryStyle(e.target.value)}
+              value={categoryStyle}
+              className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            >
+              <option value="">Select Category Style</option>
+              {Styles.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Details Grade</p>
+            <select
+              onChange={(e) => setDetailsStyle(e.target.value)}
+              value={detailsStyle}
+              className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            >
+              <option value="">Select Details Style</option>
+              {Styles.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Header Style</p>
+            <select
+              onChange={(e) => setHeader(e.target.value)}
+              value={header}
+              className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            >
+              <option value="">Select Header Style</option>
+              {Styles.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="relative w-full flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Footer Style</p>
+            <select
+              onChange={(e) => setFooter(e.target.value)}
+              value={footer}
+              className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            >
+              <option value="">Select Footer Style</option>
+              {Styles.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.name}
                 </option>
               ))}
             </select>
