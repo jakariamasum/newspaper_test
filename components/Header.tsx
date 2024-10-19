@@ -166,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
 
       {top === 2 && <div className="top-content">top 2</div>}
 
-      {header === 1 && (
+      {settings?.header === "1" && (
         <div className="bg-white">
           <div className="container">
             <div className="lg:w-[350px] h-auto">
@@ -195,7 +195,9 @@ const Header: React.FC<HeaderProps> = ({ top, header, menu }) => {
           </div>
         </div>
       )}
-      {header === 2 && <div className="header-content">hello 2</div>}
+      {settings?.header === "2" && (
+        <div className="header-content">hello 2</div>
+      )}
 
       {menu === 1 && <Menu items={menus} />}
 

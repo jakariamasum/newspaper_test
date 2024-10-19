@@ -15,6 +15,7 @@ import { toast, Toaster } from "sonner";
 import { FaCompress } from "react-icons/fa";
 import Head from "next/head";
 import { IAds } from "@/types/ads.types";
+import { useSettings } from "@/app/context/settingContext";
 
 type TNews = {
   _id: string;
@@ -31,6 +32,7 @@ type TLanguage = {
   seeAll: string;
 };
 const IndexPage: React.FC = () => {
+  const { settings } = useSettings();
   const { lang } = useLang();
   const router = useRouter();
   const [page] = useState<number>(1);
@@ -146,7 +148,7 @@ const IndexPage: React.FC = () => {
         <meta property="og:image" content={news?.img} />
         <meta name="pinterest-rich-pin" content="true" />
       </Head>
-      {page === 1 && (
+      {settings?.detailsStyle === "1" && (
         <div className="container my-2">
           <div className="w-full flex md:flex-row flex-col gap-4">
             <div className="w-fill md:w-3/4 block space-y-2">
@@ -429,7 +431,7 @@ const IndexPage: React.FC = () => {
           </div>
         </div>
       )}
-      {page === 2 && (
+      {settings?.detailsStyle === "2" && (
         <div className="container my-2">
           <div className="w-full flex md:flex-row flex-col gap-4">
             <div className="w-fill md:w-3/4 block space-y-2">

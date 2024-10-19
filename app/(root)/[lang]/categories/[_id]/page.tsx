@@ -1,6 +1,7 @@
 "use client";
 
 import { useLang } from "@/app/context/langContext";
+import { useSettings } from "@/app/context/settingContext";
 import AdDisplay from "@/app/utils/AdDisplay";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
@@ -17,6 +18,7 @@ interface CategoryInfo {
 }
 
 const IndexPage: React.FC = () => {
+  const { settings } = useSettings();
   const [allNews, setAllNews] = useState<INews[]>([]);
   const [displayedNews, setDisplayedNews] = useState<INews[]>([]);
   const [newsToShow, setNewsToShow] = useState(5);
@@ -108,85 +110,95 @@ const IndexPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-red-600 mb-2">
-          {categoryInfo?.category}
-        </h1>
-        <div className="flex justify-center items-center space-x-2 mb-3">
-          {subCategory?.map((subCat, index) => (
-            <React.Fragment key={subCat._id}>
-              {index > 0 && <span className="text-gray-400">•</span>}
-              <button
-                onClick={() => handleSubCategoryClick(subCat._id)}
-                className={`text-lg hover:underline ${
-                  selectedSubCategory === subCat._id
-                    ? "text-red-600 font-semibold"
-                    : "text-gray-600"
-                }`}
-              >
-                {subCat?.title}
-              </button>
-            </React.Fragment>
-          ))}
-        </div>
-        {selectedSubCategory && (
-          <h2 className="text-2xl font-semibold text-gray-800 mt-4">
-            {subCategory.find((sc) => sc._id === selectedSubCategory)?.title}
-          </h2>
-        )}
-      </div>
-
-      <AdDisplay ads={ads} adId="headerBottom" />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {displayedNews.map((newsItem, index) => (
-          <Link href={`/${lang}/news/${newsItem._id}`} key={newsItem._id}>
-            <div
-              ref={
-                index === displayedNews.length - 1 ? lastNewsElementRef : null
-              }
-              className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
-            >
-              <div className="relative h-48">
-                <Image
-                  src={newsItem.img || "/placeholder.svg"}
-                  alt={newsItem.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transition-opacity duration-300 hover:opacity-80"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-2 line-clamp-2">
-                  {newsItem.title}
-                </h3>
-                <p
-                  className="text-gray-600 text-sm mb-4 line-clamp-3"
-                  dangerouslySetInnerHTML={{
-                    __html: newsItem.content,
-                  }}
-                />
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <span>{newsItem.location.city}</span>
-                  <span>
-                    {new Date(newsItem.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
+    <>
+      {settings?.categoryStyle === "1" && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold text-red-600 mb-2">
+              {categoryInfo?.category}
+            </h1>
+            <div className="flex justify-center items-center space-x-2 mb-3">
+              {subCategory?.map((subCat, index) => (
+                <React.Fragment key={subCat._id}>
+                  {index > 0 && <span className="text-gray-400">•</span>}
+                  <button
+                    onClick={() => handleSubCategoryClick(subCat._id)}
+                    className={`text-lg hover:underline ${
+                      selectedSubCategory === subCat._id
+                        ? "text-red-600 font-semibold"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {subCat?.title}
+                  </button>
+                </React.Fragment>
+              ))}
             </div>
-          </Link>
-        ))}
-      </div>
+            {selectedSubCategory && (
+              <h2 className="text-2xl font-semibold text-gray-800 mt-4">
+                {
+                  subCategory.find((sc) => sc._id === selectedSubCategory)
+                    ?.title
+                }
+              </h2>
+            )}
+          </div>
 
-      <AdDisplay ads={ads} adId="categoryBottom" />
+          <AdDisplay ads={ads} adId="headerBottom" />
 
-      {newsToShow >= displayedNews.length && (
-        <div className="text-center py-8 text-gray-600">
-          No more news available.
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {displayedNews.map((newsItem, index) => (
+              <Link href={`/${lang}/news/${newsItem._id}`} key={newsItem._id}>
+                <div
+                  ref={
+                    index === displayedNews.length - 1
+                      ? lastNewsElementRef
+                      : null
+                  }
+                  className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
+                >
+                  <div className="relative h-48">
+                    <Image
+                      src={newsItem.img || "/placeholder.svg"}
+                      alt={newsItem.title}
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-opacity duration-300 hover:opacity-80"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold mb-2 line-clamp-2">
+                      {newsItem.title}
+                    </h3>
+                    <p
+                      className="text-gray-600 text-sm mb-4 line-clamp-3"
+                      dangerouslySetInnerHTML={{
+                        __html: newsItem.content,
+                      }}
+                    />
+                    <div className="flex justify-between items-center text-sm text-gray-500">
+                      <span>{newsItem.location.city}</span>
+                      <span>
+                        {new Date(newsItem.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <AdDisplay ads={ads} adId="categoryBottom" />
+
+          {newsToShow >= displayedNews.length && (
+            <div className="text-center py-8 text-gray-600">
+              No more news available.
+            </div>
+          )}
         </div>
       )}
-    </div>
+      {settings?.categoryStyle !== "1" && <p>Design Comming in few days</p>}
+    </>
   );
 };
 
