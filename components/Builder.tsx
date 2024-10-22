@@ -96,6 +96,8 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange, data = [] }) => {
   };
 
   const [categories, setCategories] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -103,6 +105,20 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange, data = [] }) => {
       setCategories(response.data.data);
     };
     fetchCategoryData();
+    const fetchStories = async () => {
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=story`
+      );
+      setStories(response.data.data);
+    };
+    fetchStories();
+    const fetchVideos = async () => {
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=video`
+      );
+      setVideos(response.data.data);
+    };
+    fetchVideos();
   }, []);
 
   return (
@@ -122,6 +138,8 @@ const Builder: React.FC<BuilderProps> = ({ onRowDataChange, data = [] }) => {
           <Row
             key={row.id}
             categories={categories}
+            stories={stories}
+            videos={videos}
             id={row.id}
             index={index}
             moveRow={moveRow}

@@ -37,10 +37,11 @@ const IndexPage: React.FC = () => {
       }
     };
 
+    console.log(pathname.lang);
     const fetchNewsData = async () => {
       try {
         setLoading(true);
-        const response = await axiosPublic.get(`/news?lang=${pathname.lang}`);
+        const response = await axiosPublic.get(`/news/${pathname.lang}`);
         setNews(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -52,7 +53,7 @@ const IndexPage: React.FC = () => {
       try {
         setLoading(true);
 
-        const response = await axiosPublic.get("/categories");
+        const response = await axiosPublic.get("/categories?lang=all");
         setCategory(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);

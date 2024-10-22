@@ -19,6 +19,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   placeholder,
   value = [],
 }) => {
+  console.log(value);
   const handleChange = useCallback(
     (selected: MultiValue<Option>) => {
       onChange(selected);

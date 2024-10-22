@@ -12,9 +12,13 @@ interface SectionData {
   imgPosition: string;
   width?: string;
   categories?: IOption[];
+  stories?: IOption[];
+  videos?: IOption[];
 }
 const Row: React.FC<{
   categories: any[];
+  stories: any[];
+  videos: any[];
   id: number;
   index: number;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
@@ -41,6 +45,8 @@ const Row: React.FC<{
   moveRowUp,
   moveRowDown,
   categories,
+  stories,
+  videos,
   initialSections = [],
   initialBackgroundColor = "",
   initialColor = "",
@@ -115,7 +121,7 @@ const Row: React.FC<{
   const addSection = (section: string) => {
     setSectionList([...sectionList, section]);
   };
-
+  console.log(sectionList);
   const deleteSection = (index: number) => {
     setSectionList(sectionList.filter((_, idx) => idx !== index));
   };
@@ -315,11 +321,25 @@ const Row: React.FC<{
           >
             Category
           </button>
+          <button
+            onClick={() => addSection("story")}
+            className="bg-main px-2 py-1.5 leading-none rounded-md text-white"
+          >
+            Story
+          </button>
+          <button
+            onClick={() => addSection("video")}
+            className="bg-main px-2 py-1.5 leading-none rounded-md text-white"
+          >
+            Video
+          </button>
         </div>
         {sectionList.map((section, idx) => (
           <Section
             key={idx}
             categories={categories}
+            stories={stories}
+            videos={videos}
             section={section}
             setSectionInfo={(data) => handleSetSectionInfo(idx, data)}
             index={idx}

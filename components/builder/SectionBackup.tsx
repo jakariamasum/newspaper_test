@@ -1,12 +1,11 @@
-// Section.tsx
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import Photo from "../admin/Photo";
-import { ICategory } from "@/types/category.types";
-import { IOption, ISectionData } from "@/types/page.types";
-import { MultiValue } from "react-select";
 import { MultiSelect } from "../MultiSelect";
+import { MultiValue } from "react-select";
+import { IOption, ISectionData } from "@/types/page.types";
+import { ICategory } from "@/types/category.types";
+
 const boxStyles = Array.from({ length: 18 }, (_, i) => ({
   id: (i + 1).toString(),
   name: `Box ${i + 1}`,
@@ -16,11 +15,10 @@ const gridStyles = Array.from({ length: 12 }, (_, i) => ({
   id: (i + 1).toString(),
   name: `Grid ${i + 1}`,
 }));
-type SectionProps = {
+
+const Section: React.FC<{
   section: string;
   categories: ICategory[];
-  stories: ICategory[];
-  videos: ICategory[];
   setSectionInfo: (data: Partial<ISectionData>) => void;
   index: number;
   moveSection: (dragIndex: number, hoverIndex: number) => void;
@@ -28,9 +26,7 @@ type SectionProps = {
   moveSectionUp: () => void;
   moveSectionDown: () => void;
   defaultData?: Partial<ISectionData>;
-};
-
-const Section: React.FC<SectionProps> = ({
+}> = ({
   section,
   index,
   moveSection,
@@ -39,8 +35,6 @@ const Section: React.FC<SectionProps> = ({
   moveSectionDown,
   setSectionInfo,
   categories,
-  stories,
-  videos,
   defaultData = {},
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -82,16 +76,8 @@ const Section: React.FC<SectionProps> = ({
     value: cat._id,
     label: cat.title,
   }));
-  const selectStoryOptions: IOption[] = stories.map((story) => ({
-    value: story._id,
-    label: story.title,
-  }));
-  const selectVideoOptions: IOption[] = videos.map((video) => ({
-    value: video._id,
-    label: video.title,
-  }));
   const [sectionInfo, setSectionInfoState] = useState<ISectionData>({
-    sectionTitle: defaultData.sectionTitle || `${section}`,
+    sectionTitle: defaultData.sectionTitle || `Section ${index}`,
     color: defaultData.color || "#000000",
     backgroundColor: defaultData.backgroundColor || "#ffffff",
     desktopGrid: defaultData.desktopGrid || "",
@@ -128,7 +114,8 @@ const Section: React.FC<SectionProps> = ({
     setSectionInfoState((prev) => ({ ...prev, [field]: value }));
     setSectionInfo({ ...sectionInfo, [field]: value });
   };
-  console.log(defaultData);
+  console.log(section);
+
   return (
     <div
       ref={ref}
@@ -136,6 +123,7 @@ const Section: React.FC<SectionProps> = ({
       className="flex items-center text-xs justify-between w-full p-2"
     >
       <div className="flex items-center w-full space-x-3">
+        {section} name
         <div ref={dragRef} className="cursor-move hidden md:block">
           <svg
             stroke="currentColor"
@@ -149,80 +137,16 @@ const Section: React.FC<SectionProps> = ({
             <path d="M11 11V5.82843L9.17157 7.65685L7.75736 6.24264L12 2L16.2426 6.24264L14.8284 7.65685L13 5.82843V11H18.1716L16.3431 9.17157L17.7574 7.75736L22 12L17.7574 16.2426L16.3431 14.8284L18.1716 13H13V18.1716L14.8284 16.3431L16.2426 17.7574L12 22L7.75736 17.7574L9.17157 16.3431L11 18.1716V13H5.82843L7.65685 14.8284L6.24264 16.2426L2 12L6.24264 7.75736L7.65685 9.17157L5.82843 11H11Z"></path>
           </svg>
         </div>
-
-        {defaultData.sectionTitle === "category" && (
+        <div className="">
           <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select categories"
-              />
-            </div>
+            <MultiSelect
+              options={selectOptions}
+              onChange={handleSelectionChange}
+              value={defaultData.categories}
+              placeholder="Select categories"
+            />
           </div>
-        )}
-        {defaultData.sectionTitle === "story" && (
-          <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectStoryOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select Stories"
-              />
-            </div>
-          </div>
-        )}
-        {defaultData.sectionTitle === "video" && (
-          <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectVideoOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select Videos"
-              />
-            </div>
-          </div>
-        )}
-        {section === "category" && (
-          <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select categories"
-              />
-            </div>
-          </div>
-        )}
-        {section === "story" && (
-          <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectStoryOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select Stories"
-              />
-            </div>
-          </div>
-        )}
-        {section === "video" && (
-          <div className="">
-            <div className="">
-              <MultiSelect
-                options={selectVideoOptions}
-                onChange={handleSelectionChange}
-                value={defaultData?.categories}
-                placeholder="Select Videos"
-              />
-            </div>
-          </div>
-        )}
-
+        </div>
         <div className="flex md:flex-row flex-col items-center md:space-x-2">
           <button onClick={moveSectionUp}>
             <svg
@@ -314,6 +238,7 @@ const Section: React.FC<SectionProps> = ({
                     placeholder="Enter text color"
                   />
                 </div>
+
                 <div className="flex items-center justify-between py-1.5">
                   <p>Category BG Color</p>
                   <input
@@ -336,6 +261,7 @@ const Section: React.FC<SectionProps> = ({
                     placeholder="Enter text color"
                   />
                 </div>
+
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
@@ -356,27 +282,48 @@ const Section: React.FC<SectionProps> = ({
                     </div>
                   </div>
                 </div>
-                (
-                <div className="mb-6 w-full my-2">
-                  <div className="relative">
-                    <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
-                      <option value="" className="text-gray-400">
-                        Select Category Title
-                      </option>
-                      <option value="1">On</option>
-                      <option value="2">Off</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                      </svg>
+
+                {section === "category" && (
+                  <div className="mb-6 w-full my-2">
+                    <div className="relative">
+                      <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
+                        <option value="" className="text-gray-400">
+                          Select Category Title
+                        </option>
+                        <option value="1">On</option>
+                        <option value="2">Off</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg
+                          className="fill-current h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {section === "story" && (
+                  <div>
+                    <select name="" id="">
+                      <option value="">Select Story</option>
+                      <option value="1">Story1</option>
+                      <option value="2">Story2</option>
+                    </select>
+                  </div>
+                )}
+                {section === "video" && (
+                  <div>
+                    <select name="" id="">
+                      <option value="">Select Video</option>
+                      <option value="1">Video1</option>
+                      <option value="2">Video2</option>
+                    </select>
+                  </div>
+                )}
+
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
@@ -443,6 +390,7 @@ const Section: React.FC<SectionProps> = ({
                     </div>
                   </div>
                 </div>
+
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
@@ -474,6 +422,7 @@ const Section: React.FC<SectionProps> = ({
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-2 py-1">
                   <p className="text-sm font-medium text-gray-700">
                     Category Limit
@@ -488,6 +437,7 @@ const Section: React.FC<SectionProps> = ({
                     }
                   />
                 </div>
+
                 <div className="flex items-center gap-2 py-1">
                   <p className="text-sm font-medium text-gray-700">
                     Category Width
@@ -500,6 +450,7 @@ const Section: React.FC<SectionProps> = ({
                     onChange={(e) => handleInputChange("width", e.target.value)}
                   />
                 </div>
+
                 <div className="mb-6 w-full my-1">
                   <div className="relative">
                     <select
@@ -547,5 +498,4 @@ const Section: React.FC<SectionProps> = ({
     </div>
   );
 };
-
 export default Section;

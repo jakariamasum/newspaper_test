@@ -48,6 +48,7 @@ const EditPage: React.FC = () => {
       return newData;
     });
   };
+  console.log(pageData);
 
   const handleUpdate = async () => {
     const pageInfo = {
