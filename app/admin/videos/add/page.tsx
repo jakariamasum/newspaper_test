@@ -5,7 +5,6 @@ import Checkbox from "@/components/admin/Checkbox";
 import Content from "@/components/admin/Content";
 import Image from "next/image";
 import Tag from "@/components/admin/Tag";
-import { useAllCategory } from "@/lib/useAllCategory";
 import { useAllSubCategories } from "@/lib/useAllSubCategory";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
@@ -56,25 +55,27 @@ const IndexPage: React.FC = () => {
   const transformeCategorydData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
-    const formData = {
+    const payload = {
       title,
       video: videoInput,
       content: description,
       tags,
       category,
+      lang: "video",
+      img: `https://i.ytimg.com/vi/${videoInput}/mqdefault.jpg`,
     };
-
+    console.log(payload);
     try {
-      const response = await axiosPublic.post("/videos/admin", formData, {
+      const response = await axiosPublic.post("/news/admin", payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       if (response.status === 200) {
-        toast.success("Videos published!");
-        router.push("/admin/videos");
+        toast.success("Video created!");
+        router.push(`/admin/videos`);
       } else {
-        toast.error("Failed to publish videos!");
+        toast.error("Failed to create video!");
       }
     } catch (error) {
       console.error("Error publishing video:", error);

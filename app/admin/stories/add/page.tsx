@@ -3,6 +3,7 @@
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import Banners from "@/components/admin/Banners";
 import Checkbox from "@/components/admin/Checkbox";
+import Location from "@/components/admin/Location";
 import axiosPublic from "@/lib/axiosPublic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +19,9 @@ const IndexPage: React.FC = () => {
   }>({ category: "" });
   const [title, setTitle] = useState<string>("");
   const [banners, setBanners] = useState<{ img: string; title: string }[]>([]);
+  const [location, setLocation] = useState({ city: "", area: "" });
+  const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,30 +38,56 @@ const IndexPage: React.FC = () => {
       setSubCategories(response.data.data);
     };
     fetchSubCategories();
+    const fetchCities = async () => {
+      const response = await axiosPublic.get("/city");
+      setCities(response.data.data);
+    };
+    fetchCities();
+    const fetchAreas = async () => {
+      const response = await axiosPublic.get("/area");
+      setAreas(response.data.data);
+    };
+    fetchAreas();
   }, []);
 
   const transformeCategorydData = categoryFormat(subCategories, categories);
+  const transformData = (
+    areas: { title: string; city: { _id: string } }[],
+    cities: { _id: string; title: string }[]
+  ) => {
+    return cities.map((city) => ({
+      title: city.title,
+      areas: areas
+        .filter((area) => area.city._id === city._id)
+        .map((area) => ({ title: area.title })),
+    }));
+  };
+  const transformedData = transformData(areas, cities);
 
   const handleSubmit = async () => {
+    const payload = {
+      title,
+      img: banners[0].img,
+      location,
+      category,
+      stories: banners,
+      lang: "story",
+    };
     try {
-      const payload = {
-        title,
-        category: category.category,
-        subCategory: category.subCategory,
-        banners,
-      };
-      const response = await axiosPublic.post("/story/admin", payload, {
+      const response = await axiosPublic.post("/news/admin", payload, {
         headers: {
-          Authorization: `Beares ${localStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       if (response.status === 200) {
-        toast.success("Stories published successfully!");
-        router.push("/admin/stories");
+        toast.success("Story created!");
+        router.push(`/admin/stories`);
+      } else {
+        toast.error("Failed to create story!");
       }
     } catch (error) {
-      console.error("Failed to publish data", error);
-      toast.warning("Failed to publish data");
+      console.error("Error publishing story:", error);
+      toast.error("Error publishing story:");
     }
   };
   return (
@@ -92,6 +122,7 @@ const IndexPage: React.FC = () => {
               items={transformeCategorydData}
               onChange={setCategory}
             />
+            <Location items={transformedData} onChange={setLocation} />
           </div>
         </div>
       </div>
