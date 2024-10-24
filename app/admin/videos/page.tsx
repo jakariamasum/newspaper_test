@@ -3,36 +3,23 @@ import React, { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
 import { toast, Toaster } from "sonner";
 import Image from "next/image";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-
-interface ICategory {
-  category: { title: string };
-  subCategory?: { title: string };
-}
-
-interface IVideo {
-  _id: string;
-  title: string;
-  video: string;
-  tags: string[];
-  description: string;
-  category: ICategory;
-}
+import { INews } from "@/types/news.types";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import Link from "next/link";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
-  const [videos, setVideos] = useState<IVideo[]>([]);
+  const [videos, setVideos] = useState<INews[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [currentVideo, setCurrentVide] = useState<IVideo | null>(null);
+  const [currentVideo, setCurrentVideo] = useState<INews | null>(null);
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axiosPublic.get("/videos");
+        const response = await axiosPublic.get("/news/type/videos");
         setVideos(response.data.data);
       } catch (err) {
         setError("Failed to fetch videos");
@@ -43,19 +30,15 @@ const IndexPage: React.FC = () => {
     fetchVideos();
   }, []);
 
-  const handleEdit = (video: IVideo) => {
-    router.push(`/admin/videos/edit/${video._id}`);
-  };
-
-  const handleDelete = (item: IVideo) => {
-    setCurrentVide(item);
+  const handleDelete = (newsItem: INews) => {
+    setCurrentVideo(newsItem);
     setDeleteConfirmOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
     if (currentVideo) {
       const response = await axiosPublic.delete(
-        `/videos/admin/${currentVideo._id}`,
+        `/news/admin/${currentVideo._id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -63,15 +46,15 @@ const IndexPage: React.FC = () => {
         }
       );
       if (response.status === 200) {
-        toast.success("Video Deleted successfully!");
-        setVideos((prevVideos) =>
-          prevVideos.filter((n) => n._id !== currentVideo._id)
+        toast.success("Story Deleted successfully!");
+        setVideos((prevVideo) =>
+          prevVideo.filter((n) => n._id !== currentVideo._id)
         );
       } else {
         toast.warning("Something went wrong!");
       }
       setDeleteConfirmOpen(false);
-      setCurrentVide(null);
+      setCurrentVideo(null);
     }
   };
 
@@ -79,111 +62,100 @@ const IndexPage: React.FC = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="container mx-auto my-8">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-1">
+    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="my-4 flex justify-end items-center gap-2">
+          <div className="flex gap-1">
+            <Link
+              className={`hover:bg-main hover:text-white p-2 block`}
+              href="/admin/videos/categories"
+            >
+              Category
+            </Link>
+            <Link
+              className={`hover:bg-main hover:text-white p-2 block`}
+              href="/admin/videos/subcategories"
+            >
+              SubCategory
+            </Link>
+          </div>
           <Link
-            className={`hover:bg-main hover:text-white p-2 block`}
-            href="/admin/videos/categories"
+            href="/admin/videos/add"
+            className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
           >
-            Category
+            Add New Story
           </Link>
-          <Link
-            className={`hover:bg-main hover:text-white p-2 block`}
-            href="/admin/videos/subcategories"
-          >
-            SubCategory
-          </Link>
-        </div>
-        <Link
-          href="/admin/videos/add"
-          className="bg-main py-1 px-4 rounded-md text-white"
-        >
-          Add
-        </Link>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Title
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Video
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Tags
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {videos?.map((video) => (
-              <tr key={video._id} className="border-b hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-800">
+        </div>{" "}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {videos?.map((video) => (
+            <div
+              key={video._id}
+              className="bg-white overflow-hidden shadow-sm rounded-lg"
+            >
+              <div className="relative">
+                <Image
+                  src={video.img}
+                  alt={video.title}
+                  className="w-full h-48 object-cover"
+                  width={100}
+                  height={48}
+                />
+                <div className="absolute top-2 right-2 bg-gray-900 bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                  {video.status}
+                </div>
+              </div>
+              <div className="p-4">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
                   {video.title}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-800">
-                  {video.video && (
-                    <Image
-                      src={`https://i.ytimg.com/vi/${video.video}/mqdefault.jpg`}
-                      width={120}
-                      height={90}
-                      alt={video.title}
-                      className="rounded-lg"
-                    />
-                  )}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-800">
-                  <div className="flex flex-wrap gap-2">
-                    {video.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-700 text-xs font-medium px-2.5 py-0.5 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-800 ">
-                  {video.category.category.title}
-                  {video.category.subCategory && (
-                    <span className="text-gray-500 text-xs ml-2">
-                      ({video.category.subCategory.title})
+                </h2>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {video.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                    >
+                      {tag}
                     </span>
-                  )}
-                </td>
-                <td className=" px-6 py-4 text-sm text-gray-800">
-                  <button
-                    className="text-yellow-500 hover:text-yellow-700 mr-5"
-                    onClick={() => handleEdit(video)}
+                  ))}
+                </div>
+                <div className="text-sm text-gray-500 mb-3">
+                  Published:{" "}
+                  {new Date(video.publishedDate).toLocaleDateString()}
+                </div>
+                <div className="flex justify-between items-center">
+                  <Link
+                    href={`https://www.youtube.com/watch?v=${video.video}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                   >
-                    <FaEdit size={22} />
-                  </button>
-                  <button
-                    className="text-red-500 hover:text-red-700"
-                    onClick={() => handleDelete(video)}
-                  >
-                    <FaTrash size={22} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    Watch on YouTube
+                  </Link>
+                  <div className="flex space-x-2">
+                    <Link href={`/admin/videos/edit/${video._id}`}>
+                      <button className="text-gray-600 hover:text-blue-600 transition-colors">
+                        <FiEdit2 className="w-5 h-5" />
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(video)}
+                      className="text-gray-600 hover:text-red-600 transition-colors"
+                    >
+                      <FiTrash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       {deleteConfirmOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete this news item?</p>
+            <p>Are you sure you want to delete this video item?</p>
             <div className="flex justify-end gap-2 mt-4">
               <button
                 className="px-4 py-2 bg-gray-300 rounded"
@@ -199,6 +171,12 @@ const IndexPage: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {videos?.length === 0 && (
+        <div className="text-center text-red-500 mt-5 font-semibold">
+          Sorry. There is no stories.
         </div>
       )}
       <Toaster richColors position="top-right" />

@@ -100,7 +100,10 @@ const ModuleTypePage = () => {
   if (loading) {
     return <Loader />;
   }
-
+  const filterNews = news?.filter(
+    (n) => n.lang !== "story" && n.lang !== "video"
+  );
+  console.log(news);
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 items-center">
@@ -150,12 +153,12 @@ const ModuleTypePage = () => {
             </tr>
           </thead>
           <tbody>
-            {news.map((n) => (
+            {filterNews?.map((n) => (
               <tr key={n._id}>
                 <td className="py-2 px-4 border-b hover:underline hover:text-blue-500">
                   <Link href={`/news/${n._id}`}>{n.title}</Link>
                 </td>
-                <td className="py-2 px-4 border-b">{n.author.title}</td>
+                <td className="py-2 px-4 border-b">{n.author?.title}</td>
                 <td className="py-2 px-4 border-b">
                   {n.category.category.title}
                 </td>

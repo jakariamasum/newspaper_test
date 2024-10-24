@@ -22,8 +22,8 @@ const EditPage: React.FC<BuilderProps> = ({ params }) => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [category, setCategory] = useState<{
-    category: any;
-    subCategory?: any;
+    category: string;
+    subCategory?: string;
   }>({ category: "" });
   const [title, setTitle] = useState<string>("");
   const [banners, setBanners] = useState<{ img: string; title: string }[]>([]);
@@ -32,12 +32,15 @@ const EditPage: React.FC<BuilderProps> = ({ params }) => {
   useEffect(() => {
     const fetchStoryDetails = async () => {
       try {
-        const response = await axiosPublic.get(`/story/${params._id}`);
-        const { title, category, subCategory, banners } = response.data.data;
+        const response = await axiosPublic.get(`/news/each-news/${params._id}`);
+        const { title, category, stories } = response.data.data;
 
         setTitle(title);
-        setCategory({ category, subCategory });
-        setBanners(banners);
+        setCategory({
+          category: category?.category._id,
+          subCategory: category?.subcategory,
+        });
+        setBanners(stories);
       } catch (error) {
         toast.error("Failed to fetch story data");
       } finally {
@@ -46,37 +49,32 @@ const EditPage: React.FC<BuilderProps> = ({ params }) => {
     };
 
     fetchStoryDetails();
-  }, [params._id]);
-
-  useEffect(() => {
     const fetchCategories = async () => {
-      const response = await useAllCategory();
-      setCategories(response);
+      const response = await axiosPublic.get(
+        `/categories/category/types?type=story`
+      );
+      setCategories(response.data.data);
     };
     fetchCategories();
     const fetchSubCategories = async () => {
-      const response = await useAllSubCategories();
-      setSubCategories(response);
+      const response = await axiosPublic.get(`/sub-categories/type=story`);
+      setSubCategories(response.data.data);
     };
     fetchSubCategories();
-  }, []);
-
-  const transformedCategoryData = categoryFormat(
-    subCategories,
-    categories,
-    category.category ? category : undefined
-  );
+  }, [params._id]);
+  console.log(title, banners, category);
+  const transformedCategoryData = categoryFormat(subCategories, categories);
 
   const handleSubmit = async () => {
     try {
       const payload = {
         title,
-        category: category.category,
-        subCategory: category.subCategory,
-        banners,
+        img: banners[0].img,
+        category,
+        stories: banners,
       };
       const response = await axiosPublic.put(
-        `/story/admin/${params._id}`,
+        `/news/admin/${params._id}`,
         payload,
         {
           headers: {
@@ -129,6 +127,7 @@ const EditPage: React.FC<BuilderProps> = ({ params }) => {
               title="Category"
               items={transformedCategoryData}
               onChange={setCategory}
+              initialValue={category}
             />
           </div>
         </div>

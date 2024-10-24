@@ -10,6 +10,8 @@ import { useParams } from "next/navigation";
 import Time from "@/components/admin/Time";
 import { useLang } from "@/app/context/langContext";
 import { IAuthor } from "@/types/author.types";
+import Checkbox from "@/components/admin/Checkbox";
+import { categoryFormat } from "@/app/utils/categoryFormate";
 
 const EditNews: React.FC = () => {
   const router = useRouter();
@@ -22,6 +24,13 @@ const EditNews: React.FC = () => {
   const [author, setAuthor] = useState<string>("");
   const [users, setUsers] = useState<IAuthor[]>([]);
   const [time, setTime] = useState<string | null>(null);
+  const [category, setCategory] = useState<{
+    category: string;
+    subCategory?: string;
+  }>({ category: "" });
+
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
     if (_id) {
@@ -35,6 +44,10 @@ const EditNews: React.FC = () => {
           setImg(data.img);
           setAuthor(data.author._id);
           setTime(data.createdAt);
+          setCategory({
+            category: data?.category.category._id,
+            subCategory: data?.category?.subCategory,
+          });
         } catch (error) {
           console.error("Failed to fetch news item:", error);
         }
@@ -52,11 +65,23 @@ const EditNews: React.FC = () => {
           console.error("Failed to fetch users:", error);
         }
       };
+      const fetchCategories = async () => {
+        const response = await axiosPublic.get(`/categories/type/${lang}`);
+        setCategories(response.data.data);
+      };
+      fetchCategories();
+      const fetchSubCategories = async () => {
+        const response = await axiosPublic.get(`/sub-categories/${lang}`);
+        setSubCategories(response.data.data);
+      };
+      fetchSubCategories();
 
       fetchUsers();
       fetchNewsItem();
     }
   }, [_id]);
+  console.log(category);
+  const transformeCategorydData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
     try {
@@ -67,6 +92,7 @@ const EditNews: React.FC = () => {
         img,
         publishedDate: time,
         author,
+        category,
       };
       const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
         headers: {
@@ -122,6 +148,12 @@ const EditNews: React.FC = () => {
             </div>
             <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
             <Time time={time} setTime={setTime} />
+            <Checkbox
+              title="Category"
+              items={transformeCategorydData}
+              onChange={setCategory}
+              initialValue={category}
+            />
             <div className="mb-4">
               <p>Reporter</p>
               <select

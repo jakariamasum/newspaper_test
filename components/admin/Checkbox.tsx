@@ -1,25 +1,51 @@
 "use client";
 import { ICheckboxItem } from "@/types/checkbox.types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface CheckboxProps {
   title: string;
   items: ICheckboxItem[];
   onChange: (category: { category: string; subCategory: string }) => void;
+  initialValue?: { category: string; subCategory?: string };
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
-  const initializeCheckedState = (items: ICheckboxItem[]): boolean[] =>
-    items.map((item) => !!item.checked);
+const Checkbox: React.FC<CheckboxProps> = ({
+  title,
+  items,
+  onChange,
+  initialValue,
+}) => {
+  const initializeCheckedState = (items: ICheckboxItem[]): boolean[] => {
+    return items.map(
+      (item) => initialValue?.category === item._id || !!item.checked
+    );
+  };
+
+  const initializeSubCheckedState = (mainIndex: number): boolean[] => {
+    const subCategories = items[mainIndex].subCategories || [];
+    return subCategories.map(
+      (subItem) =>
+        initialValue?.category === items[mainIndex]._id &&
+        initialValue?.subCategory === subItem._id
+    );
+  };
 
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     initializeCheckedState(items)
   );
+
   const [subCheckedItems, setSubCheckedItems] = useState<boolean[][]>(
-    items.map((item) =>
-      item.subCategories ? initializeCheckedState(item.subCategories) : []
-    )
+    items.map((_, index) => initializeSubCheckedState(index))
   );
+
+  useEffect(() => {
+    if (initialValue) {
+      setCheckedItems(initializeCheckedState(items));
+      setSubCheckedItems(
+        items.map((_, index) => initializeSubCheckedState(index))
+      );
+    }
+  }, [initialValue, items]);
 
   const handleCheckboxChange = (index: number) => {
     const newCheckedItems = [...checkedItems];
@@ -33,9 +59,6 @@ const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
 
   const handleSubCheckboxChange = (mainIndex: number, subIndex: number) => {
     const newSubCheckedItems = [...subCheckedItems];
-    if (!newSubCheckedItems[mainIndex]) {
-      newSubCheckedItems[mainIndex] = [];
-    }
     newSubCheckedItems[mainIndex][subIndex] =
       !newSubCheckedItems[mainIndex][subIndex];
     setSubCheckedItems(newSubCheckedItems);
@@ -60,7 +83,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ title, items, onChange }) => {
               />
               <span>{item.title}</span>
             </label>
-            {item.subCategories && (
+            {item.subCategories && item.subCategories.length > 0 && (
               <div className="ml-6">
                 {item.subCategories.map((subItem, subIndex) => (
                   <label key={subIndex} className="flex items-center">

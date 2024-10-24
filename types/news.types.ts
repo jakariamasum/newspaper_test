@@ -21,5 +21,11 @@ export interface INews {
   createdAt: string;
   updatedAt: string;
   waterMark?: string;
+  stories: {
+    _id: string;
+    img: string;
+    title: string;
+  }[];
+  video?: string;
   publishedDate: string;
 }

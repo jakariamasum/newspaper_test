@@ -6,11 +6,20 @@ import Content from "@/components/admin/Content";
 import Tag from "@/components/admin/Tag";
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
+import Checkbox from "@/components/admin/Checkbox";
+import { categoryFormat } from "@/app/utils/categoryFormate";
 
 const EditVideo: React.FC = () => {
   const router = useRouter();
   const { _id } = useParams();
   const [title, setTitle] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [category, setCategory] = useState<{
+    category: string;
+    subCategory?: string;
+  }>({ category: "" });
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [videoInput, setVideoInput] = useState("");
@@ -32,31 +41,50 @@ const EditVideo: React.FC = () => {
     if (_id) {
       const fetchVideoItem = async () => {
         try {
-          const response = await axiosPublic.get(`/videos/${_id}`);
+          const response = await axiosPublic.get(`/news/each-news/${_id}`);
           const data = response.data.data;
           setTitle(data.title);
           setDescription(data.content);
           setVideoInput(data.video);
           setTags(data.tags || []);
+          setCategory({
+            category: data?.category?.category._id,
+            subCategory: data?.category?.subcategory,
+          });
         } catch (error) {
           console.error("Failed to fetch video item:", error);
         }
       };
+      const fetchCategories = async () => {
+        const response = await axiosPublic.get(
+          `/categories/category/types?type=video`
+        );
+        setCategories(response.data.data);
+      };
+      fetchCategories();
+      const fetchSubCategories = async () => {
+        const response = await axiosPublic.get(`/sub-categories/type=video`);
+        setSubCategories(response.data.data);
+      };
+      fetchSubCategories();
 
       fetchVideoItem();
     }
   }, [_id]);
+  const transformedCategoryData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
     try {
       const payload = {
         title,
-        description,
+        content: description,
         tags,
         video: videoInput,
+        img: `https://i.ytimg.com/vi/${videoInput}/mqdefault.jpg`,
+        category,
       };
 
-      const response = await axiosPublic.put(`/videos/admin/${_id}`, payload, {
+      const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
@@ -116,6 +144,12 @@ const EditVideo: React.FC = () => {
                 </div>
               </div>
             )}
+            <Checkbox
+              title="Category"
+              items={transformedCategoryData}
+              onChange={setCategory}
+              initialValue={category}
+            />
             <div className="mb-4">
               <button
                 onClick={handlePublish}
