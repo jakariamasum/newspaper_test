@@ -15,6 +15,7 @@ import {
   FiEye,
 } from "react-icons/fi";
 import { INews } from "@/types/news.types";
+import { deleteNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
   const [stories, setStories] = useState<INews[]>([]);
@@ -45,16 +46,8 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentStory) {
-      const response = await axiosPublic.delete(
-        `/news/admin/${currentStory._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Story Deleted successfully!");
+      const success = await deleteNewsItem(currentStory._id, "story");
+      if (success) {
         setStories((prevStroy) =>
           prevStroy.filter((n) => n._id !== currentStory._id)
         );

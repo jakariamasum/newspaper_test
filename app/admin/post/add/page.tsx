@@ -13,6 +13,7 @@ import { useLang } from "@/app/context/langContext";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import { useRouter } from "next/navigation";
 import { IAuthor } from "@/types/author.types";
+import { createNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -100,21 +101,9 @@ const IndexPage: React.FC = () => {
       waterMark,
     };
     console.log(payload);
-    try {
-      const response = await axiosPublic.post("/news/admin", payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      if (response.status === 200) {
-        toast.success("News created!");
-        router.push(`/admin/type/${lang}`);
-      } else {
-        toast.error("Failed to create news!");
-      }
-    } catch (error) {
-      console.error("Error publishing news:", error);
-      toast.error("Error publishing news:");
+    const success = await createNewsItem(payload, "News");
+    if (success) {
+      router.push(`/admin/type/${lang}`);
     }
   };
 

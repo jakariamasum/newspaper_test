@@ -8,6 +8,7 @@ import Loader from "@/components/Loader";
 import { INews } from "@/types/news.types";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import Link from "next/link";
+import { deleteNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
@@ -37,21 +38,11 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentVideo) {
-      const response = await axiosPublic.delete(
-        `/news/admin/${currentVideo._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Story Deleted successfully!");
-        setVideos((prevVideo) =>
-          prevVideo.filter((n) => n._id !== currentVideo._id)
+      const success = await deleteNewsItem(currentVideo._id, "video");
+      if (success) {
+        setVideos((prevVideos) =>
+          prevVideos.filter((n) => n._id !== currentVideo._id)
         );
-      } else {
-        toast.warning("Something went wrong!");
       }
       setDeleteConfirmOpen(false);
       setCurrentVideo(null);

@@ -12,6 +12,7 @@ import { useLang } from "@/app/context/langContext";
 import { IAuthor } from "@/types/author.types";
 import Checkbox from "@/components/admin/Checkbox";
 import { categoryFormat } from "@/app/utils/categoryFormate";
+import { updateNewsItem } from "@/app/services/admin/NewsServices";
 
 const EditNews: React.FC = () => {
   const router = useRouter();
@@ -84,31 +85,18 @@ const EditNews: React.FC = () => {
   const transformeCategorydData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
-    try {
-      const payload = {
-        title,
-        description,
-        tags,
-        img,
-        publishedDate: time,
-        author,
-        category,
-      };
-      const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-
-      if (response.status === 200) {
-        toast.success("News updated successfully!");
-        router.push(`/admin/type/${lang}`);
-      } else {
-        toast.warning("Failed to update news");
-      }
-    } catch (error) {
-      console.error("Failed to update news:", error);
-      toast.warning("Failed to update news");
+    const payload = {
+      title,
+      description,
+      tags,
+      img,
+      publishedDate: time,
+      author,
+      category,
+    };
+    const success = await updateNewsItem(_id as string, payload, "News");
+    if (success) {
+      router.push(`/admin/type/${lang}`);
     }
   };
 

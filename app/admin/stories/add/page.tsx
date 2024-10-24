@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import { createNewsItem } from "@/app/services/admin/NewsServices";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import Banners from "@/components/admin/Banners";
 import Checkbox from "@/components/admin/Checkbox";
@@ -73,21 +74,9 @@ const IndexPage: React.FC = () => {
       stories: banners,
       lang: "story",
     };
-    try {
-      const response = await axiosPublic.post("/news/admin", payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      if (response.status === 200) {
-        toast.success("Story created!");
-        router.push(`/admin/stories`);
-      } else {
-        toast.error("Failed to create story!");
-      }
-    } catch (error) {
-      console.error("Error publishing story:", error);
-      toast.error("Error publishing story:");
+    const success = await createNewsItem(payload, "story");
+    if (success) {
+      router.push("/admin/stories");
     }
   };
   return (

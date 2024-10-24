@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import { updateNewsItem } from "@/app/services/admin/NewsServices";
 import { categoryFormat } from "@/app/utils/categoryFormate";
 import Banners from "@/components/admin/Banners";
 import Checkbox from "@/components/admin/Checkbox";
@@ -66,29 +67,19 @@ const EditPage: React.FC<BuilderProps> = ({ params }) => {
   const transformedCategoryData = categoryFormat(subCategories, categories);
 
   const handleSubmit = async () => {
-    try {
-      const payload = {
-        title,
-        img: banners[0].img,
-        category,
-        stories: banners,
-      };
-      const response = await axiosPublic.put(
-        `/news/admin/${params._id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Story updated successfully!");
-        router.push("/admin/stories");
-      }
-    } catch (error) {
-      console.error("Failed to update story", error);
-      toast.error("Failed to update story");
+    const payload = {
+      title,
+      img: banners[0].img,
+      category,
+      stories: banners,
+    };
+    const success = await updateNewsItem(
+      params._id as string,
+      payload,
+      "story"
+    );
+    if (success) {
+      router.push("/admin/stories");
     }
   };
 

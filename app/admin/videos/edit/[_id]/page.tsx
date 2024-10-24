@@ -8,6 +8,7 @@ import { Toaster, toast } from "sonner";
 import Image from "next/image";
 import Checkbox from "@/components/admin/Checkbox";
 import { categoryFormat } from "@/app/utils/categoryFormate";
+import { updateNewsItem } from "@/app/services/admin/NewsServices";
 
 const EditVideo: React.FC = () => {
   const router = useRouter();
@@ -74,30 +75,18 @@ const EditVideo: React.FC = () => {
   const transformedCategoryData = categoryFormat(subCategories, categories);
 
   const handlePublish = async () => {
-    try {
-      const payload = {
-        title,
-        content: description,
-        tags,
-        video: videoInput,
-        img: `https://i.ytimg.com/vi/${videoInput}/mqdefault.jpg`,
-        category,
-      };
+    const payload = {
+      title,
+      content: description,
+      tags,
+      video: videoInput,
+      img: `https://i.ytimg.com/vi/${videoInput}/mqdefault.jpg`,
+      category,
+    };
 
-      const response = await axiosPublic.put(`/news/admin/${_id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      if (response.status === 200) {
-        toast.success("Video updated successfully!");
-        router.push("/admin/videos");
-      } else {
-        toast.warning("Failed to update video");
-      }
-    } catch (error) {
-      console.error("Failed to update video:", error);
-      toast.warning("Failed to update video");
+    const success = await updateNewsItem(_id as string, payload, "video");
+    if (success) {
+      router.push("/admin/videos");
     }
   };
 

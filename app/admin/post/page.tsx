@@ -8,6 +8,7 @@ import { toast, Toaster } from "sonner";
 import Loader from "@/components/Loader";
 import { useLang } from "@/app/context/langContext";
 import { INews } from "@/types/news.types";
+import { deleteNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
   const [news, setNews] = useState<INews[]>([]);
@@ -47,9 +48,8 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (editItem) {
-      const response = await axiosPublic.delete(`/news/admin/${editItem._id}`);
-      if (response.status === 200) {
-        toast.success("News Deleted successfully!");
+      const success = await deleteNewsItem(editItem._id, "News");
+      if (success) {
         setNews((prevNews) => prevNews.filter((n) => n._id !== editItem._id));
       } else {
         toast.warning("Something went wrong!");
