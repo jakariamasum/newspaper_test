@@ -123,6 +123,48 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
             </button>
           </div>
         ))}
+        <div
+          className={`bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center relative 
+               border-2 border-green-500`}
+        >
+          <h3 className="text-lg font-semibold mb-2">Story</h3>
+
+          <div className="flex items-center mb-4">
+            <FiCheck className="text-green-500 mr-2" />
+
+            <span className={`text-sm font-medium ${"text-green-500"}`}>
+              Active
+            </span>
+          </div>
+
+          <Link
+            href={`/admin/stories`}
+            className="text-blue-600 hover:text-blue-800 font-medium mb-4 transition duration-300 ease-in-out"
+          >
+            See Stories
+          </Link>
+        </div>
+        <div
+          className={`bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center relative 
+               border-2 border-green-500`}
+        >
+          <h3 className="text-lg font-semibold mb-2">Video</h3>
+
+          <div className="flex items-center mb-4">
+            <FiCheck className="text-green-500 mr-2" />
+
+            <span className={`text-sm font-medium ${"text-green-500"}`}>
+              Active
+            </span>
+          </div>
+
+          <Link
+            href={`/admin/videos`}
+            className="text-blue-600 hover:text-blue-800 font-medium mb-4 transition duration-300 ease-in-out"
+          >
+            See Videos
+          </Link>
+        </div>
       </div>
 
       {isModalOpen && (
