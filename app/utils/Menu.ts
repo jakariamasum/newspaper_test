@@ -87,7 +87,7 @@ export const useMenusData = () => {
         .filter((sub) => sub.category === category._id)
         .map((sub) => ({
           title: sub.title,
-          link: `/${lang}/categories/${category._id}?lang=${lang}`,
+          link: `/${lang}/categories/${category._id}/${sub._id}`,
         }));
 
       const postItems = posts

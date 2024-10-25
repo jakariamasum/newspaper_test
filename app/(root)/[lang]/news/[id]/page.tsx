@@ -35,7 +35,6 @@ const IndexPage: React.FC = () => {
   const { settings } = useSettings();
   const { lang } = useLang();
   const router = useRouter();
-  const [page] = useState<number>(1);
   const [ads, setAds] = useState<IAds[]>([]);
   const path = useParams();
   const [news, setNews] = useState<TNews>();
@@ -81,7 +80,7 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     const fetchAllNews = async () => {
-      const response = await axiosPublic.get(`/news`);
+      const response = await axiosPublic.get(`/news/${lang}`);
       setAllNews(response.data.data);
     };
     fetchAllNews();
@@ -116,7 +115,7 @@ const IndexPage: React.FC = () => {
   const relatedPosts = allPost?.filter(
     (item) => item.category === news?.category?.category?.title
   );
-  const mostPopularPosts = getRandomPosts(relatedPosts, 5);
+  const mostPopularPosts = getRandomPosts(relatedPosts, 1);
 
   const handlePrintClick = (id: string) => {
     router.push(`/print/${id}`);
@@ -681,6 +680,9 @@ const IndexPage: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+      {settings?.detailsStyle !== "1" && settings?.detailsStyle !== "2" && (
+        <p>New design comming soon........</p>
       )}
       <Toaster richColors position="top-right" />
     </>
