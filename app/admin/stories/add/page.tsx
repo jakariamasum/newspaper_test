@@ -73,6 +73,7 @@ const IndexPage: React.FC = () => {
       category,
       stories: banners,
       lang: "story",
+      status: "published",
     };
     const success = await createNewsItem(payload, "story");
     if (success) {

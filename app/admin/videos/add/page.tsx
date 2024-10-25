@@ -64,6 +64,7 @@ const IndexPage: React.FC = () => {
       category,
       lang: "video",
       img: `https://i.ytimg.com/vi/${videoInput}/mqdefault.jpg`,
+      status: "published",
     };
     console.log(payload);
     const success = await createNewsItem(payload, "video");

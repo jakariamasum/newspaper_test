@@ -46,15 +46,6 @@ const IndexPage: React.FC = () => {
 
   return (
     <div className="">
-      <div className="w-full max-w-7xl flex items-center justify-between mt-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 "></h1>
-        <Link
-          href="/admin/page/add"
-          className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
-        >
-          Add New Page
-        </Link>
-      </div>
       <div className="lg:mx-24 my-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {pages.map((data, pageIndex) => (
           <div
@@ -79,13 +70,11 @@ const IndexPage: React.FC = () => {
                 <h4 className="text-sm font-semibold text-gray-600 mb-2">
                   Row {rowIndex + 1}
                 </h4>
-                {row.sections.map((section, sectionIndex) => (
-                  <div key={sectionIndex} className="mb-1">
-                    <h6 className="text-sm font-medium text-gray-700">
-                      Total Sections: {row.sections.length || ""}
-                    </h6>
-                  </div>
-                ))}
+                <div className="mb-1">
+                  <h6 className="text-sm font-medium text-gray-700">
+                    Total Sections: {row.sections.length || ""}
+                  </h6>
+                </div>
               </div>
             ))}
           </div>
