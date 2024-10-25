@@ -67,7 +67,7 @@ export const useMenusData = () => {
 
     const fetchNews = async () => {
       try {
-        const response = await axiosPublic.get(`/news?lang=${lang}`);
+        const response = await axiosPublic.get(`/news/${lang}`);
         setPosts(response.data.data);
       } catch (error) {
         console.error("Error fetching news:", error);

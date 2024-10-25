@@ -47,7 +47,7 @@ async function fetchNewsByLang(lang: string): Promise<INews[]> {
   try {
     const back_url = "https://newspaper-backend-eta.vercel.app/api/v1";
 
-    const response = await fetch(`${back_url}/news?lang=${lang}`, {
+    const response = await fetch(`${back_url}/news/${lang}`, {
       next: { revalidate: 3600 },
       headers: {
         "Cache-Control": "no-cache",

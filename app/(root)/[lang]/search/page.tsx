@@ -90,9 +90,9 @@ export default function ArchivePage() {
   };
 
   const truncateContent = (content: string, maxLength: number = 150) => {
-    const strippedContent = content.replace(/<[^>]+>/g, "");
-    return strippedContent.length > maxLength
-      ? strippedContent.substring(0, maxLength) + "..."
+    const strippedContent = content?.replace(/<[^>]+>/g, "");
+    return strippedContent?.length > maxLength
+      ? strippedContent?.substring(0, maxLength) + "..."
       : strippedContent;
   };
 

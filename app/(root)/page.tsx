@@ -37,7 +37,7 @@ const IndexPage: React.FC = () => {
       try {
         setLoading(true);
 
-        const response = await axiosPublic.get(`/news?lang=${lang}`);
+        const response = await axiosPublic.get(`/news/${lang}`);
         setNews(response.data.data);
         setLoading(false);
       } catch (error) {

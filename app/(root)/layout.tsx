@@ -35,6 +35,9 @@ export default function RootLayout({
     if (pathParts.length > 0) {
       const possibleLang = pathParts[0];
       if (language.some((lang) => lang.language_code === possibleLang)) {
+        sessionStorage.setItem("selectedLanguage", possibleLang);
+        setLang(possibleLang);
+
         return possibleLang;
       }
     }
