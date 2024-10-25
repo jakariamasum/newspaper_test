@@ -14,11 +14,11 @@ import React, { useEffect, useState, useRef } from "react";
 
 interface CategoryInfo {
   _id: string;
-  category: string;
-  subCategory: string;
+  title: string;
 }
 
-const IndexPage: React.FC = () => {
+const IndexPage = ({ params }: { params: { id: string } }) => {
+  console.log(params.id);
   const { settings } = useSettings();
   const [allNews, setAllNews] = useState<INews[]>([]);
   const [displayedNews, setDisplayedNews] = useState<INews[]>([]);
@@ -30,8 +30,8 @@ const IndexPage: React.FC = () => {
   );
   const observer = useRef<IntersectionObserver>();
   const { _id } = useParams();
+  console.log(_id);
   const { lang } = useLang();
-  const [ads, setAds] = useState([]);
   const [subCategory, setSubCategory] = useState<ISubCategory[]>([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const IndexPage: React.FC = () => {
       try {
         setLoading(true);
         const response = await axiosPublic.get(
-          `/news/category-news/${_id}?lang=${lang}`
+          `/news/sub-category-news/${params?.id}?lang=${lang}`
         );
 
         setAllNews(response.data.data);
@@ -48,8 +48,7 @@ const IndexPage: React.FC = () => {
         if (response.data.data.length > 0) {
           setCategoryInfo({
             _id: response.data.data[0].category.category._id,
-            category: response.data.data[0].category.category.title,
-            subCategory: response.data.data[0].category.subcategory,
+            title: response.data.data[0].category.category.title,
           });
         }
         setLoading(false);
@@ -61,15 +60,6 @@ const IndexPage: React.FC = () => {
 
     fetchAllNews();
   }, [_id, lang]);
-
-  useEffect(() => {
-    const fetchAds = async () => {
-      const response = await axiosPublic.get("/ads");
-      setAds(response.data.data);
-    };
-
-    fetchAds();
-  }, []);
 
   useEffect(() => {
     const fetchSubCategories = async () => {
@@ -112,13 +102,24 @@ const IndexPage: React.FC = () => {
       {settings?.categoryStyle === "1" && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-red-600 mb-2">
-              {categoryInfo?.category}
-            </h1>
+            <Link href={`/${lang}/categories/${categoryInfo?._id}`}>
+              <h1 className="text-4xl font-bold text-black mb-2">
+                {categoryInfo?.title}
+              </h1>
+            </Link>
+
+            <h2 className="text-3xl font-bold text-red-600 mb-2">
+              {subCategory
+                ? subCategory?.find((subCat) => subCat._id === params.id)?.title
+                : ""}
+            </h2>
+
             <div className="flex justify-center items-center space-x-2 mb-3">
               {subCategory?.map((subCat, index) => (
                 <React.Fragment key={subCat._id}>
                   {index > 0 && <span className="text-gray-400">•</span>}
+
+                  {/* Subcategory Links */}
                   <Link
                     href={`/${lang}/categories/${_id}/${subCat?._id}`}
                     className={`text-lg hover:underline ${
@@ -133,8 +134,6 @@ const IndexPage: React.FC = () => {
               ))}
             </div>
           </div>
-
-          <AdDisplay ads={ads} adId="headerBottom" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {displayedNews.map((newsItem, index) => (
@@ -177,8 +176,6 @@ const IndexPage: React.FC = () => {
               </Link>
             ))}
           </div>
-
-          <AdDisplay ads={ads} adId="categoryBottom" />
 
           {newsToShow >= displayedNews.length && (
             <div className="text-center py-8 text-gray-600">
