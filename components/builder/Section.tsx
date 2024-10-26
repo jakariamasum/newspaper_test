@@ -91,7 +91,7 @@ const Section: React.FC<SectionProps> = ({
     label: video.title,
   }));
   const [sectionInfo, setSectionInfoState] = useState<ISectionData>({
-    sectionTitle: defaultData.sectionTitle || `${section}`,
+    sectionTitle: defaultData.sectionTitle || "",
     color: defaultData.color || "#000000",
     backgroundColor: defaultData.backgroundColor || "#ffffff",
     desktopGrid: defaultData.desktopGrid || "",
@@ -100,6 +100,7 @@ const Section: React.FC<SectionProps> = ({
     imgPosition: defaultData.imgPosition || "",
     width: defaultData.width || "",
     box: defaultData.box || "",
+    type: defaultData.type || `${section}`,
     categories: defaultData.categories || [],
   });
 
@@ -150,7 +151,7 @@ const Section: React.FC<SectionProps> = ({
           </svg>
         </div>
 
-        {defaultData.sectionTitle === "category" && (
+        {defaultData.type === "category" && (
           <div className="">
             <div className="">
               <MultiSelect
@@ -162,7 +163,7 @@ const Section: React.FC<SectionProps> = ({
             </div>
           </div>
         )}
-        {defaultData.sectionTitle === "story" && (
+        {defaultData.type === "story" && (
           <div className="">
             <div className="">
               <MultiSelect
@@ -174,7 +175,7 @@ const Section: React.FC<SectionProps> = ({
             </div>
           </div>
         )}
-        {defaultData.sectionTitle === "video" && (
+        {defaultData.type === "video" && (
           <div className="">
             <div className="">
               <MultiSelect
@@ -336,47 +337,7 @@ const Section: React.FC<SectionProps> = ({
                     placeholder="Enter text color"
                   />
                 </div>
-                <div className="mb-6 w-full my-2">
-                  <div className="relative">
-                    <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
-                      <option value="" className="text-gray-400">
-                        Category Style
-                      </option>
-                      <option value="1">Grid</option>
-                      <option value="2">Slider</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mb-6 w-full my-2">
-                  <div className="relative">
-                    <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out">
-                      <option value="" className="text-gray-400">
-                        Select Category Title
-                      </option>
-                      <option value="1">On</option>
-                      <option value="2">Off</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
                 <div className="mb-6 w-full my-2">
                   <div className="relative">
                     <select
@@ -473,6 +434,21 @@ const Section: React.FC<SectionProps> = ({
                       </svg>
                     </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 py-1">
+                  <p className="text-sm font-medium text-gray-700">
+                    Section Name
+                  </p>
+                  <input
+                    type="text"
+                    className="w-96 px-2 py-1 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                    placeholder="Enter name"
+                    value={sectionInfo.sectionTitle}
+                    onChange={(e) =>
+                      handleInputChange("sectionTitle", e.target.value)
+                    }
+                  />
                 </div>
                 <div className="flex items-center gap-2 py-1">
                   <p className="text-sm font-medium text-gray-700">

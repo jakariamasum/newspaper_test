@@ -114,7 +114,7 @@ const IndexPage: React.FC = () => {
                   className="p-2"
                 >
                   <News
-                    title={`Section ${indx}`}
+                    title={`${section.sectionTitle || ""}`}
                     link={
                       `/${lang}/categories/` +
                       (section?.categories[0]?.value || "/")
