@@ -29,41 +29,49 @@ export default function RootLayout({
   const [showOptions, setShowOptions] = useState(true);
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const getLangFromPath = () => {
     const pathParts = pathname.split("/").filter(Boolean);
     if (pathParts.length > 0) {
       const possibleLang = pathParts[0];
       if (language.some((lang) => lang.language_code === possibleLang)) {
-        sessionStorage.setItem("selectedLanguage", possibleLang);
+        if (isClient) {
+          sessionStorage.setItem("selectedLanguage", possibleLang);
+        }
         setLang(possibleLang);
-
         return possibleLang;
       }
     }
     return null;
   };
-  console.log(lang, sessionStorage.getItem("selectedLanguage"));
-  useEffect(() => {
-    const savedLang = sessionStorage.getItem("selectedLanguage");
-    const langFromPath = getLangFromPath();
 
-    if (
-      savedLang &&
-      settings?.content !== "off" &&
-      savedLang === settings?.content
-    ) {
-      setLang(savedLang as string);
-    } else if (langFromPath && settings?.content) {
-      setLang(langFromPath);
-      sessionStorage.setItem("selectedLanguage", langFromPath);
-    } else if (settings?.content && settings?.content !== "off") {
-      setLang(settings.content);
-      sessionStorage.setItem("selectedLanguage", settings.content);
-    } else if (settings?.content === "off") {
-      sessionStorage.removeItem("selectedLanguage");
+  useEffect(() => {
+    if (isClient) {
+      const savedLang = sessionStorage.getItem("selectedLanguage");
+      const langFromPath = getLangFromPath();
+
+      if (
+        savedLang &&
+        settings?.content !== "off" &&
+        savedLang === settings?.content
+      ) {
+        setLang(savedLang as string);
+      } else if (langFromPath && settings?.content) {
+        setLang(langFromPath);
+        sessionStorage.setItem("selectedLanguage", langFromPath);
+      } else if (settings?.content && settings?.content !== "off") {
+        setLang(settings.content);
+        sessionStorage.setItem("selectedLanguage", settings.content);
+      } else if (settings?.content === "off") {
+        sessionStorage.removeItem("selectedLanguage");
+      }
     }
-  }, [settings?.content, setLang, pathname]);
+  }, [isClient, settings?.content, setLang, pathname]);
 
   useEffect(() => {
     const fetchLanguage = async () => {
@@ -87,10 +95,10 @@ export default function RootLayout({
   }, [settings?.content]);
 
   useEffect(() => {
-    const savedLang = sessionStorage.getItem("selectedLanguage");
-    const langFromPath = getLangFromPath();
+    if (isClient && isSettingsLoaded) {
+      const savedLang = sessionStorage.getItem("selectedLanguage");
+      const langFromPath = getLangFromPath();
 
-    if (isSettingsLoaded) {
       if (langFromPath) {
         setLang(langFromPath);
         document.documentElement.lang = langFromPath;
@@ -103,12 +111,14 @@ export default function RootLayout({
         setLoading(false);
       }
     }
-  }, [isSettingsLoaded, pathname, setLang, router]);
+  }, [isClient, isSettingsLoaded, pathname, setLang, router]);
 
   const handleCardClick = (languageCode: string) => {
     setShowOptions(false);
     setLang(languageCode);
-    sessionStorage.setItem("selectedLanguage", languageCode);
+    if (isClient) {
+      sessionStorage.setItem("selectedLanguage", languageCode);
+    }
     document.documentElement.lang = languageCode;
     router.push(`/${languageCode}`);
   };
