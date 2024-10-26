@@ -16,4 +16,8 @@ export type TSetting = {
   footer: string;
   categoryStyle: string;
   detailsStyle: string;
+  whatsapp: string;
+  facebook: string;
+  twitter: string;
+  pinterest: string;
 };

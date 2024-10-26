@@ -40,6 +40,10 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [content, setContent] = useState(initialSettings.content || "");
   const [header, setHeader] = useState(initialSettings.header || "1");
   const [footer, setFooter] = useState(initialSettings.footer || "1");
+  const [facebook, setFacebook] = useState(initialSettings.facebook || "");
+  const [whatsapp, setWhatsapp] = useState(initialSettings.whatsapp || "");
+  const [twitter, setTwitter] = useState(initialSettings.twitter || "");
+  const [pinterest, setPinterest] = useState(initialSettings.pinterest || "");
   const [categoryStyle, setCategoryStyle] = useState(
     initialSettings.categoryStyle || "1"
   );
@@ -66,6 +70,10 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
       detailsStyle,
       header,
       footer,
+      facebook,
+      whatsapp,
+      twitter,
+      pinterest,
     };
 
     const success = await updateSettings(initialSettings._id, settingData);
@@ -202,6 +210,47 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
               className="p-2 mt-2 w-full outline-none rounded-md"
               value={copyright}
               onChange={(e) => setCopyright(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Facebook</p>
+            <input
+              type="text"
+              placeholder="Title"
+              value={facebook}
+              className="p-2 mt-2 w-full outline-none rounded-md"
+              onChange={(e) => setFacebook(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Whatsapp</p>
+            <input
+              type="text"
+              placeholder="Title"
+              value={whatsapp}
+              className="p-2 mt-2 w-full outline-none rounded-md"
+              onChange={(e) => setWhatsapp(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Pinterest</p>
+            <input
+              type="text"
+              placeholder="https://"
+              value={pinterest}
+              className="p-2 mt-2 w-full outline-none rounded-md"
+              onChange={(e) => setPinterest(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center">
+            <p className="md:w-60">Twitter</p>
+            <input
+              type="text"
+              placeholder="https://"
+              value={twitter}
+              className="p-2 mt-2 w-full outline-none rounded-md"
+              onChange={(e) => setTwitter(e.target.value)}
             />
           </div>
 
