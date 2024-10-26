@@ -28,8 +28,8 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [description, setDescription] = useState(
     initialSettings.description || ""
   );
-  // const [privacy, setPrivacy] = useState(initialSettings.privacy || "");
-  // const [terms, setTerms] = useState(initialSettings.terms || "");
+  const [privacy, setPrivacy] = useState(initialSettings.privacy || "");
+  const [terms, setTerms] = useState(initialSettings.terms || "");
   const [logo, setLogo] = useState(initialSettings.logo || "");
   const [favicon, setFavicon] = useState(initialSettings.favicon || "");
   const [lotoImg, setLotoImg] = useState(initialSettings.lotoImg || "");
@@ -56,8 +56,8 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
     const settingData = {
       metaDescription,
       description,
-      // privacy,
-      // terms,
+      privacy,
+      terms,
       logo,
       favicon,
       lotoImg,
@@ -258,18 +258,18 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
             <p className="md:w-60">Meta Description</p>
             <Content value={metaDescription} onChange={setMetaDescription} />
           </div>
-          {/* 
+
           <div className="col-span-2">
             <p className="md:w-60">Description</p>
             <Content value={description} onChange={setDescription} />
           </div>
 
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <p className="md:w-60">Privacy Policies</p>
             <Content value={privacy} onChange={setPrivacy} />
-          </div>
+          </div> */}
 
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <p className="md:w-60">Terms and Conditions</p>
             <Content value={terms} onChange={setTerms} />
           </div> */}
