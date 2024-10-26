@@ -37,11 +37,11 @@ const Footer: React.FC = () => {
         <footer className="bg-main text-white py-6 mt-2">
           <div className="container mx-auto px-4">
             {langDetails?.htmlBoxes && langDetails.htmlBoxes.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
                 {langDetails.htmlBoxes.map((html, index) => (
                   <div
                     key={index}
-                    className="overflow-hidden rounded-lg bg-white bg-opacity-10 p-4"
+                    className="overflow-hidden p-4"
                   >
                     <div
                       className="prose prose-sm prose-invert max-w-none"
