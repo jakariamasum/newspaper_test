@@ -264,15 +264,15 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
             <Content value={description} onChange={setDescription} />
           </div>
 
-          {/* <div className="col-span-2">
+          <div className="col-span-2">
             <p className="md:w-60">Privacy Policies</p>
             <Content value={privacy} onChange={setPrivacy} />
-          </div> */}
+          </div>
 
-          {/* <div className="col-span-2">
+          <div className="col-span-2">
             <p className="md:w-60">Terms and Conditions</p>
             <Content value={terms} onChange={setTerms} />
-          </div> */}
+          </div>
         </div>
 
         <div className="border-y-4 border-main border-dashed py-2 my-8">
