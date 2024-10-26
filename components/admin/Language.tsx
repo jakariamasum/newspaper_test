@@ -4,7 +4,6 @@ import { ILanguage } from "@/types/language.types";
 import { useState } from "react";
 import { FiCheck, FiEdit, FiX } from "react-icons/fi";
 import { toast, Toaster } from "sonner";
-import axiosPublic from "@/lib/axiosPublic";
 import Link from "next/link";
 import { updateLanguage } from "@/app/services/admin/LanguageServices";
 import { useRouter } from "next/navigation";
@@ -24,6 +23,7 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
   const [terms, setTerms] = useState("");
   const [privacy, setPrivacy] = useState("");
   const [orderPolicy, setOrderPolicy] = useState("");
+  const [htmlBoxes, setHtmlBoxes] = useState(Array(8).fill(""));
 
   const openEditModal = (language: ILanguage) => {
     setSelectedLanguage(language || "");
@@ -38,6 +38,11 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
     setPrivacy(language.privacy || "");
     setTerms(language.terms || "");
     setIsModalOpen(true);
+    const filledHtmlBoxes = Array.from(
+      { length: 8 },
+      (_, index) => language.htmlBoxes?.[index] || ""
+    );
+    setHtmlBoxes(filledHtmlBoxes);
   };
 
   const closeModal = () => {
@@ -46,10 +51,17 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
   };
   const router = useRouter();
 
+  const handleHtmlBoxChange = (index: number, value: string) => {
+    const newHtmlBoxes = [...htmlBoxes];
+    newHtmlBoxes[index] = value;
+    setHtmlBoxes(newHtmlBoxes);
+  };
+
   const handleEditSave = async () => {
     if (selectedLanguage) {
+      // console.log(htmlBoxes);
       try {
-        const updatedLanguageData = {
+        const payload = {
           ...selectedLanguage,
           title: editTitle,
           link: editLink,
@@ -61,11 +73,10 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
           terms,
           privacy,
           orderPolicy,
+          htmlBoxes,
         };
-        const success = await updateLanguage(
-          selectedLanguage?._id,
-          updatedLanguageData
-        );
+        console.log(payload);
+        const success = await updateLanguage(selectedLanguage?._id, payload);
         if (success) {
           router.refresh();
         }
@@ -294,6 +305,30 @@ const Languages = ({ languages }: { languages: ILanguage[] }) => {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
               </div>
+            </div>
+            <h3 className="text-lg font-bold mb-4">HTML Boxes</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {htmlBoxes.map((html, index) => (
+                <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                  <label
+                    htmlFor={`html-box-${index}`}
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    HTML Box {index + 1}
+                  </label>
+                  <textarea
+                    id={`html-box-${index}`}
+                    value={html}
+                    onChange={(e) => handleHtmlBoxChange(index, e.target.value)}
+                    className="w-full h-32 p-2 border rounded mb-2"
+                    placeholder={`Enter HTML for box ${index + 1}`}
+                  />
+                  <div
+                    className="bg-white p-2 border rounded"
+                    dangerouslySetInnerHTML={{ __html: html }}
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="flex justify-end mt-4">

@@ -43,7 +43,7 @@ export default function RootLayout({
     }
     return null;
   };
-
+  console.log(lang, sessionStorage.getItem("selectedLanguage"));
   useEffect(() => {
     const savedLang = sessionStorage.getItem("selectedLanguage");
     const langFromPath = getLangFromPath();

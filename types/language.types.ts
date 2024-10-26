@@ -14,4 +14,5 @@ export interface ILanguage {
   relatedPost: string;
   seeAll: string;
   terms: string;
+  htmlBoxes: string[];
 }
