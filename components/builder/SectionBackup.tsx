@@ -77,7 +77,7 @@ const Section: React.FC<{
     label: cat.title,
   }));
   const [sectionInfo, setSectionInfoState] = useState<ISectionData>({
-    sectionTitle: defaultData.sectionTitle || `Section ${index}`,
+    sectionTitle: defaultData.sectionTitle || "",
     color: defaultData.color || "#000000",
     backgroundColor: defaultData.backgroundColor || "#ffffff",
     desktopGrid: defaultData.desktopGrid || "",
@@ -87,6 +87,7 @@ const Section: React.FC<{
     width: defaultData.width || "",
     box: defaultData.box || "",
     categories: defaultData.categories || [],
+    type: defaultData.type || `${section}`,
   });
 
   useEffect(() => {
