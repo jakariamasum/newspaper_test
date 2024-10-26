@@ -46,6 +46,8 @@ export const LanguageSelector = () => {
           {lang?.language_code?.toLocaleUpperCase()}
         </option>
       ))}
+      <option value="story">Story</option>
+      <option value="video">Video</option>
     </select>
   );
 };
