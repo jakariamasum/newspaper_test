@@ -53,9 +53,7 @@ const IndexPage: React.FC = () => {
       try {
         setLoading(true);
 
-        const response = await axiosPublic.get(
-          `/categories?lang=${pathname.lang}`
-        );
+        const response = await axiosPublic.get(`/categories?lang=all`);
         setCategory(response.data.data);
       } catch (error) {
         console.error("Error fetching page data:", error);
