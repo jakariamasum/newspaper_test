@@ -1,12 +1,20 @@
 "use client";
+import {
+  handleChangeUserPassword,
+  handleChangeUserStatus,
+  handleUserDelete,
+  handleUserEdit,
+} from "@/app/services/admin/UserServices";
 import Loader from "@/components/Loader";
 import axiosPublic from "@/lib/axiosPublic";
 import { IAuthor } from "@/types/author.types";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BiBlock, BiCheck } from "react-icons/bi";
 import { FaEdit, FaTrashAlt, FaKey } from "react-icons/fa";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 
 const IndexPage: React.FC = () => {
   const [users, setUsers] = useState<IAuthor[]>([]);
@@ -18,6 +26,7 @@ const IndexPage: React.FC = () => {
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
 
   const handleEdit = (user: IAuthor) => {
     setCurrentUser(user);
@@ -36,21 +45,11 @@ const IndexPage: React.FC = () => {
 
   const handleDeleteConfirm = async () => {
     if (currentUser) {
-      const response = await axiosPublic.delete(
-        `/user/admin/${currentUser._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("User Deleted successfully!");
+      const success = await handleUserDelete(currentUser._id);
+      if (success) {
         setUsers((prevUsers) =>
           prevUsers.filter((u) => u._id !== currentUser._id)
         );
-      } else {
-        toast.warning("Something went wrong!");
       }
       setDeleteConfirmOpen(false);
       setCurrentUser(null);
@@ -59,26 +58,11 @@ const IndexPage: React.FC = () => {
 
   const handleEditSave = async () => {
     if (currentUser) {
-      try {
-        const response = await axiosPublic.put(
-          `/user/admin/${currentUser._id}`,
-          currentUser,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-          }
+      const success = await handleUserEdit(currentUser);
+      if (success) {
+        setUsers((prevUsers) =>
+          prevUsers.map((u) => (u._id === currentUser._id ? currentUser : u))
         );
-        if (response.status === 200) {
-          toast.success("User updated successfully!");
-          setUsers((prevUsers) =>
-            prevUsers.map((u) => (u._id === currentUser._id ? currentUser : u))
-          );
-        } else {
-          toast.warning("Something went wrong!");
-        }
-      } catch (error) {
-        toast.error("Failed to update user!");
       }
       setEditModalOpen(false);
       setCurrentUser(null);
@@ -87,31 +71,23 @@ const IndexPage: React.FC = () => {
 
   const handlePasswordChangeSave = async () => {
     if (currentUser && newPassword === confirmPassword) {
-      try {
-        const response = await axiosPublic.put(
-          `/user/admin/change-password/${currentUser._id}`,
-          { password: newPassword },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-          }
-        );
-        if (response.status === 200) {
-          toast.success("Password changed successfully!");
-        } else {
-          toast.warning("Failed to change password!");
-        }
-      } catch (error) {
-        toast.error("Failed to change password!");
-      }
+      await handleChangeUserPassword(currentUser._id, newPassword);
+
       setPasswordChangeModalOpen(false);
       setNewPassword("");
       setConfirmPassword("");
       setCurrentUser(null);
-    } else if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
     }
+  };
+  const handleChangeStatus = async (id: string, isActive: boolean) => {
+    const success = await handleChangeUserStatus(id, isActive);
+    if (success) {
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u._id === id ? { ...u, isActive } : u))
+      );
+    }
+    setEditModalOpen(false);
+    setCurrentUser(null);
   };
 
   useEffect(() => {
@@ -167,7 +143,10 @@ const IndexPage: React.FC = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {users.map((user: IAuthor) => (
-            <tr key={user._id}>
+            <tr
+              key={user._id}
+              className={`${user.isActive ? "" : "bg-red-50"}`}
+            >
               <td className="px-6 py-4 whitespace-nowrap">
                 <Image
                   src={user.img as string}
@@ -187,23 +166,38 @@ const IndexPage: React.FC = () => {
                 {user.role}
               </td>
               <td className="text-left px-6 py-4 whitespace-nowrap text-sm font-medium">
+                {user.isActive ? (
+                  <button
+                    className="text-indigo-600 hover:text-indigo-900 mr-3"
+                    onClick={() => handleChangeStatus(user._id, false)}
+                  >
+                    <BiBlock size={18} />
+                  </button>
+                ) : (
+                  <button
+                    className="text-indigo-600 hover:text-indigo-900 mr-3"
+                    onClick={() => handleChangeStatus(user._id, true)}
+                  >
+                    <BiCheck size={18} />
+                  </button>
+                )}
                 <button
                   className="text-indigo-600 hover:text-indigo-900 mr-3"
                   onClick={() => handleEdit(user)}
                 >
-                  <FaEdit />
+                  <FaEdit size={18} />
                 </button>
                 <button
                   className="text-red-600 hover:text-red-900 mr-3"
                   onClick={() => handleDelete(user)}
                 >
-                  <FaTrashAlt />
+                  <FaTrashAlt size={18} />
                 </button>
                 <button
                   className="text-yellow-600 hover:text-yellow-900"
                   onClick={() => handlePasswordChange(user)}
                 >
-                  <FaKey />
+                  <FaKey size={15} />
                 </button>
               </td>
             </tr>

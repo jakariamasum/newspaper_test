@@ -7,6 +7,8 @@ export interface IAuthor {
   img?: string;
   bio?: string;
   preApproved: boolean;
+  isActive: boolean;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
