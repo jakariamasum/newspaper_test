@@ -24,7 +24,7 @@ const IndexPage: React.FC = () => {
   const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [tags, setTags] = useState<string[]>(["hello"]);
+  const [tags, setTags] = useState<string[]>([]);
   const [img, setImg] = useState("");
   const [language, setLanguage] = useState("en");
   const [location, setLocation] = useState({ city: "", area: "" });
