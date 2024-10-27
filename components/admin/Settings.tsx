@@ -33,6 +33,7 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [logo, setLogo] = useState(initialSettings.logo || "");
   const [favicon, setFavicon] = useState(initialSettings.favicon || "");
   const [lotoImg, setLotoImg] = useState(initialSettings.lotoImg || "");
+  const [waterMark, setWaterMark] = useState(initialSettings.waterMark || "");
   const [metaImg, setMetaImg] = useState(initialSettings.metaImg || "");
   const [title, setTitle] = useState(initialSettings.title || "Price In Kenya");
   const [bgColor, setBgColor] = useState(initialSettings.bgColor || "#ab4725");
@@ -62,7 +63,7 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
       terms,
       logo,
       favicon,
-      lotoImg,
+      waterMark,
       metaImg,
       title,
       bgColor,
@@ -99,7 +100,11 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
             img={favicon}
             onChange={setFavicon}
           />
-          <Photo title="Loto (170x35px)" img={lotoImg} onChange={setLotoImg} />
+          <Photo
+            title="Watermark (1200x630px)"
+            img={waterMark}
+            onChange={setWaterMark}
+          />
           <Photo
             title="FB Meta (1200x630px)"
             img={metaImg}

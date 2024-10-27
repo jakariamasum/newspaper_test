@@ -1,24 +1,10 @@
 import axiosPublic from "@/lib/axiosPublic";
+import { TSetting } from "@/types/settings.types";
 import { toast } from "sonner";
-
-interface SettingData {
-  metaDescription: string;
-  description: string;
-  privacy: string;
-  terms: string;
-  logo: string;
-  favicon: string;
-  lotoImg: string;
-  metaImg: string;
-  title: string;
-  bgColor: string;
-  copyright: string;
-  content: string;
-}
 
 export const updateSettings = async (
   settingsId: string,
-  settingData: SettingData
+  settingData: Partial<TSetting>
 ) => {
   try {
     const response = await axiosPublic.put(
