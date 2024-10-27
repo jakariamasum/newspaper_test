@@ -81,7 +81,7 @@ const IndexPage: React.FC = () => {
 
   const handleAddNews = (lang: string) => {
     setLang(lang);
-    router.push(`/admin/post/add`);
+    router.push(`/admin/${lang}/add`);
   };
 
   if (loading) {
