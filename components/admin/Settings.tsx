@@ -44,6 +44,8 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
   const [whatsapp, setWhatsapp] = useState(initialSettings.whatsapp || "");
   const [twitter, setTwitter] = useState(initialSettings.twitter || "");
   const [pinterest, setPinterest] = useState(initialSettings.pinterest || "");
+  const [headerBox, setHeaderBox] = useState(initialSettings.headerBox || "");
+  const [bodyBox, setBodyBox] = useState(initialSettings.bodyBox || "");
   const [categoryStyle, setCategoryStyle] = useState(
     initialSettings.categoryStyle || "1"
   );
@@ -74,6 +76,8 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
       whatsapp,
       twitter,
       pinterest,
+      headerBox,
+      bodyBox,
     };
 
     const success = await updateSettings(initialSettings._id, settingData);
@@ -252,6 +256,39 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
               className="p-2 mt-2 w-full outline-none rounded-md"
               onChange={(e) => setTwitter(e.target.value)}
             />
+          </div>
+
+          <div className="flex flex-col md:flex-row w-full">
+            <p className="md:w-60">Header Box</p>
+            <div className="flex flex-col gap-1 w-full">
+              <textarea
+                id="html-box-header"
+                value={headerBox}
+                onChange={(e) => setHeaderBox(e.target.value)}
+                className="w-full h-auto p-2 border rounded mb-2"
+                placeholder="Enter HTML for header box"
+              />
+              <div
+                className="w-full bg-white p-2 border rounded"
+                dangerouslySetInnerHTML={{ __html: headerBox }}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row w-full">
+            <p className="md:w-60">Body Box</p>
+            <div className="flex flex-col gap-1 w-full">
+              <textarea
+                id="html-box-body"
+                value={bodyBox}
+                onChange={(e) => setBodyBox(e.target.value)}
+                className="w-full h-auto p-2 border rounded mb-2"
+                placeholder="Enter HTML for body box"
+              />
+              <div
+                className="w-full bg-white p-2 border rounded"
+                dangerouslySetInnerHTML={{ __html: bodyBox }}
+              />
+            </div>
           </div>
 
           <div className="col-span-2">
