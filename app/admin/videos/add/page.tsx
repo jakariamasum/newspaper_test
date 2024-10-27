@@ -23,7 +23,7 @@ const IndexPage: React.FC = () => {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [videoInput, setVideoInput] = useState("");
-  const [tags, setTags] = useState<string[]>(["hello"]);
+  const [tags, setTags] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -104,7 +104,12 @@ const IndexPage: React.FC = () => {
             </div>
 
             <div className="mb-4">
-              <p>Keywords</p>
+              <p>
+                Keywords{" "}
+                <span className="text-sm text-gray-500">
+                  (press enter to add)
+                </span>{" "}
+              </p>
               <Tag value={tags} onChange={setTags} />
             </div>
           </div>

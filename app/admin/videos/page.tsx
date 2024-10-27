@@ -74,7 +74,7 @@ const IndexPage: React.FC = () => {
             href="/admin/videos/add"
             className="bg-main text-white py-2 px-4 rounded-lg shadow-md transition duration-300"
           >
-            Add New Story
+            Add New Video
           </Link>
         </div>{" "}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
