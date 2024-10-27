@@ -256,7 +256,18 @@ const Settings: React.FC<SettingsProps> = ({ initialSettings, languages }) => {
 
           <div className="col-span-2">
             <p className="md:w-60">Meta Description</p>
-            <Content value={metaDescription} onChange={setMetaDescription} />
+            <textarea
+              name="metaDescription"
+              id="metaDescription"
+              placeholder="Meta Description here"
+              maxLength={160}
+              onChange={(e) => setMetaDescription(e.target.value)}
+              value={metaDescription}
+              className="border rounded p-2 w-full"
+            ></textarea>
+            <p className="text-sm text-gray-500">
+              {160 - metaDescription.length} characters remaining
+            </p>
           </div>
 
           <div className="col-span-2">
