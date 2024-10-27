@@ -37,6 +37,7 @@ const IndexPage: React.FC = () => {
   const [waterMark, setWaterMark] = useState("");
 
   useEffect(() => {
+    sessionStorage.setItem("selectedLanguage", lang);
     const fetchUsers = async () => {
       const response = await axiosPublic.get("/user/admin", {
         headers: {

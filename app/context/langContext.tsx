@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface LangContextProps {
   lang: string;
@@ -19,7 +25,16 @@ export const useLang = () => {
 export const LangProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [lang, setLang] = useState("all");
+  const [lang, setLang] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("lang") || "all";
+    }
+    return "all";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+  }, [lang]);
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>
