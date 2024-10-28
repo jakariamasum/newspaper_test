@@ -2,6 +2,25 @@ import axiosPublic from "@/lib/axiosPublic";
 import { ILanguage } from "@/types/language.types";
 import { toast } from "sonner";
 
+export const getAllLanguages = async (lang: string) => {
+  try {
+    const response = await axiosPublic.get(`/language`);
+    return response.data.data;
+  } catch (error) {
+    console.log("error fetching languages", error);
+    return [];
+  }
+};
+export const getSingleLanguage = async (lang: string) => {
+  try {
+    const response = await axiosPublic.get(`/language?lang=${lang}`);
+    return response.data.data;
+  } catch (error) {
+    console.log("error fetching languages", error);
+    return {};
+  }
+};
+
 export const updateLanguage = async (
   langId: string,
   LanguageData: ILanguage

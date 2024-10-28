@@ -2,6 +2,16 @@ import axiosPublic from "@/lib/axiosPublic";
 import { TSetting } from "@/types/settings.types";
 import { toast } from "sonner";
 
+export const getAllSettings = async () => {
+  try {
+    const response = await axiosPublic.get("/settings");
+    console.log(response.data.data[0]);
+    return response.data.data[0];
+  } catch (error) {
+    console.log("Error fetching settings", error);
+  }
+};
+
 export const updateSettings = async (
   settingsId: string,
   settingData: Partial<TSetting>
