@@ -405,7 +405,6 @@ const IndexPage: React.FC = () => {
                     (news?.category?.category?._id as string) || "/"
                 }
                 limit={5}
-                box={14}
                 style={2}
                 item={relatedPosts}
                 seeAll={langDetails?.seeAll}
@@ -429,7 +428,6 @@ const IndexPage: React.FC = () => {
                       (news?.category?.category?._id as string) || "/"
                   }
                   limit={5}
-                  box={2}
                   style={2}
                   item={mostPopularPosts}
                   seeAll={langDetails?.seeAll}
@@ -680,7 +678,6 @@ const IndexPage: React.FC = () => {
                     news?.category?.category?._id) as string) || "/"
                 }
                 limit={5}
-                box={14}
                 style={2}
                 item={relatedPosts}
                 seeAll={langDetails?.seeAll}
@@ -713,7 +710,6 @@ const IndexPage: React.FC = () => {
                       news?.category?.category?._id) as string) || "/"
                   }
                   limit={5}
-                  box={2}
                   style={2}
                   item={mostPopularPosts}
                   seeAll={langDetails?.seeAll}

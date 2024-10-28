@@ -18,7 +18,7 @@ interface NewssProps {
   title: string;
   link: string;
   limit: number;
-  box: number;
+  box?: number;
   style: number;
   item: Item[];
   seeAll?: string;
