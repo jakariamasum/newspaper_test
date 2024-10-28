@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axiosPublic from "@/lib/axiosPublic";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { INews } from "@/types/news.types";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
@@ -11,7 +10,6 @@ import Link from "next/link";
 import { deleteNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
-  const router = useRouter();
   const [videos, setVideos] = useState<INews[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,69 +75,93 @@ const IndexPage: React.FC = () => {
             Add New Video
           </Link>
         </div>{" "}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {videos?.map((video) => (
-            <div
-              key={video._id}
-              className="bg-white overflow-hidden shadow-sm rounded-lg"
-            >
-              <div className="relative">
-                <Image
-                  src={video.img}
-                  alt={video.title}
-                  className="w-full h-48 object-cover"
-                  width={100}
-                  height={48}
-                />
-                <div className="absolute top-2 right-2 bg-gray-900 bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                  {video.status}
-                </div>
-              </div>
-              <div className="p-4">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                  {video.title}
-                </h2>
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Story
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Published Date
+                </th>
 
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {video.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                    >
-                      {tag}
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {videos?.map((video) => (
+                <tr key={video._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10 relative">
+                        <Image
+                          className="h-10 w-10 rounded-full object-cover"
+                          src={video.img}
+                          alt=""
+                          layout="fill"
+                        />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {video.title}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {video.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      {video.status}
                     </span>
-                  ))}
-                </div>
-                <div className="text-sm text-gray-500 mb-3">
-                  Published:{" "}
-                  {new Date(video.publishedDate).toLocaleDateString()}
-                </div>
-                <div className="flex justify-between items-center">
-                  <Link
-                    href={`https://www.youtube.com/watch?v=${video.video}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  >
-                    Watch on YouTube
-                  </Link>
-                  <div className="flex space-x-2">
-                    <Link href={`/admin/videos/edit/${video._id}`}>
-                      <button className="text-gray-600 hover:text-blue-600 transition-colors">
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(video.publishedDate).toLocaleDateString()}
+                  </td>
+
+                  <td className="px-6 py-4 flex justify-start items-center gap-1 text-sm font-medium">
+                    <Link href={`videos/edit/${video._id}`}>
+                      <button className="text-indigo-600 hover:text-indigo-900 mr-4">
                         <FiEdit2 className="w-5 h-5" />
                       </button>
                     </Link>
                     <button
                       onClick={() => handleDelete(video)}
-                      className="text-gray-600 hover:text-red-600 transition-colors"
+                      className="text-red-600 hover:text-red-900 mr-4"
                     >
                       <FiTrash2 className="w-5 h-5" />
                     </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
       {deleteConfirmOpen && (
