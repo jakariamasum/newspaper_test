@@ -116,6 +116,7 @@ const IndexPage: React.FC = () => {
                       (section?.categories[0]?.value || "/")
                     }
                     limit={Number(section?.sectionLimit) || 5}
+                    box={Number(section?.box) || 18}
                     style={Number(section.imgPosition) || 1}
                     item={filteredNewsData}
                     seeAll={seeAll}

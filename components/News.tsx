@@ -18,7 +18,7 @@ interface NewssProps {
   title: string;
   link: string;
   limit: number;
-  box?: number;
+  box: number;
   style: number;
   item: Item[];
   seeAll?: string;
@@ -98,9 +98,7 @@ const News: React.FC<NewssProps> = ({
     <div className="w-full mb-2">
       {style === 1 && (
         <div className="flex items-center justify-between mb-2 px-2 py-1 border-b-2 border-main bg-white">
-          <h2 className="text-xl font-bold">
-            {title} {box}
-          </h2>
+          <h2 className="text-xl font-bold">{title}</h2>
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (
               <>

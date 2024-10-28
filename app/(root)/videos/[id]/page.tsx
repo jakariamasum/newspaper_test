@@ -266,6 +266,7 @@ const IndexPage: React.FC = () => {
                 title="RELATED ARTICLES"
                 link="/"
                 limit={5}
+                box={14}
                 style={2}
                 item={[
                   {
@@ -330,6 +331,7 @@ const IndexPage: React.FC = () => {
                   title="MOST POPULAR"
                   link="/"
                   limit={5}
+                  box={2}
                   style={2}
                   item={[
                     {
