@@ -20,10 +20,7 @@ export async function uploadToCloudinary(dataUrl: string) {
       "upload_preset",
       process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
     );
-    formData.append(
-      "api_key",
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || ""
-    );
+
     formData.append(
       "timestamp",
       String(Math.round(new Date().getTime() / 1000))
