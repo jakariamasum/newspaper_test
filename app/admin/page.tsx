@@ -120,6 +120,7 @@ const IndexPage: React.FC = () => {
       toast.warning("Failed to publish news");
     }
   };
+  console.log(news);
 
   return (
     <>

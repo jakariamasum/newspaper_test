@@ -103,7 +103,7 @@ const ModuleTypePage = () => {
   const filterNews = news?.filter(
     (n) => n.lang !== "story" && n.lang !== "video"
   );
-  console.log(news);
+  console.log(filterNews);
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 items-center">

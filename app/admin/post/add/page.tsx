@@ -98,7 +98,7 @@ const IndexPage: React.FC = () => {
       category,
       lang,
       status: newsStatus,
-      publishedDate: publishedDate || new Date().toDateString(),
+      publishedDate: publishedDate || new Date(),
       waterMark,
     };
     console.log(payload);

@@ -61,12 +61,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function fetchSettings() {
-  const settings = await axiosPublic.get("/settings");
-  return {
-    title: settings?.data?.data[0]?.title,
-    description: settings?.data?.data[0]?.description,
-    image: "/default-og-image.png",
-  };
+  try {
+    const settings = await axiosPublic.get("/settings");
+
+    return {
+      title: settings?.data?.data[0]?.title,
+      description: settings?.data?.data[0]?.description,
+      image: "/default-og-image.png",
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function RootLayout({

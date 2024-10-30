@@ -21,7 +21,7 @@ export const createNewsItem = async (
   content: string
 ): Promise<boolean> => {
   try {
-    const response = await axiosPublic.put(`/news/admin`, payload, {
+    const response = await axiosPublic.post(`/news/admin`, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
