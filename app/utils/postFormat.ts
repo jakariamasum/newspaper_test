@@ -13,7 +13,7 @@ export const postFormat = (newsData: INews[], categoriesData: ICategory[]) => {
         img: newsItem.img,
         link:
           lang === "story" || lang === "video"
-            ? `/${lang}/${newsItem._id}`
+            ? `/${lang}/details/${newsItem._id}`
             : `/${lang}/news/${newsItem._id}`,
         title: newsItem.title,
       }));
