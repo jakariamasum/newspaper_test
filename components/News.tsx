@@ -128,7 +128,7 @@ const News: React.FC<NewssProps> = ({
       {style === 2 && (
         <div className="flex items-center justify-between mb-2 border-b-2 border-main">
           <h2 className="text-xs font-bold bg-main px-2 py-1 text-white">
-            {title} {box}
+            {title}
           </h2>
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (
