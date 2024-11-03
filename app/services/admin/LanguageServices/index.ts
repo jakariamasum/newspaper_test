@@ -2,7 +2,7 @@ import axiosPublic from "@/lib/axiosPublic";
 import { ILanguage } from "@/types/language.types";
 import { toast } from "sonner";
 
-export const getAllLanguages = async (lang: string) => {
+export const getAllLanguages = async (lang?: string) => {
   try {
     const response = await axiosPublic.get(`/language`);
     return response.data.data;

@@ -214,6 +214,16 @@ export default function RootLayout({
             Models type
           </Link>
           <Link
+            className={`hover:bg-main hover:text-white p-2 block ${
+              isActive(["/admin/auto-news", "/admin/auto-news"])
+                ? "bg-main text-white"
+                : ""
+            }`}
+            href="/admin/auto-news"
+          >
+            Auto News
+          </Link>
+          <Link
             className="hover:bg-main hover:text-white p-2 block"
             href="/"
             onClick={handleLogout}
