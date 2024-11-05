@@ -9,6 +9,8 @@ import { ISubCategory } from "@/types/subcategory.types";
 import { AutoNewsFormData } from "@/types/auto-news.types";
 import { createAutoNews } from "@/app/services/autoNewsServices";
 import { useRouter } from "next/navigation";
+import { IAuthor } from "@/types/author.types";
+import axiosPublic from "@/lib/axiosPublic";
 
 interface AutoNewsFormProps {
   languages: ILanguage[];
@@ -22,6 +24,8 @@ export default function AutoNewsForm({
   initialSubcategories,
 }: AutoNewsFormProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [authors, setAuthors] = useState<IAuthor[]>([]);
   const [categories, setCategories] = useState<ICategory[]>(initialCategories);
   const [subcategories, setSubcategories] =
     useState<ISubCategory[]>(initialSubcategories);
@@ -32,14 +36,31 @@ export default function AutoNewsForm({
     status: "published",
     link: "",
     duration: 0,
+    author: "",
   });
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const newCategories = await getCategoryByLang(formData.language);
-      setCategories(newCategories);
-      setFormData((prev) => ({ ...prev, category: "", subcategory: "" }));
+      setIsLoading(true);
+      try {
+        const newCategories = await getCategoryByLang(formData.language);
+        setCategories(newCategories);
+        setFormData((prev) => ({ ...prev, category: "", subcategory: "" }));
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    const fetchUsers = async () => {
+      const response = await axiosPublic.get("/user/admin", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      setAuthors(response.data.data);
+    };
+    fetchUsers();
     fetchCategories();
   }, [formData.language]);
 
@@ -48,6 +69,7 @@ export default function AutoNewsForm({
       const newSubcategories = await getSubCategoryByLang(formData.language);
       setSubcategories(newSubcategories);
     };
+
     fetchSubcategories();
   }, [formData.language]);
 
@@ -129,6 +151,11 @@ export default function AutoNewsForm({
               </option>
             ))}
           </select>
+          {isLoading && (
+            <p className="text-sm text-muted-foreground">
+              Loading categories...
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -175,23 +202,27 @@ export default function AutoNewsForm({
           </select>
         </div>
 
-        <div className="col-span-1 md:col-span-2 space-y-2">
+        <div className="space-y-2">
           <label
-            htmlFor="link"
+            htmlFor="subcategory"
             className="block text-sm font-medium text-gray-700"
           >
-            Link
+            Author
           </label>
-          <textarea
-            id="link"
-            required
-            name="link"
-            rows={3}
-            value={formData?.link || ""}
+          <select
+            id="author"
+            name="author"
+            value={formData.author || ""}
             onChange={handleInputChange}
             className="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-main transition duration-150 ease-in-out"
-            placeholder="Enter link"
-          />
+          >
+            <option value="">Select author</option>
+            {authors?.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="space-y-2">
@@ -209,6 +240,25 @@ export default function AutoNewsForm({
             onChange={handleInputChange}
             min="0"
             className="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-main transition duration-150 ease-in-out"
+          />
+        </div>
+
+        <div className="col-span-1 md:col-span-2 space-y-2">
+          <label
+            htmlFor="link"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Link
+          </label>
+          <textarea
+            id="link"
+            required
+            name="link"
+            rows={3}
+            value={formData?.link || ""}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-main transition duration-150 ease-in-out"
+            placeholder="Enter link"
           />
         </div>
 

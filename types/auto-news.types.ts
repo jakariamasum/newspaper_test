@@ -3,6 +3,7 @@ export interface AutoNewsFormData {
   category: string;
   subcategory?: string;
   status: "published" | "unpublished";
+  author: string | null;
   link: string;
   duration: number;
 }
