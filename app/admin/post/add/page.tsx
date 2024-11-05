@@ -1,104 +1,181 @@
-import AttachFiles from "@/components/admin/AttachFiles";
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
+import React, { useEffect, useState } from "react";
+import axiosPublic from "@/lib/axiosPublic";
+import { toast, Toaster } from "sonner";
 import Checkbox from "@/components/admin/Checkbox";
 import Content from "@/components/admin/Content";
 import Location from "@/components/admin/Location";
 import Photo from "@/components/admin/Photo";
 import Tag from "@/components/admin/Tag";
 import Time from "@/components/admin/Time";
+import { useLang } from "@/app/context/langContext";
+import { categoryFormat } from "@/app/utils/categoryFormate";
+import { useRouter } from "next/navigation";
+import { IAuthor } from "@/types/author.types";
+import { createNewsItem } from "@/app/services/admin/NewsServices";
 
 const IndexPage: React.FC = () => {
-    return (
-        <>
-            <div className="container my-4">
-                <div className="flex flex-col md:flex-row gap-8">
-                    <div className="w-full md:w-2/3">
-                        <div className="mb-4">
-                            <p>
-                                Title
-                            </p>
-                            <input
-                                type="text"
-                                placeholder="title"
-                                className="p-2 mt-2 w-full outline-none rounded-md"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <p>
-                                Description
-                            </p>
-                            <Content />
-                        </div>
-                        <div className="mb-4">
-                            <p>
-                                Keywords
-                            </p>
-                            <Tag keyword="hello 1, hello 2" />
-                        </div>
-                        
-                                
-                    </div>
-                    <div className="w-full md:w-1/3">
-                        <div className="border-2 border-main border-dashed rounded-md p-2 my-8">
-                            <button type="submit" className="bg-main flex items-center justify-center w-full text-white px-4 py-2 rounded-md">
-                                Publish
-                            </button>
-                        </div>
-                        
-                        <Photo
-                            title="Photo (600x600px)"
-                            img=""
-                        />
-                        <Time />
-                        <Checkbox
-                            title="Category"
-                            items={[
-                                { title: "Category 1", subItems: [{ title: "SubCategory 1.1" }, { title: "SubCategory 1.2" }] },
-                                { title: "Category 2", subItems: [{ title: "SubCategory 2.1", checked: true }] },
-                                { title: "Category 3", checked: true },
-                                { title: "Category 4" }
-                            ]}
-                        />
+  const router = useRouter();
+  const { lang } = useLang();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [img, setImg] = useState("");
+  const [reporter, setReporter] = useState("");
+  const [location, setLocation] = useState({ city: "", area: "" });
+  const [users, setUsers] = useState<IAuthor[]>([]);
+  const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [category, setCategory] = useState<{
+    category: string;
+    subCategory?: string;
+  }>({ category: "" });
+  const [publishedDate, setPublishedDate] = useState<string | null>(null);
+  const [waterMark, setWaterMark] = useState("");
 
-                        <div className="mb-4">
-                            <p>
-                                Reporter
-                            </p>
-                            <select
-                                className="p-2 mt-2 w-full outline-none rounded-md"
-                                defaultValue=""
-                            >
-                                <option value="HeRa">HeRa</option>
-                                <option value="Khan">Khan</option>
-                                <option value="Reporter">Reporter</option>
-                            </select>
-                        </div>
+  useEffect(() => {
+    sessionStorage.setItem("selectedLanguage", lang);
+    const fetchUsers = async () => {
+      const response = await axiosPublic.get("/user/admin", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      setUsers(response.data.data);
+    };
+    fetchUsers();
+    const fetchCities = async () => {
+      const response = await axiosPublic.get("/city");
+      setCities(response.data.data);
+    };
+    fetchCities();
+    const fetchAreas = async () => {
+      const response = await axiosPublic.get("/area");
+      setAreas(response.data.data);
+    };
+    fetchAreas();
+    const fetchCategories = async () => {
+      const response = await axiosPublic.get(`/categories/type/${lang}`);
+      setCategories(response.data.data);
+    };
+    fetchCategories();
+    const fetchSubCategories = async () => {
+      const response = await axiosPublic.get(`/sub-categories/${lang}`);
+      setSubCategories(response.data.data);
+    };
+    fetchSubCategories();
+  }, []);
 
-                        <Location
-                            items={[
-                            {
-                                name: "City Name 1",
-                                areas: [
-                                { name: "Area 1" },
-                                { name: "Area 2", selected: true },
-                                { name: "Area 3" },
-                                ],
-                            },
-                            {
-                                name: "City Name 2",
-                                areas: [
-                                { name: "Area 4" },
-                                { name: "Area 5" },
-                                { name: "Area 6" },
-                                ],
-                            },
-                            // Add more cities as needed
-                            ]}
-                        />
+  const transformData = (
+    areas: { title: string; city: { _id: string } }[],
+    cities: { _id: string; title: string }[]
+  ) => {
+    return cities.map((city) => ({
+      title: city.title,
+      areas: areas
+        .filter((area) => area.city._id === city._id)
+        .map((area) => ({ title: area.title })),
+    }));
+  };
 
-                    </div>
-                </div>
+  const transformedData = transformData(areas, cities);
+  const transformeCategorydData = categoryFormat(subCategories, categories);
+
+  const handlePublish = async () => {
+    const selectedReporter = users.find((user) => user._id === reporter);
+
+    const newsStatus = selectedReporter?.preApproved ? "published" : "pending";
+    const payload = {
+      title,
+      content: description,
+      tags,
+      img,
+      author: reporter,
+      location,
+      category,
+      lang,
+      status: newsStatus,
+      publishedDate: publishedDate || new Date(),
+      waterMark,
+    };
+    console.log(payload);
+    const success = await createNewsItem(payload, "News");
+    if (success) {
+      router.push(`/admin/type/${lang}`);
+    }
+  };
+
+  return (
+    <>
+      <div className="container my-4">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-2/3">
+            <div className="mb-4">
+              <p>Title</p>
+              <input
+                type="text"
+                placeholder="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="p-2 mt-2 w-full outline-none rounded-md"
+              />
             </div>
-        </>
-    );
+            <div className="mb-4">
+              <p>Description</p>
+              <Content value={description} onChange={setDescription} />
+            </div>
+            <div className="mb-4">
+              <p>Keywords</p>
+              <Tag value={tags} onChange={setTags} />
+            </div>
+          </div>
+          <div className="w-full md:w-1/3">
+            <div className="border-2 border-main border-dashed rounded-md p-2 my-8">
+              <button
+                type="button"
+                onClick={handlePublish}
+                className="bg-main flex items-center justify-center w-full text-white px-4 py-2 rounded-md"
+              >
+                Publish
+              </button>
+            </div>
+            <Photo title="Photo (600x600px)" img={img} onChange={setImg} />
+            <Photo
+              title="Watermark (600x600px)"
+              img={waterMark}
+              onChange={setWaterMark}
+            />
+            <Time time={publishedDate} setTime={setPublishedDate} />
+            <Checkbox
+              title="Category"
+              items={transformeCategorydData}
+              onChange={setCategory}
+            />
+            <div className="mb-4">
+              <p>Reporter</p>
+              <select
+                className="p-2 mt-2 w-full outline-none rounded-md"
+                value={reporter}
+                onChange={(e) => setReporter(e.target.value)}
+              >
+                <option value="">Select a reporter</option>
+                {users?.map((user: IAuthor) => (
+                  <option value={user?._id} key={user?._id}>
+                    {user?.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Location items={transformedData} onChange={setLocation} />
+          </div>
+        </div>
+      </div>
+      <Toaster position="top-right" richColors closeButton />
+    </>
+  );
 };
+
 export default IndexPage;

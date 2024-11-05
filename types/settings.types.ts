@@ -1,0 +1,26 @@
+export type TSetting = {
+  _id: string;
+  metaDescription: string;
+  description: string;
+  privacy: string;
+  terms: string;
+  logo: string;
+  favicon: string;
+  lotoImg: string;
+  metaImg: string;
+  title: string;
+  bgColor: string;
+  copyright: string;
+  content: string;
+  header: string;
+  footer: string;
+  categoryStyle: string;
+  detailsStyle: string;
+  whatsapp: string;
+  facebook: string;
+  twitter: string;
+  pinterest: string;
+  headerBox: string;
+  bodyBox: string;
+  waterMark: string;
+};

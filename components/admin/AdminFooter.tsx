@@ -1,13 +1,14 @@
+import { useSettings } from "@/app/context/settingContext";
+
 const AdminFooter: React.FC = () => {
-    return (
-      <>
-        <div className="bg-main text-white py-2">
-          <div className="container">
-              Price in Kenya
-          </div>
-        </div>
-      </>
-    );
-  };
-  
-  export default AdminFooter;
+  const { settings } = useSettings();
+  return (
+    <>
+      <div className="bg-main text-white py-2">
+        <div className="container">{settings?.title || ""}</div>
+      </div>
+    </>
+  );
+};
+
+export default AdminFooter;

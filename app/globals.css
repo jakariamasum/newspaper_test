@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-.sun-editor .se-wrapper .se-wrapper-inner {min-height: 400px !important;}
-.sun-editor-editable p, .sun-editor-editable div {font-size: 18px;}
+.sun-editor .se-wrapper .se-wrapper-inner {
+  min-height: 400px !important;
+}
+.sun-editor-editable p,
+.sun-editor-editable div {
+  font-size: 18px;
+}
 #ww_b9ea0e9fd8fcb .ww_source,
 a#ww_b9ea0e9fd8fcb_u,
-._5lm5._2pi3._3-8y {display: none;}
+._5lm5._2pi3._3-8y {
+  display: none;
+}
 
-#ww_b9ea0e9fd8fcb {max-width: 100% !important;}
+#ww_b9ea0e9fd8fcb {
+  max-width: 100% !important;
+}

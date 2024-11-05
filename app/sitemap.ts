@@ -1,24 +1,59 @@
-import { MetadataRoute } from 'next'
- 
-export default function sitemap(): MetadataRoute.Sitemap {
+import { ILanguage } from "@/types/language.types";
+import { MetadataRoute } from "next";
+
+async function fetchLanguages(): Promise<string[]> {
+  try {
+    const back_url = "https://newspaper-backend-eta.vercel.app/api/v1";
+    const response = await fetch(`${back_url}/language`, {
+      next: { revalidate: 3600 },
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (Array.isArray(data.data)) {
+      return data.data.map((lang: ILanguage) => lang.language_code);
+    } else if (typeof data === "object" && data !== null) {
+      const languageCodes = Object.values(data)
+        .filter(
+          (value): value is ILanguage =>
+            typeof value === "object" &&
+            value !== null &&
+            "language_code" in value
+        )
+        .map((lang) => lang.language_code);
+
+      if (languageCodes.length > 0) {
+        return languageCodes;
+      }
+    }
+
+    console.log("Unexpected data format from /language endpoint:", data);
+    return ["en"];
+  } catch (error) {
+    console.error("Failed to fetch languages:", error);
+    return ["en"];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://newspaper-mocha.vercel.app";
+
+  const languages = await fetchLanguages();
+
   return [
     {
-      url: 'https://acme.com',
+      url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 1,
     },
-    {
-      url: 'https://acme.com/about',
+    ...languages.map((lang) => ({
+      url: `${baseUrl}/api/sitemap/${lang}`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://acme.com/blog',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.5,
-    },
-  ]
+    })),
+  ];
 }
