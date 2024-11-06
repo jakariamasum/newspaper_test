@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import axiosPublic from "@/lib/axiosPublic";
-import { ILanguage } from "@/types/language.types";
+import Loader from "@/components/Loader";
 
 export type TSectionData = {
   sectionTitle: { title: string };
@@ -35,64 +35,17 @@ export type TPage = {
 const IndexPage: React.FC = () => {
   const router = useRouter();
   const [pages, setPages] = useState<TPage[]>([]);
-  const [languages, setLanguages] = useState<ILanguage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const createdLanguages = useRef(new Set<string>());
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [pagesResponse, languagesResponse] = await Promise.all([
-          axiosPublic.get("/pages"),
-          axiosPublic.get("/language"),
-        ]);
-        const fetchedPages = pagesResponse.data.data;
-        const fetchedLanguages = languagesResponse.data.data;
+        const response = await axiosPublic.get("/pages");
+        const fetchedPages = response.data.data;
 
         setPages(fetchedPages);
-        setLanguages(fetchedLanguages);
-
-        // Create a Set of existing language codes
-        const existingLanguageCodes = new Set(
-          fetchedPages.map((page: TPage) => page.language)
-        );
-
-        // Filter out languages that already have pages
-        const newLanguages = fetchedLanguages.filter(
-          (lang: ILanguage) =>
-            !existingLanguageCodes.has(lang.language_code) &&
-            !createdLanguages.current.has(lang.language_code)
-        );
-
-        // Create pages for new languages
-        for (const lang of newLanguages) {
-          if (!createdLanguages.current.has(lang.language_code)) {
-            createdLanguages.current.add(lang.language_code);
-            const newPage = {
-              title: lang.title,
-              language: lang.language_code,
-              rows: [],
-            };
-            try {
-              const response = await axiosPublic.post("/pages/admin", newPage, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                },
-              });
-              setPages((prevPages) => [...prevPages, response.data.data]);
-            } catch (err) {
-              console.error(
-                `Failed to create page for language ${lang.language_code}:`,
-                err
-              );
-              createdLanguages.current.delete(lang.language_code);
-            }
-          }
-        }
       } catch (err) {
-        setError("Failed to fetch data. Please try again later.");
         console.error("Error fetching data:", err);
       } finally {
         setIsLoading(false);
@@ -107,11 +60,7 @@ const IndexPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-10 text-red-500">{error}</div>;
+    return <Loader />;
   }
 
   return (
