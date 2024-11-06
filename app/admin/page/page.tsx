@@ -1,9 +1,11 @@
 "use client";
-import axiosPublic from "@/lib/axiosPublic";
-import Link from "next/link";
+
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import axiosPublic from "@/lib/axiosPublic";
+import { ILanguage } from "@/types/language.types";
+
 export type TSectionData = {
   sectionTitle: { title: string };
   color: string;
@@ -33,20 +35,89 @@ export type TPage = {
 const IndexPage: React.FC = () => {
   const router = useRouter();
   const [pages, setPages] = useState<TPage[]>([]);
+  const [languages, setLanguages] = useState<ILanguage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const createdLanguages = useRef(new Set<string>());
+
   useEffect(() => {
-    const fetchPageData = async () => {
-      const response = await axiosPublic.get("/pages");
-      setPages(response.data.data);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [pagesResponse, languagesResponse] = await Promise.all([
+          axiosPublic.get("/pages"),
+          axiosPublic.get("/language"),
+        ]);
+        const fetchedPages = pagesResponse.data.data;
+        const fetchedLanguages = languagesResponse.data.data;
+
+        setPages(fetchedPages);
+        setLanguages(fetchedLanguages);
+
+        // Create a Set of existing language codes
+        const existingLanguageCodes = new Set(
+          fetchedPages.map((page: TPage) => page.language)
+        );
+
+        // Filter out languages that already have pages
+        const newLanguages = fetchedLanguages.filter(
+          (lang: ILanguage) =>
+            !existingLanguageCodes.has(lang.language_code) &&
+            !createdLanguages.current.has(lang.language_code)
+        );
+
+        // Create pages for new languages
+        for (const lang of newLanguages) {
+          if (!createdLanguages.current.has(lang.language_code)) {
+            createdLanguages.current.add(lang.language_code);
+            const newPage = {
+              title: lang.title,
+              language: lang.language_code,
+              rows: [],
+            };
+            try {
+              const response = await axiosPublic.post("/pages/admin", newPage, {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                },
+              });
+              setPages((prevPages) => [...prevPages, response.data.data]);
+            } catch (err) {
+              console.error(
+                `Failed to create page for language ${lang.language_code}:`,
+                err
+              );
+              createdLanguages.current.delete(lang.language_code);
+            }
+          }
+        }
+      } catch (err) {
+        setError("Failed to fetch data. Please try again later.");
+        console.error("Error fetching data:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchPageData();
+
+    fetchData();
   }, []);
+
   const handleEdit = (_id: string) => {
     router.push(`/admin/page/edit/${_id}`);
   };
 
+  if (isLoading) {
+    return <div className="text-center py-10">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500">{error}</div>;
+  }
+
   return (
-    <div className="">
-      <div className="lg:mx-24 my-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="container mx-auto px-4 my-10">
+      <h1 className="text-2xl font-bold mb-6">Pages by Language</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {pages.map((data, pageIndex) => (
           <div
             key={pageIndex}
@@ -54,7 +125,7 @@ const IndexPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800">
-                {data.title}
+                {data.title} ({data.language})
               </h2>
               <FaEdit
                 onClick={() => handleEdit(data._id)}
@@ -77,10 +148,15 @@ const IndexPage: React.FC = () => {
                 </div>
               </div>
             ))}
+
+            {data.rows.length === 0 && (
+              <p className="text-sm text-gray-500 italic">No rows added yet</p>
+            )}
           </div>
         ))}
       </div>
     </div>
   );
 };
+
 export default IndexPage;
