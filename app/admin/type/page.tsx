@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { ILanguage } from "@/types/language.types";
-import axiosPublic from "@/lib/axiosPublic";
 import Languages from "@/components/admin/Language";
+import { getAllLanguages } from "@/app/services/admin/LanguageServices";
 
 const IndexPage = async () => {
-  const languages = await axiosPublic.get("/language");
+  const languages = await getAllLanguages();
 
   return (
     <div className="p-4">
@@ -17,7 +16,7 @@ const IndexPage = async () => {
           Add
         </Link>
       </div>
-      <Languages languages={languages.data.data} />
+      <Languages languages={languages} />
     </div>
   );
 };
