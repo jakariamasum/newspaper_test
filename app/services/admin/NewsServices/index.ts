@@ -1,12 +1,27 @@
 import axiosPublic from "@/lib/axiosPublic";
 import { toast } from "sonner";
 
+export const getAllNews = async (lang: string) => {
+  const response = await axiosPublic.get(`/news/${lang}`);
+  return response.data.data;
+};
+
+export const getSinglehNews = async (id: string) => {
+  try {
+    const response = await axiosPublic.get(`/news/each-news/${id}`);
+    return response.data.data;
+  } catch (error) {
+    console.log("Error fetching news", error);
+    return [];
+  }
+};
+
 export const createNewsItem = async (
   payload: any,
   content: string
 ): Promise<boolean> => {
   try {
-    const response = await axiosPublic.put(`/news/admin`, payload, {
+    const response = await axiosPublic.post(`/news/admin`, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },

@@ -20,4 +20,7 @@ export type TSetting = {
   facebook: string;
   twitter: string;
   pinterest: string;
+  headerBox: string;
+  bodyBox: string;
+  waterMark: string;
 };

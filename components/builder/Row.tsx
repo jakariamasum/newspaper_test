@@ -14,6 +14,7 @@ interface SectionData {
   categories?: IOption[];
   stories?: IOption[];
   videos?: IOption[];
+  type?: string;
 }
 const Row: React.FC<{
   categories: any[];

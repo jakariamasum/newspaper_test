@@ -14,6 +14,7 @@ export interface ISectionData {
   width: string;
   box: string;
   categories: IOption[];
+  type: string;
 }
 
 interface Section {

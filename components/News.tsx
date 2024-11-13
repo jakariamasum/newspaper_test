@@ -98,9 +98,7 @@ const News: React.FC<NewssProps> = ({
     <div className="w-full mb-2">
       {style === 1 && (
         <div className="flex items-center justify-between mb-2 px-2 py-1 border-b-2 border-main bg-white">
-          <h2 className="text-xl font-bold">
-            {title} {box}
-          </h2>
+          <h2 className="text-xl font-bold">{title}</h2>
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (
               <>
@@ -130,7 +128,7 @@ const News: React.FC<NewssProps> = ({
       {style === 2 && (
         <div className="flex items-center justify-between mb-2 border-b-2 border-main">
           <h2 className="text-xs font-bold bg-main px-2 py-1 text-white">
-            {title} {box}
+            {title}
           </h2>
           <div className="flex items-center text-base space-x-2">
             {categoriesCount > 1 && (

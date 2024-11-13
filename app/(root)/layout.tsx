@@ -39,7 +39,14 @@ export default function RootLayout({
     const pathParts = pathname.split("/").filter(Boolean);
     if (pathParts.length > 0) {
       const possibleLang = pathParts[0];
-      if (language.some((lang) => lang.language_code === possibleLang)) {
+      if (
+        language.some(
+          (lang) =>
+            lang.language_code === possibleLang ||
+            possibleLang === "story" ||
+            possibleLang === "video"
+        )
+      ) {
         if (isClient) {
           sessionStorage.setItem("selectedLanguage", possibleLang);
         }

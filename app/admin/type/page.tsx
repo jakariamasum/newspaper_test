@@ -1,11 +1,19 @@
+"use client";
 import Link from "next/link";
+import Languages from "@/components/admin/Language";
+import { useEffect, useState } from "react";
 import { ILanguage } from "@/types/language.types";
 import axiosPublic from "@/lib/axiosPublic";
-import Languages from "@/components/admin/Language";
 
-const IndexPage = async () => {
-  const languages = await axiosPublic.get("/language");
-
+const IndexPage = () => {
+  const [languages, setLanguages] = useState<ILanguage[]>([]);
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      const response = await axiosPublic.get("/language");
+      setLanguages(response.data.data);
+    };
+    fetchLanguages();
+  }, []);
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-3">
@@ -17,7 +25,7 @@ const IndexPage = async () => {
           Add
         </Link>
       </div>
-      <Languages languages={languages.data.data} />
+      <Languages languages={languages} />
     </div>
   );
 };

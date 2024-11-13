@@ -5,6 +5,7 @@ export interface IArea {
     _id: string;
     title: string;
   };
+  isActive: boolean;
 }
 
 export interface ICity {

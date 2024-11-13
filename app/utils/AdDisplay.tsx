@@ -1,3 +1,4 @@
+"use client";
 import { IAds } from "@/types/ads.types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";

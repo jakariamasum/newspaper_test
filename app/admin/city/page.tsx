@@ -11,6 +11,10 @@ import Link from "next/link";
 import Loader from "@/components/Loader";
 import { toast, Toaster } from "sonner";
 import { ICity } from "@/types/location.types";
+import {
+  toggleCityStatus,
+  updateCityName,
+} from "@/app/services/admin/cityServices";
 
 const IndexPage: React.FC = () => {
   const [cities, setCities] = useState<ICity[]>([]);
@@ -41,50 +45,27 @@ const IndexPage: React.FC = () => {
   };
 
   const handleSave = async (city: ICity) => {
-    try {
-      await axiosPublic.put(
-        `/city/admin/${city._id}`,
-        { title: editedName },
-        {
-          headers: {
-            Authorization: `Beares ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
+    const success = await updateCityName(city._id, editedName);
+    if (success) {
       setCities(
         cities.map((c) =>
           c._id === city._id ? { ...c, title: editedName } : c
         )
       );
-      setEditingCity(null);
-      toast.success("City name updated successfully");
-    } catch (err) {
-      toast.error("Failed to update city name");
     }
+    setEditingCity(null);
   };
 
   const handleToggleActive = async (city: ICity) => {
-    try {
-      await axiosPublic.put(
-        `/city/admin/${city._id}`,
-        { isActive: !city.isActive },
-        {
-          headers: {
-            Authorization: `Beares ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      setCities(
-        cities.map((c) =>
-          c._id === city._id ? { ...c, isActive: !c.isActive } : c
-        )
-      );
-      toast.success(
-        `City ${city.isActive ? "deactivated" : "activated"} successfully`
-      );
-    } catch (err) {
-      toast.error("Failed to update city status");
-    }
+    const success = await toggleCityStatus(city);
+    setCities(
+      cities.map((c) =>
+        c._id === city._id ? { ...c, isActive: !c.isActive } : c
+      )
+    );
+    toast.success(
+      `City ${city.isActive ? "deactivated" : "activated"} successfully`
+    );
   };
 
   if (loading) return <Loader />;
