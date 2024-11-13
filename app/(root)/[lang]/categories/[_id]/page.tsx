@@ -184,7 +184,7 @@ const IndexPage: React.FC = () => {
                           }}
                         />
                         <div className="flex justify-between items-center text-sm text-gray-500">
-                          <span>{newsItem.location.city}</span>
+                          <span>{newsItem?.location?.city}</span>
                           <span>
                             {new Date(newsItem.createdAt).toLocaleDateString()}
                           </span>
