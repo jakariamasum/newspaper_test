@@ -24,12 +24,8 @@ export default function LanguageInputForm() {
     const { name, value } = e.target;
     setLanguage((prev) => ({
       ...prev,
-      [name]:
-        name === "language_code" ? value.slice(0, 2).toLowerCase() : value,
-      link:
-        name === "language_code"
-          ? `/${value.slice(0, 2).toLowerCase()}`
-          : prev.link,
+      [name]: name === "language_code" ? value : value,
+      link: name === "language_code" ? `/${value.toLowerCase()}` : prev.link,
     }));
   };
 
@@ -90,7 +86,7 @@ export default function LanguageInputForm() {
             htmlFor="language_code"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Language Code (2 letters)
+            Language Code
           </label>
           <input
             id="language_code"
@@ -99,7 +95,6 @@ export default function LanguageInputForm() {
             value={language.language_code}
             onChange={handleInputChange}
             placeholder="e.g. en"
-            maxLength={2}
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main focus:border-transparent transition duration-200"
             required
           />

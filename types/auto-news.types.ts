@@ -18,6 +18,7 @@ export interface IAutoNews {
   subcategory?: string;
   status: "published" | "unpublished";
   link: string;
+  author: string;
   duration: string;
   createdAt: string;
   updatedAt: string;
