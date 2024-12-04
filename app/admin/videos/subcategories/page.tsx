@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
 
 const IndexPage = () => {
   const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);

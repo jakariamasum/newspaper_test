@@ -14,6 +14,11 @@ import { categoryFormat } from "@/app/utils/categoryFormate";
 import { useRouter } from "next/navigation";
 import { IAuthor } from "@/types/author.types";
 import { createNewsItem } from "@/app/services/admin/NewsServices";
+import dynamic from "next/dynamic";
+
+const Photo1 = dynamic(() => import("@/components/admin/Photo"), {
+  ssr: false,
+});
 
 const IndexPage: React.FC = () => {
   const router = useRouter();
