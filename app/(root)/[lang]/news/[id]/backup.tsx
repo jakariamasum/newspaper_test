@@ -46,6 +46,8 @@ const IndexPage: React.FC = () => {
   const [langDetails, setLangDetails] = useState<TLanguage | null>(null);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+
     const handleFullScreenChange = () => {
       if (document.fullscreenElement) {
         setIsFullScreen(true);

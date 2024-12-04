@@ -22,6 +22,9 @@ export function DynamicTitle() {
   const [languages, setLanguages] = useState<ILanguage[]>([]);
   const [newsTitle, setNewsTitle] = useState<string>("");
   const [categoryTitle, setCategoryTitle] = useState<string>("");
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+  }, []);
 
   useEffect(() => {
     const fetchLanguage = async () => {

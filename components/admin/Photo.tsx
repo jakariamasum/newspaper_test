@@ -20,10 +20,14 @@ export default function Photo({ title, img, onChange }: PhotoProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const inputId = useId();
-
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+  }, []);
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (typeof document === "undefined") return;
+
     const file = event.target.files?.[0];
     if (!file) return;
 

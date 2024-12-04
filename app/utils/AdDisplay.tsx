@@ -15,6 +15,8 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
   const imageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+
     const handleFullScreenChange = () => {
       if (document.fullscreenElement) {
         setIsFullScreen(true);

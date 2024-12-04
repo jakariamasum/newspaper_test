@@ -8,9 +8,7 @@ export async function compressImage(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     useEffect(() => {
-      if (typeof document === "undefined") {
-        console.error("This component requires the browser environment.");
-      }
+      if (typeof document === "undefined") return;
     }, []);
     const img = new Image();
     img.crossOrigin = "anonymous";

@@ -13,6 +13,9 @@ export const LanguageSelector = () => {
   const [languages, setLanguages] = useState<ILanguage[]>([]);
   console.log(languages);
   useEffect(() => {
+    if (typeof document === "undefined") return;
+  }, []);
+  useEffect(() => {
     const storedLang = sessionStorage.getItem("selectedLanguage");
     if (storedLang) {
       setCurrentLang(storedLang);

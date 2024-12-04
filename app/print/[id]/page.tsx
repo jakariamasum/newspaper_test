@@ -27,7 +27,12 @@ const IndexPage: React.FC = () => {
   const [news, setNews] = useState<TNews | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+  }, []);
   const handlePrint = () => {
+    if (typeof document === "undefined") return;
+
     if (printRef.current) {
       const printContents = printRef.current.innerHTML;
       const originalContents = document.body.innerHTML;
