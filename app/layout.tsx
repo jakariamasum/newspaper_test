@@ -14,9 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSettings();
 
   const metadata: Metadata = {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_FRONTEND || "http://localhost:3000"
-    ),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_FRONTEND!),
     title: {
       default: settings?.title || "Default Title",
       template: `%s | ${settings?.title || "Default Title"}`,
