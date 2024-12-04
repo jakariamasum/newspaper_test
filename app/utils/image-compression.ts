@@ -1,9 +1,17 @@
+"use client";
+import { useEffect } from "react";
+
 export async function compressImage(
   dataUrl: string,
   maxSizeMB: number = 1,
   quality: number = 0.8
 ): Promise<string> {
   return new Promise((resolve, reject) => {
+    useEffect(() => {
+      if (typeof document === "undefined") {
+        console.error("This component requires the browser environment.");
+      }
+    }, []);
     const img = new Image();
     img.crossOrigin = "anonymous";
 
