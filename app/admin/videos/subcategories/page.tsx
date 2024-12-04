@@ -7,13 +7,16 @@ import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
 
-const IndexPage: React.FC = () => {
+const IndexPage = () => {
   const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory | null>(
     null
   );
   const [newTitle, setNewTitle] = useState<string>("");
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+  }, []);
 
   useEffect(() => {
     const fetchSubCategories = async () => {
