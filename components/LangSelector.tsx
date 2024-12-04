@@ -28,6 +28,8 @@ export const LanguageSelector = () => {
   }, []);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (typeof document === "undefined") return;
+
     const newLang = e.target.value;
     sessionStorage.setItem("selectedLanguage", newLang);
     setLang(newLang);
