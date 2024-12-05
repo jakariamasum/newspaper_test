@@ -87,12 +87,14 @@ const Canva = () => {
       canva.style.height = originalHeight;
 
       const url = canvas.toDataURL();
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "nextjs.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (typeof window !== "undefined") {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "nextjs.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     });
   };
 
