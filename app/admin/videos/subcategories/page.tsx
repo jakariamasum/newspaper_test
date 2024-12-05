@@ -15,14 +15,10 @@ const IndexPage = () => {
     null
   );
   const [newTitle, setNewTitle] = useState<string>("");
-  useEffect(() => {
-    console.log("Finished loading");
-  }, []);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-  }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const fetchSubCategories = async () => {
       setLoading(true);
       try {
