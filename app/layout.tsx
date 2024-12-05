@@ -2,7 +2,7 @@ import "./globals.css";
 import { AuthProvider } from "./context/authContext";
 import { LangProvider } from "./context/langContext";
 import { SettingsProvider } from "./context/settingContext";
-import DynamicTitle from "@/components/DynamicTitle";
+import { DynamicTitle } from "@/components/DynamicTitle";
 import { Metadata, Viewport } from "next";
 import axiosPublic from "@/lib/axiosPublic";
 export const viewport: Viewport = {
