@@ -102,7 +102,7 @@ export default function RootLayout({
   }, [settings?.content]);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
     if (isClient && isSettingsLoaded) {
       const savedLang = sessionStorage.getItem("selectedLanguage");
       const langFromPath = getLangFromPath();

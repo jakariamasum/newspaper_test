@@ -31,10 +31,10 @@ const IndexPage: React.FC = () => {
     console.log("Finished loading");
   }, []);
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
   }, []);
   const handlePrint = () => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
 
     if (typeof window !== "undefined" && printRef.current) {
       const printContents = printRef.current.innerHTML;

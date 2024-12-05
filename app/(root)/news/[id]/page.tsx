@@ -49,7 +49,7 @@ const IndexPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
 
     const handleFullScreenChange = () => {
       if (document.fullscreenElement) {

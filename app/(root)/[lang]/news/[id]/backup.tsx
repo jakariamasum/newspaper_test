@@ -49,7 +49,7 @@ const IndexPage: React.FC = () => {
     console.log("Finished loading");
   }, []);
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
 
     const handleFullScreenChange = () => {
       if (document.fullscreenElement) {
