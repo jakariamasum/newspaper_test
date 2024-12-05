@@ -9,7 +9,7 @@ export default function LanguageInitializer() {
     console.log("Finished loading");
   }, []);
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
   }, []);
   useEffect(() => {
     const storedLang = sessionStorage.getItem("selectedLanguage");

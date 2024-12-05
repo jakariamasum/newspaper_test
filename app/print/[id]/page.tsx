@@ -36,7 +36,7 @@ const IndexPage: React.FC = () => {
   const handlePrint = () => {
     if (typeof document === "undefined") return;
 
-    if (printRef.current) {
+    if (typeof window !== "undefined" && printRef.current) {
       const printContents = printRef.current.innerHTML;
       const originalContents = document.body.innerHTML;
       document.body.innerHTML = printContents;

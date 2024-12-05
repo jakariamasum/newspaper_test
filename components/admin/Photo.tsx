@@ -27,7 +27,7 @@ export default function Photo({ title, img, onChange }: PhotoProps) {
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
 
     const file = event.target.files?.[0];
     if (!file) return;

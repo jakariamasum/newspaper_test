@@ -21,7 +21,7 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
     if (typeof document === "undefined") return;
 
     const handleFullScreenChange = () => {
-      if (document.fullscreenElement) {
+      if (typeof window !== "undefined" && document.fullscreenElement) {
         setIsFullScreen(true);
       } else {
         setIsFullScreen(false);
@@ -35,7 +35,7 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
   }, []);
 
   const handleImageClick = () => {
-    if (imageContainerRef.current) {
+    if (typeof window !== "undefined" && imageContainerRef.current) {
       if (!document.fullscreenElement) {
         imageContainerRef.current.requestFullscreen().catch((err) => {
           console.error(`Error attempting to enable full-screen mode: ${err}`);
@@ -47,7 +47,7 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
   };
 
   const handleExitFullScreenClick = () => {
-    if (document.fullscreenElement) {
+    if (typeof window !== "undefined" && document.fullscreenElement) {
       document.exitFullscreen();
     }
   };

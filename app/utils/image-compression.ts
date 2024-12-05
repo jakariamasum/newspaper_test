@@ -11,7 +11,7 @@ export async function compressImage(
       console.log("Finished loading");
     }, []);
     useEffect(() => {
-      if (typeof document === "undefined") return;
+      if (typeof window === "undefined") return;
     }, []);
     const img = new Image();
     img.crossOrigin = "anonymous";

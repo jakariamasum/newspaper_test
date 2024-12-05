@@ -32,9 +32,6 @@ export default function RootLayout({
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    console.log("Finished loading");
-  }, []);
-  useEffect(() => {
     setIsClient(true);
   }, []);
 
@@ -130,8 +127,10 @@ export default function RootLayout({
     if (isClient) {
       sessionStorage.setItem("selectedLanguage", languageCode);
     }
-    document.documentElement.lang = languageCode;
-    router.push(`/${languageCode}`);
+    if (typeof window !== "undefined") {
+      document.documentElement.lang = languageCode;
+      router.push(`/${languageCode}`);
+    }
   };
 
   if (loading || !isSettingsLoaded) {

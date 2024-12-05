@@ -67,7 +67,7 @@ const IndexPage: React.FC = () => {
 
   const handleImageClick1 = () => {
     if (imageContainerRef.current) {
-      if (!document.fullscreenElement) {
+      if (typeof window !== "undefined" && !document.fullscreenElement) {
         imageContainerRef.current.requestFullscreen().catch((err) => {
           console.error(`Error attempting to enable full-screen mode: ${err}`);
         });
@@ -78,7 +78,7 @@ const IndexPage: React.FC = () => {
   };
 
   const handleExitFullScreenClick = () => {
-    if (document.fullscreenElement) {
+    if (typeof window !== "undefined" && document.fullscreenElement) {
       document.exitFullscreen();
     }
   };

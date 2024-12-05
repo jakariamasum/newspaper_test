@@ -6,7 +6,7 @@ const Comment: React.FC = () => {
     console.log("Finished loading");
   }, []);
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
     // Load Facebook SDK asynchronously
     const loadFbSdk = () => {
       (window as any).fbAsyncInit = function () {

@@ -26,7 +26,7 @@ export function DynamicTitle() {
     console.log("Finished loading");
   }, []);
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof window === "undefined") return;
   }, []);
 
   useEffect(() => {
