@@ -45,6 +45,10 @@ const IndexPage: React.FC = () => {
   const [langDetails, setLangDetails] = useState<TLanguage | null>(null);
 
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+
+  useEffect(() => {
     if (typeof document === "undefined") return;
 
     const handleFullScreenChange = () => {

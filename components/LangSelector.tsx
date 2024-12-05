@@ -13,6 +13,9 @@ export const LanguageSelector = () => {
   const [languages, setLanguages] = useState<ILanguage[]>([]);
   console.log(languages);
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     if (typeof document === "undefined") return;
   }, []);
   useEffect(() => {

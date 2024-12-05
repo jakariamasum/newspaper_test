@@ -8,6 +8,9 @@ export async function compressImage(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     useEffect(() => {
+      console.log("Finished loading");
+    }, []);
+    useEffect(() => {
       if (typeof document === "undefined") return;
     }, []);
     const img = new Image();

@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 
 export default function LanguageInitializer() {
   const router = useRouter();
-
+  useEffect(() => {
+    console.log("Finished loading");
+  }, []);
   useEffect(() => {
     if (typeof document === "undefined") return;
   }, []);

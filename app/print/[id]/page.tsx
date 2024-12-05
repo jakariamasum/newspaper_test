@@ -28,6 +28,9 @@ const IndexPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     if (typeof document === "undefined") return;
   }, []);
   const handlePrint = () => {

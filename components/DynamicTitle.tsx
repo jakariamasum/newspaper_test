@@ -23,6 +23,9 @@ export function DynamicTitle() {
   const [newsTitle, setNewsTitle] = useState<string>("");
   const [categoryTitle, setCategoryTitle] = useState<string>("");
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     if (typeof document === "undefined") return;
   }, []);
 

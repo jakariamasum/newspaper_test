@@ -16,6 +16,9 @@ const IndexPage = () => {
   );
   const [newTitle, setNewTitle] = useState<string>("");
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     if (typeof document === "undefined") return;
   }, []);
 

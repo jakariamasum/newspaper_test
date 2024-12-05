@@ -3,6 +3,9 @@ import React, { useEffect } from "react";
 
 const Comment: React.FC = () => {
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     if (typeof document === "undefined") return;
     // Load Facebook SDK asynchronously
     const loadFbSdk = () => {

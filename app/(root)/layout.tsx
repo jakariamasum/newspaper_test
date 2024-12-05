@@ -32,6 +32,9 @@ export default function RootLayout({
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    console.log("Finished loading");
+  }, []);
+  useEffect(() => {
     setIsClient(true);
   }, []);
 
