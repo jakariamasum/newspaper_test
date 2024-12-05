@@ -52,34 +52,44 @@ const IndexPage: React.FC = () => {
     if (typeof window === "undefined") return;
 
     const handleFullScreenChange = () => {
-      if (document.fullscreenElement) {
+      if (typeof window !== "undefined" && document.fullscreenElement) {
         setIsFullScreen(true);
       } else {
         setIsFullScreen(false);
       }
     };
-
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    if (typeof window !== "undefined") {
+      document.addEventListener("fullscreenchange", handleFullScreenChange);
+    }
     return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      if (typeof window !== "undefined") {
+        document.removeEventListener(
+          "fullscreenchange",
+          handleFullScreenChange
+        );
+      }
     };
   }, []);
 
   const handleImageClick1 = () => {
-    if (imageContainerRef.current) {
+    if (typeof window !== "undefined" && imageContainerRef.current) {
       if (typeof window !== "undefined" && !document.fullscreenElement) {
         imageContainerRef.current.requestFullscreen().catch((err) => {
           console.error(`Error attempting to enable full-screen mode: ${err}`);
         });
       } else {
-        document.exitFullscreen();
+        if (typeof window !== "undefined") {
+          document.exitFullscreen();
+        }
       }
     }
   };
 
   const handleExitFullScreenClick = () => {
-    if (typeof window !== "undefined" && document.fullscreenElement) {
-      document.exitFullscreen();
+    if (typeof window !== "undefined") {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
     }
   };
 

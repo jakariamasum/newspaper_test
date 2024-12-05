@@ -21,10 +21,12 @@ const AdDisplay: React.FC<AdDisplayProps> = ({ ads, adId }) => {
     if (typeof window === "undefined") return;
 
     const handleFullScreenChange = () => {
-      if (typeof window !== "undefined" && document.fullscreenElement) {
-        setIsFullScreen(true);
-      } else {
-        setIsFullScreen(false);
+      if (typeof window !== "undefined") {
+        if (document.fullscreenElement) {
+          setIsFullScreen(true);
+        } else {
+          setIsFullScreen(false);
+        }
       }
     };
 

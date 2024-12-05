@@ -14,7 +14,7 @@ export default function LanguageInitializer() {
   useEffect(() => {
     const storedLang = sessionStorage.getItem("selectedLanguage");
     console.log(storedLang);
-    if (storedLang) {
+    if (typeof window !== "undefined" && storedLang) {
       document.documentElement.lang = storedLang;
       router.refresh();
     }

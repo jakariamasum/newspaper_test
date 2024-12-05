@@ -18,12 +18,14 @@ const Comment: React.FC = () => {
         });
       };
 
-      const fjs = document.getElementsByTagName("script")[0];
-      if (fjs && fjs.parentNode) {
-        const js = document.createElement("script");
-        js.id = "facebook-jssdk";
-        js.src = "https://connect.facebook.net/en-US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
+      if (typeof window !== "undefined") {
+        const fjs = document.getElementsByTagName("script")[0];
+        if (fjs && fjs.parentNode) {
+          const js = document.createElement("script");
+          js.id = "facebook-jssdk";
+          js.src = "https://connect.facebook.net/en-US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }
       }
     };
 

@@ -107,11 +107,15 @@ export default function RootLayout({
       const savedLang = sessionStorage.getItem("selectedLanguage");
       const langFromPath = getLangFromPath();
 
-      if (langFromPath) {
+      if (typeof window !== "undefined" && langFromPath) {
         setLang(langFromPath);
         document.documentElement.lang = langFromPath;
         sessionStorage.setItem("selectedLanguage", langFromPath);
-      } else if (pathname === "/" && savedLang) {
+      } else if (
+        typeof window !== "undefined" &&
+        pathname === "/" &&
+        savedLang
+      ) {
         setLoading(true);
         setLang(savedLang);
         router.push(`/${savedLang}`);

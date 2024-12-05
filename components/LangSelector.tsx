@@ -36,7 +36,9 @@ export const LanguageSelector = () => {
     const newLang = e.target.value;
     sessionStorage.setItem("selectedLanguage", newLang);
     setLang(newLang);
-    document.documentElement.lang = newLang;
+    if (typeof window !== "undefined") {
+      document.documentElement.lang = newLang;
+    }
     setCurrentLang(newLang);
     router.push("/" + newLang);
   };

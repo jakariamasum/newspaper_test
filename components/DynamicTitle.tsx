@@ -100,8 +100,9 @@ export function DynamicTitle() {
       } else if (matchedLanguage) {
         titleName = `${matchedLanguage.title} | ${settings.title}`;
       }
-
-      document.title = titleName;
+      if (typeof window !== "undefined") {
+        document.title = titleName;
+      }
     }
   }, [pathname, settings, languages, newsTitle, categoryTitle]);
 

@@ -17,44 +17,46 @@ export async function compressImage(
     img.crossOrigin = "anonymous";
 
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Failed to get canvas context"));
-        return;
-      }
+      if (typeof window !== "undefined") {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Failed to get canvas context"));
+          return;
+        }
 
-      let { width, height } = img;
-      const maxDimension = 1920;
+        let { width, height } = img;
+        const maxDimension = 1920;
 
-      if (width > height && width > maxDimension) {
-        height *= maxDimension / width;
-        width = maxDimension;
-      } else if (height > maxDimension) {
-        width *= maxDimension / height;
-        height = maxDimension;
-      }
+        if (width > height && width > maxDimension) {
+          height *= maxDimension / width;
+          width = maxDimension;
+        } else if (height > maxDimension) {
+          width *= maxDimension / height;
+          height = maxDimension;
+        }
 
-      canvas.width = width;
-      canvas.height = height;
+        canvas.width = width;
+        canvas.height = height;
 
-      // Draw and compress
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(img, 0, 0, width, height);
+        // Draw and compress
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
 
-      // Get compressed data URL
-      const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+        // Get compressed data URL
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
 
-      // Check if size is still too large
-      const base64Data = compressedDataUrl.split(",")[1];
-      const binaryData = atob(base64Data);
-      const sizeInMB = binaryData.length / (1024 * 1024);
+        // Check if size is still too large
+        const base64Data = compressedDataUrl.split(",")[1];
+        const binaryData = atob(base64Data);
+        const sizeInMB = binaryData.length / (1024 * 1024);
 
-      if (sizeInMB > maxSizeMB && quality > 0.1) {
-        resolve(compressImage(dataUrl, maxSizeMB, quality - 0.1));
-      } else {
-        resolve(compressedDataUrl);
+        if (sizeInMB > maxSizeMB && quality > 0.1) {
+          resolve(compressImage(dataUrl, maxSizeMB, quality - 0.1));
+        } else {
+          resolve(compressedDataUrl);
+        }
       }
     };
 
